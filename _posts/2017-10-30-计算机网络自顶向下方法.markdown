@@ -1,0 +1,126 @@
+---
+layout: post
+title:  "计算机网络自顶向下方法"
+date:   2017-10-30
+categories: notes
+---
+
+Contents
+=
+* [锚](#锚)
+    * Epic
+* [protocol stack](#the-top-down-approach)
+    * [application layer](#application-layer)
+        * [p2p](#peer-to-peer)
+        * [socket api](#socket-api)
+        * [HTTP](#http)
+        * [Cookie](#cookie)
+        * [Proxy server](#proxy-server-web-cache)
+
+
+anchor
+======
+    web:world wide wed hypertext system that operates over the Internet
+    host/endsystem
+    communication link
+    packet/packet switch/router/link-layer switch
+    ISP(Internet Service Provider)
+    TCP(Transmission Control Protocol)/IP
+    IEEE 802.11
+    d = d + d + d + d
+    d = N(d + d + d)
+    基于"一群相互信任的用户连接到一个透明的网络上"的模型
+    application architecture
+    P2P architecture
+    bandwidth-sensitive application
+    Request For Comments
+    Round-Trip Time(RTT
+
+
+Epic<sup>change the world</sup>
+----------------------------------------------------------
+电路交换|时间|note
+---|---|---
+分组交换|1961-1972|流量的涨落
+专用网络与网络互连|1972-1980|开创
+网络的激增|1980-1990|1.5Mbps主干
+因特网爆炸|1990+|World Wide Web
+
+
+The Top-down approach
+====================================
+![TCP/UDP](../src/TCPUDP.png)
+
+protocol stack|
+---|
+[应用](#application-layer)|
+[运输](#l) |
+[网络](#webl)|
+[链路](#ll)|
+[物理](#ll)|
+
+## Application layer
+
+### peer-to-peer
+* 无/小 中心服务器
+* self-scalability
+* server,client
+### socket api
+ App layer---Transport layer
+
+    TCP
+    面向连接
+    可靠传输
+    阻塞控制
+    <-HTTP支撑运输协议
+    ->secure socket layer
+>>>
+
+    UDP
+    无握手过程
+    不保证传到
+    乱序到达
+
+
+### HTTP
+    application protocol
+    web:HTTP
+    webpage:object:URL
+    stateless protocol->cookie
+#### non persistent connection
+    "发起双向链接-client请求报文-server接收报文-
+    server通知TCP断开-客户端知道断开"
+
+#### request message
+    GET /somedir/page.html HTTP/1.1     //request line
+    Host: www.someschool.edu    //header line
+    Connection: close
+    User-agent: Mozilla/5.0
+    Accept-language: fr
+>>>![format](10-30-1)
+![format](10-30-2)
+
+    HTTP/1.1 200 OK
+    Connection: close
+    Date: Tie, 09 Aug 2011 15:44:04 GMT
+    Server: Apache/2.2.3 (CentOS)
+    Last-Modified: Tue, 09 Aug 2011 15:11:03 GMT
+    Content-Length: 6821
+    Content-Type: text/html
+
+#### Status Code
+Status|Means
+---|---
+2XX|OK
+3XX|Redirect
+301|Moved Permanently
+4XX|Client error
+400|Bad Request
+404|Not Found
+5XX|Server error
+505|HTTP Version Not Supported
+
+
+## Cookie
+..
+## Proxy server-Web cache
