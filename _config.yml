@@ -17,8 +17,8 @@ title: 我会说的话
 email: huanghaozun@gmail.com
 description: > # this means to ignore newlines until "baseurl:"
 
-baseurl: /blog # the subpath of your site, e.g. /blog
-url: https://haozun.github.io/
+baseurl: "" # the subpath of your site, e.g. /blog
+url: ""
 twitter_username: :-)
 github_username:  Haozun
 
