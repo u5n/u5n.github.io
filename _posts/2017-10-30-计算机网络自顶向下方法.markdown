@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "计算机网络自顶向下方法"
+title:  "计算机网络自顶向下方法笔记"
 date:   2017-10-30
 categories: posts
 ---
@@ -16,6 +16,8 @@ Contents
         * [HTTP](#http)
         * [Cookie](#cookie)
         * [Proxy server](#proxy-server-web-cache)
+        * [email](#email)
+        * [DNS](#dns)
 
 
 anchor
@@ -35,6 +37,8 @@ anchor
     bandwidth-sensitive application
     Request For Comments
     Round-Trip Time(RTT
+    message queue
+    recursive query, iterative query
 
 
 Epic<sup>change the world</sup>
@@ -97,8 +101,8 @@ protocol stack|
     Connection: close
     User-agent: Mozilla/5.0
     Accept-language: fr
->>>![format](10-30-1)
-![format](10-30-2)
+>>>![format](../src/10-30-1.png)<br>
+![format](../src/10-30-2.png)
 
     HTTP/1.1 200 OK
     Connection: close
@@ -119,8 +123,32 @@ Status|Means
 404|Not Found
 5XX|Server error
 505|HTTP Version Not Supported
+#### FTP
+    使用并行TCP连接:控制连接/数据连接
+    追踪用户在远程目录树上的当前位置
+..(用的时候填上)
+### Cookie
+..(用的时候填上)
+### Proxy server-Web cache
+缓存器利用高速的局域网,并且有着过期的问题
+### email
+    user agent-mail serve-Simple Mail Transfer Protocol,SMTP
+#### SMTP
+    这么过时的吗?
+SMTP|push protocol|7 bits ASCII|只有一个报文
+---|---|---|---|
+HTTP|pull protocol|            |封装到HTTP响应报文|
+#### POP3,IMAP
+(Post Office Protocol V3)
+(Internet Mail Access Protocol)
 
+    ..(用的时候填上)
+### DNS
+Domain name system
+* 分层的DNS server implement distributed database
+* a protocol make it possible for host to query this database
+* Local name servers->Root name servers->Authoritative name servers
+![dns layer](../src/10-30-3.png)
+![dns layer](../src/10-30-4.png)
+#### DNS缓存
 
-## Cookie
-..
-## Proxy server-Web cache
