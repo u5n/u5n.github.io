@@ -2,7 +2,7 @@
 layout: post
 title:  "计算机网络自顶向下方法"
 date:   2017-10-30
-categories: notes
+categories: posts
 ---
 
 Contents
