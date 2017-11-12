@@ -2,8 +2,8 @@ excerpt_separator: ""
 pygments: true
 markdown: kramdown
 url: http://haozun.github.io
-name: Lantern Dev Blog
-description: migeater'blog, 0, 0);DROP DATABASE TABLICE;
+name: migeater'blog, 0, 0);DROP DATABASE TABLICE;
+description: 
 author: migeater
 avatar: 
 ga_domain: 
