@@ -1,69 +1,23 @@
 <!doctype html>
-<html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+
+    <title>Hello, world!</title>
+    <script src="lib/jquery-3.3.1.min.js"></script>
+</head>
 <body>
-<canvas id="1" width="400" height="400" ></canvas>
-<script src="three.js"></script>
-<script>
-    var scene = new THREE.Scene();
-    var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
+<h1>Hello, world!</h1>
 
-    var renderer = new THREE.WebGLRenderer();
-    renderer.setSize( window.innerWidth, window.innerHeight );
-    document.body.appendChild( renderer.domElement );
-
-    var geometry = new THREE.BoxGeometry( 1, 1, 1 );
-    var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-    var cube = new THREE.Mesh( geometry, material );
-    scene.add( cube );
-
-    camera.position.z = 5;
-
-    var render = function () {
-        requestAnimationFrame( render );
-
-        cube.rotation.x += 0.1;
-        cube.rotation.y += 0.1;
-
-        renderer.render(scene, camera);
-    };
-
-    render();
-</script>
-<script>
-    let ctx = document.getElementById("1").getContext("2d");
-    let Len = 20, dir = 2, dirNow , food = [2,0], Snake = [ [0, 0], [1, 0] ], Map = [];
-    Snake.every(x => Map[x] = 1);
-    let dirMat = [[-1, 0], [0, -1], [1, 0], [0, 1]];
-    let pairEqual = ((p1, p2) => p1[0] == p2[0] && p1[1] == p2[1]);
-    document.onkeydown = function (env) {
-        arr = env.keyCode - 37;
-        if (0 <= arr == arr < 4)
-            if (dirNow !== (arr + 2) % 4)
-                dir = arr;
-    };
-    !function () {
-        let Head = Snake[Snake.length-1].map((x, i) => x + dirMat[dirNow=dir][i]);
-        if (!pairEqual(Head, food)) {
-            Map[Snake.shift()] = 0;
-            if (Snake.some(x=>pairEqual(x,Head)) || !Head.every(x => 0<=x == x < Len))
-                return document.write("Game Over");
-        }
-        Snake.push(Head);
-        Map[Head] = 1;
-        while (Snake.some(x => pairEqual(x, food)))
-            food = [~~(Math.random() * Len), ~~(Math.random() * Len)];
-        Map[food] = 2;
-        for(let i =0;i<Len ;i++)
-            for(let j =0;j<Len ;j++){
-                switch (Map[[i,j]]) {
-                    case 1:ctx.fillStyle= 'purple';break;
-                    case 2:ctx.fillStyle= 'green';break;
-                    default:ctx.fillStyle= 'grey';break;
-                }
-                ctx.fillRect(i*Len,j*Len, Len, Len)
-            }
-        setTimeout(arguments.callee, 100);
-    }()
-</script>
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
 </body>
 </html>

@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+<body>
+<canvas id="1" width="400" height="400" ></canvas>
+<script>
+    let ctx = document.getElementById("1").getContext("2d");
+    let Len = 20, dir = 2, dirNow , food = [2,0], Snake = [ [0, 0], [1, 0] ], Map = [];
+    Snake.every(x => Map[x] = 1);
+    let dirMat = [[-1, 0], [0, -1], [1, 0], [0, 1]];
+    let pairEqual = ((p1, p2) => p1[0] == p2[0] && p1[1] == p2[1]);
+    document.onkeydown = function (env) {
+        arr = env.keyCode - 37;
+        if (0 <= arr == arr < 4)
+            if (dirNow !== (arr + 2) % 4)
+                dir = arr;
+    };
+    !function () {
+        let Head = Snake[Snake.length-1].map((x, i) => x + dirMat[dirNow=dir][i]);
+        if (!pairEqual(Head, food)) {
+            Map[Snake.shift()] = 0;
+            if (Snake.some(x=>pairEqual(x,Head)) || !Head.every(x => 0<=x == x < Len))
+                return document.write("Game Over");
+        }
+        Snake.push(Head);
+        Map[Head] = 1;
+        while (Snake.some(x => pairEqual(x, food)))
+            food = [~~(Math.random() * Len), ~~(Math.random() * Len)];
+        Map[food] = 2;
+        for(let i =0;i<Len ;i++)
+            for(let j =0;j<Len ;j++){
+                switch (Map[[i,j]]) {
+                    case 1:ctx.fillStyle= 'purple';break;
+                    case 2:ctx.fillStyle= 'green';break;
+                    default:ctx.fillStyle= 'grey';break;
+                }
+                ctx.fillRect(i*Len,j*Len, Len, Len)
+            }
+        setTimeout(arguments.callee, 100);
+    }()
+</script>
+</body>
+</html>
