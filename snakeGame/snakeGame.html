@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <canvas id="1" width="400" height="400"></canvas>
 <script>
-let dir=1,food=3,snk=[1,0],n_=0, ctx=document.getElementById("1").getContext("2d")
-document.onkeydown=e=>{ dir =snk[0]-snk[1]==-(tmp = [-1,-10,1,10][e.keyCode-37]||dir)?dir:tmp }
+let dir=1,food=3,snk=[1,0],ctx=document.getElementById("1").getContext("2d")
+document.onkeydown=e=>{dir =  snk[0]-snk[1]==-(tmp = [-1,-10,1,10][e.keyCode-37]||dir)?dir:tmp }
 setInterval(()=>{
     snk.unshift(Head = snk[0] + dir)
     if(Head!=food) snk.pop()
     else while(snk.includes(food=0|Math.random()*10*10)) ;
     if(snk.indexOf(Head,1)!=-1||(dir==1&&Head%10==0)||(dir==-1&&Head%10==9)||Head<0||Head>=100)
-        return alert("died"+ ++n_+"times") //死亡记录死亡次数
-    for(let i =0 ;i< 100 ; i++){
-        ctx.fillStyle = '#0'+~~((food===i)*13000*Math.random())+~~(snk.includes(i)*3000*Math.random())
+        return document.write(0&snk.shift()) //死亡记录蛇长
+    for(let i=0; i<100; i++){
+        ctx.fillStyle = '#0'+(food==i)*9910+snk.includes(i)*1990
         ctx.fillRect(i%10*40,(i-i%10)*4, 40,40)
     }
-},120)
+},100)
 </script>
