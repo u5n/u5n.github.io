@@ -1,0 +1,281 @@
+/* 全局 */
+*{
+    padding: 0px;   
+    margin:0 0 0 0;  /* 全局自定义布局,紧凑布局 */
+    font-family:consolas, Monaco, monospace,Arial, Helvetica, sans-serif;
+}
+/* 取消原模板设置*/
+#main img{
+    max-width: none!important;
+}
+div#main{
+    margin:0 16px 0 16px ;
+    padding: 50px 0 0 0 ;
+}
+    /* 替onenote擦屁股 */
+    em{
+        font-family: "华文新魏",consolas, Monaco, monospace;
+    }
+    /* unknown BUG for sideBar*/
+#sideBar,#navList,.dayTitle,#blog_post_info,.diggword,.c_b_p_desc_readmore{
+    display: none
+
+}
+    
+
+a{
+    border-style:none;
+    text-decoration: none;
+    color:orangered;
+}
+a:hover{
+    color:blue;
+    transition:color 1s;
+}
+
+/* 字体部分 */
+
+    #blogTitle a{
+        font:italic 25px "Brush Script MT","Bauhaus 93","Ink Free",consolas;
+    }
+    #blog-sidecolumn {
+        margin-left: 1em;
+        margin-top: 5px;
+    }
+    #blog-sidecolumn *{
+        font-family:"华文新魏","微软雅黑","楷体";
+    }
+    #blog-sidecolumn>div{
+        font-size:1.2rem;
+        font-weight: bold;
+    }
+    #blog-sidecolumn>div>div,#blog-sidecolumn h3{
+        color:purple ;
+        
+        font-size:1rem;
+    }
+    #blog-sidecolumn li>a{
+        font-size:0.9rem;
+        color:black;
+    }
+    #blog-sidecolumn li>a:hover{
+        color:goldenrod;
+    }
+    #blog-sidecolumn li{
+        border:1px solid black;
+        font-size:0.8rem;
+        color:black;
+    }
+    input.btn_my_zzk {
+        display: none;
+    }
+    .input_my_zzk {
+        width: calc( 100% - 1rem );
+        outline: none;
+        background: transparent;
+    }
+    /* 标题 */
+    .entrylistPosttitle a,a.postTitle2 ,a#cb_post_title_url {
+        padding: 0px 1em 8px  0;
+        font-family: "华文新魏",consolas, Monaco, monospace; 
+        font-size: 25px;
+        display: inline-block;
+        min-width:10em;
+        width:max-content;
+        border-bottom: 1px solid lightgrey;
+        color: #000;
+    }
+    /* 博文时间 */
+    .postDesc a,div.postDesc{
+        font-family: "华文新魏",consolas, Monaco, monospace;
+        color:#808080;
+        margin-top:2px;
+    }
+    /* 摘要类型 */
+    .postCon div{
+        font-family: "华文新魏",consolas, Monaco, monospace;
+    }
+
+    /* 评论的字体*/
+    #tbCommentBody{
+        font-size:2em;
+    }
+
+    /* 博客正文行间距控制 */
+        #cnblogs_post_body p{
+            line-height:1.2em;
+            margin-top: 0px;
+            margin-bottom: 2px;
+        }
+        #cnblogs_post_body div{
+            margin: 5px 5px ;
+        }
+        #cnblogs_post_body td>p{
+            line-height: 1em;
+        }
+        
+/* 按结构 */
+
+    /* 导航栏 */
+    #header{
+        transition:all 2s;
+        background: linear-gradient(0deg,whitesmoke, #0000, whitesmoke);
+        position:fixed;z-index:1050; /* 顶置导航栏 */
+        width: 100%;
+        box-shadow: 0 2px 2px 2px #7777;
+        height:auto;
+        overflow: hidden;
+    }
+    #header:hover{    
+        background: white;
+    }
+    #header:hover>#blog-sidecolumn>div{
+        color:slateblue;
+    }
+    div#header li {
+        margin-right: 0.5em;
+        float: left;    
+        list-style: none;
+    }
+    #blog-sidecolumn>div{
+        cursor: pointer;
+        color: #8DAEE550;
+        /* 比较奇怪 */
+        
+        display: inline;
+    }
+    #blog-sidecolumn>div:hover>div{
+        display: block;
+    }
+    #blog-sidecolumn>div:hover>div ul{
+        display: inline-block;
+    }
+    #blog-sidecolumn>div>*{
+        display:none;
+    }
+    
+        /* 右上角 migeater's blog */
+        #blogTitle{
+            cursor: cell;   
+            -webkit-text-fill-color: transparent;
+            background:transparent;
+            background-clip: text;-webkit-background-clip: text;/**/
+            user-select: none;-moz-user-select: none;-webkit-user-select: none;  
+            
+            float: right;
+            margin-right: 16px;
+            margin-left: 16px;
+        }
+
+        #navigator li{
+            display: inline-block;
+            list-style-type: none;
+        }
+
+    
+    /* 摘要类型 */
+    .postCon{
+        border-style: outset;
+        margin: 2px;
+        transition:all 20s ;
+        user-select: none;
+    }
+    .postCon:active{
+        cursor: pointer;
+        border-style: none;
+    }
+    .c_b_p_desc{
+        word-break: keep-all;
+    }
+    .day{
+        padding:2px;
+        max-width: 50em;
+        width: min-content;
+    }
+
+/* 滚动栏 ------------------------------------------------------------- */
+    body::-webkit-scrollbar{
+        display: none;
+    }
+    .commentbox_main::-webkit-scrollbar-track {
+        background: #8DAEE5;
+    }
+    .commentbox_main::-webkit-scrollbar-thumb {
+        background: white;
+        box-shadow: inset 2px 0 0px #8DAEE5;
+        border-radius: 0px;
+    }
+    .commentbox_main::-webkit-scrollbar {
+        width: 4px;
+        border-radius: 0px;
+    }
+
+    /* #cate::-webkit-scrollbar{
+        width: 16px;
+    }
+    #cate::-webkit-scrollbar-thumb {
+        background: transparent;
+        box-shadow: inset 0px -2px 4px #eee;
+        border-radius: 100px;
+    }
+    #cate::-webkit-scrollbar-track {
+        background: transparent;
+    } */
+
+
+/* 每篇文章的界面 ,如果上面的没有覆盖到 */
+.postBody{
+    margin-top: 2em;
+}
+.postTitle{
+    display: inline-block;
+}
+#div_digg{
+    margin: 6px 0 0 0;
+    width:auto;
+    cursor: pointer;
+    border: inset;
+}
+.buryit,.diggit {
+    transition:all 1s ease-out;
+    user-select: none;
+    height: auto;
+    float: none;
+    background:none;
+    color: transparent;
+    text-shadow: 0px 0px 0px grey;
+    width:auto;
+    margin: -3px 1em 3px 0;
+    font-size:20px;
+    padding: 0px;
+}
+
+.buryit:hover,.diggit:hover{
+    color:grey;
+}
+
+.foldbutton{
+    cursor: cell;
+    float: left;
+    width: 16px;
+    height: 16px;
+    border:none;
+    margin-left: -16px;
+    background: transparent;
+}
+.foldbutton_folded:focus{
+    outline: none;
+}
+.foldbutton:focus{
+    outline: none;
+}
+.foldbutton_folded{
+    cursor: cell;
+    user-select: none;
+    width: 16px;
+    border:none;
+    margin-left: -16px;
+    float: left;
+    color: black;
+    background: transparent;
+}
