@@ -153,7 +153,9 @@ a:hover{
     #blog-sidecolumn>div>*{
         display:none;
     }
-    
+    #sidebar_search{
+        margin-top:-5px;
+    }
         /* 右上角 migeater's blog */
         #blogTitle{
             cursor: cell;   
