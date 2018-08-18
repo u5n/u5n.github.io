@@ -66,7 +66,7 @@ window.onkeypress=e=>{
     rankList.append($i('sidebar_topdiggedposts'))
     $('#blog-sidecolumn').append($(rankList))
     $("#blog-sidecolumn").append(
-        $("<div id='sidebar_others'>  [?]<div><ul><h3>说明</h3><li>数学公式模糊的只能控制缩放为100%</li></ul></div></div>")
+        $("<div id='sidebar_others'>  [?]<div><ul><a href='https://i.cnblogs.com/posts'>管理</a><h3>说明</h3><li>数学公式模糊的只能控制缩放为100%</li></ul></div></div>")
     )
    
     $("#header").append($("#blog-sidecolumn"))
@@ -200,7 +200,7 @@ window.onkeypress=e=>{
         /* 文章内容的缩进 */
         var allp =doc.querySelectorAll('.blogpost-body>p')
         function ColorLikeOnenoteTitle(i){
-            if(i.firstChild.style!=null&&i.firstChild.style.color!=""&&i.firstChild.style.color!="black")
+            if(i.fistChild!=null&&i.firstChild.style!=null&&i.firstChild.style.color!=""&&i.firstChild.style.color!="black")
                 return true;
             return false;
         }//颜色像是onenote标题

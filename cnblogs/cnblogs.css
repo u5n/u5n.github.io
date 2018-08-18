@@ -17,7 +17,7 @@ div#main{
         font-family: "华文新魏",consolas, Monaco, monospace;
     }
     /* unknown BUG for sideBar*/
-#sideBar,#navList,.dayTitle,#blog_post_info,.diggword,.c_b_p_desc_readmore{
+#sideBar,#navList,#comment_nav,.dayTitle,#blog_post_info,.diggword,.c_b_p_desc_readmore{
     display: none
 
 }
