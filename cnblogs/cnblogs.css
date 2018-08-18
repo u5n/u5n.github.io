@@ -23,7 +23,7 @@ div#main{
         margin-bottom: -0px
     }
     /* unknown BUG for sideBar*/
-#sideBar,#navList,#comment_nav,.dayTitle,#blog_post_info,.diggword,.c_b_p_desc_readmore{
+#sideBar,#navList,#comment_nav,#footer,.dayTitle,#blog_post_info,.diggword,.c_b_p_desc_readmore{
     display: none
 
 }
