@@ -8,6 +8,9 @@
 #main img{
     max-width: none!important;
 }
+pre {
+    white-space: nowrap;
+}
 div#main{
     margin:0 16px 0 16px ;
     padding: 50px 0 0 0 ;
@@ -58,6 +61,7 @@ a:hover{
         font-size:1rem;
     }
     #blog-sidecolumn li>a{
+        border:1px solid black;
         font-size:0.9rem;
         color:black;
     }
@@ -65,7 +69,6 @@ a:hover{
         color:goldenrod;
     }
     #blog-sidecolumn li{
-        border:1px solid black;
         font-size:0.8rem;
         color:black;
     }
@@ -113,9 +116,6 @@ a:hover{
         #cnblogs_post_body div{
             margin: 5px 5px ;
         }
-        #cnblogs_post_body td>p{
-            line-height: 1em;
-        }
         
 /* 按结构 */
 
@@ -136,7 +136,7 @@ a:hover{
         color:slateblue;
     }
     div#header li {
-        margin-right: 0.5em;
+        margin: 0.5em;
         float: left;    
         list-style: none;
     }
@@ -309,10 +309,17 @@ hue-6-2: #e6c07b
 .hljs {
     display: block;
     overflow-x: auto;
-    padding: 0.5em;
     color: #abb2bf;
-    background: #282c34;
+    
   }
+.hljs table p,.hljs table span{
+    font-size:calc( 1em - 1px );
+    font-family: "Fira Code",consolas !important;
+}
+    
+.hljs table{
+    background: #282c34;
+}
   
   .hljs-comment,
   .hljs-quote {
