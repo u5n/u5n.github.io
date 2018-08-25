@@ -121,7 +121,7 @@ a:hover{
 
     /* 导航栏 */
     #header{
-        transition:all 2s;
+        transition:all 1s;
         background: linear-gradient(0deg,whitesmoke, #0000, whitesmoke);
         position:fixed;z-index:1050; /* 顶置导航栏 */
         width: 100%;

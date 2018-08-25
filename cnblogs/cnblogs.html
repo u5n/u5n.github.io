@@ -1,6 +1,5 @@
 <!-- utf-8  -->
 <br>
-<p>公式模糊的 请设置缩放为100%</p>
 <!-- 通用script -->
 <!-- firacode -->
 <link rel="stylesheet" href="https://cdn.rawgit.com/tonsky/FiraCode/1.205/distr/fira_code.css">
@@ -210,7 +209,7 @@ window.onkeypress=e=>{
         /* 文章内容的缩进 */
         var allp =doc.querySelectorAll('.blogpost-body>p')
         function ColorLikeOnenoteTitle(i){
-            if(i.fistChild!=null&&i.firstChild.style!=null&&i.firstChild.style.color!=""&&i.firstChild.style.color!="black")
+            if(i.firstChild!=null&&i.firstChild.style!=null&&i.firstChild.style.color!=""&&i.firstChild.style.color!="black")
                 return true;
             return false;
         }//颜色像是onenote标题
