@@ -69,7 +69,33 @@ window.onkeypress=e=>{
         rankList.append($i('sidebar_topdiggedposts'))
         $('#blog-sidecolumn').append($(rankList))
         $("#blog-sidecolumn").prepend(
-            $("<div id='sidebar_others'>  [?]<div><ul><a href='https://i.cnblogs.com/posts'>管理</a><h3>说明</h3><li>数学公式模糊的只能控制缩放为100%</li></ul></div></div>")
+            $(`<div id='sidebar_others'>  [??]
+                <div>
+                    <a href='https://i.cnblogs.com/posts'>管理</a>
+                    <h2>说明与写作规范</h2>
+                    <ol style="margin-left: 16px;">
+                        <li>暂时没有 一篇 文章总结 写作规范</li>
+                        <li>文章内树结构用缩进表达
+                            也务必留意文章对应的是哪个分类,由于没有多级分类在大的分类下不放文章,只在描述的地方放 子分类链接
+                        </li>
+                        <li>"~"用来代指最近的是名词的祖先标题</li>
+                        <li>绿色字体往往表示这是 标题的形式定义</li>
+                        <li>"reference""Prerequisite""Denote"标题都很重要,
+                            "Prerequisite"
+                                一般只放重要的知识,有时候会在这个区域重温复习知识
+                                带*号的表明,不重要的部分才需要该知识
+                            "Denote"标题下给出了本文的特别用词,相当于宏定义
+                        </li>
+                        <li>---c++-----</li>
+                        <li>编译 | g++ -O2 -std=gnu++17</li>
+                        <li>m.h 头文件<a href='https://gist.github.com/Haozun/ad7520ee9f3468b19b3618bc12942adf'>地址gist</a></li>
+                        <li>----------</li>
+                        <li>数学公式模糊的只能控制缩放为100%</li>
+                        <li>如果需要pdf文件,请在评论留言</li>
+                    </ol>
+                </div>
+            </div>
+            `)
         )
         $("#header").append($("#blog-sidecolumn"))
 
