@@ -1,24 +1,93 @@
 <!doctype html>
 <meta charset="utf-8">
 <head>
+    <style>
+        td{
+            border: 1px solid black;
+        }        
+        body{
+            background: linear-gradient(to right,white,black);
+            padding: 1em;
+            width: 40em;
+            box-shadow: 0px 20px 20px 5px #7777;
+            transform: perspective(500px) rotate3d(1,0,0,15deg) translate(calc(100vw / 2 - 20em),-50px);
+        }
+        h1{
+            color:blueviolet;
+        }
+        h2{
+            color: teal;
+        }
+        h3{
+            color:dodgerblue;
+        }
+        div{
+            width:fit-content;
+            /* border: 1px solid grey; */
+            margin-left: 2rem ;
+        }    
+        a{
+            color:green;
+            text-decoration: none;
+        }
+        a:hover{
+            transition: all 2s ease;
+            background: lightblue;
+            border: lightblue solid 1px;
+        }
+        li{
+            list-style: none;
+        }
+    </style>
 </head>
 <body>
     <h1>
-        hello!
+        Haozun's webpage
     </h1>
     <div>
-        <div>
-            <a href="https://www.cnblogs/migeater">中文博客</a>
-        </div>
-        <div>
-            <a href="http://wwww.uniqueai.me">English blog</a>
-        </div>
-        </div>
-            TODO: Game List EXAMPLE
-            <li>
-                <a href="/snakeGame/snakeGame.html">snakeGame</a>
+        build new page for every subtitle when there is too much content 
+    </div>
 
-            </li>
+    <div><h2>All Posts</h2>
+        <div>
+            these two blogs are of the same
+
+            <br><a href="https://www.cnblogs.com/migeater" target="_blank">cnblog</a>
+            <br><a href="http://www.uniqueai.me" target="_blank">wordpress</a>
         </div>
+    </div>
+    <div><h2>Games e.g.</h2>
+        <div><h3>htmlgames</h3>
+            <div>
+                <li>
+                    <a href="/snakeGame/snakeGame.html" target="_blank">snakeGame</a>
+                </li>            
+            </div>
+        </div>
+    </div>
+    <div><h2>Fiction</h2>
+    </div>
+    <div><h2>Certificate</h2>
+        <div>
+        </div>
+    </div>
+    <div><h2>contact</h2>
+        <div>
+            <table>
+                <tr>
+                    <td>github</td>
+                    <td><a hred="https://github.com/Haozun/" target="_blank">haozun</a></td>
+                </tr>
+                <tr>
+                    <td>@gmail</td>
+                    <td>huanghaozun</td>
+                </tr>
+                <tr>
+                    <td>LinkedIn</td>
+                    <td><a hred="https://www.linkedin.com/in/migeater/" target="_blank">haozun huang</a></td>
+                </tr>
+            </table>
+        </div>
+        
     </div>
 </body>
