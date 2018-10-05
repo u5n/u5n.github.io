@@ -1,19 +1,25 @@
 <!DOCTYPE html>
-<canvas width="400" height="400"></canvas>
+<canvas></canvas>
 <script>
-/* 例如 : 3*3地图,下面的是10*10地图
+let l=20//地图大小,地图标量场分布如下
+/* 以3*3地图为例
 0 1 2
 3 4 5
 6 7 8
 */
+let n=l*l
+let can=document.querySelector("canvas")
+let ctx=can.getContext("2d")
+let h=l*33,w=l*33 //格子大小决定canvas大小
+can.height=h
+can.width=w
 let dir=1 //用位置的变化量表示方向,10*10地图的方向 [-1,-10,1,10]
 let food=3 //食物位置
 //js 里的数组可以像堆栈和队列一样操作
 //,用array表示蛇身,蛇头在数组开头
 let snk=[1,0] 
-let ctx=document.querySelector("canvas").getContext("2d")
 document.onkeydown=function(e){
-    dirnxt = [-1,-10,1,10][e.keyCode-37]||dir //js数组越界后是undefined
+    dirnxt = [-1,-l,1,l][e.keyCode-37]||dir //js数组越界后是undefined
     if(snk[0]-snk[1]!=-dirnxt)
         dir = dirnxt
 }
@@ -22,29 +28,28 @@ setInterval(function(){
     snk.unshift(Head) //push_front
     if(Head!=food){
         snk.pop() //pop_back
-    } else{
+    } else {
         do{
-            food = parseInt(Math.random()*10*10)
+            food = parseInt(Math.random()*n)
         }
         while(snk.includes(food))
     }
     
     if(snk.indexOf(Head,1)!=-1 //从index1开始搜索数组:是否撞到头
-        ||(dir==1&&Head%10==0) //左边界
-        ||(dir==-1&&Head%10==9) //右边界
-        ||Head<0||Head>=100 //上下边界
-    ){
-        return document.write(0&snk.shift()) //死亡记录蛇长
-    }
-    for(let i=0; i<100; i++){
-        let color = '#000'
+        ||(dir==1&&Head%l==0) //左边界
+        ||(dir==-1&&Head%l+1==l) //右边界
+        ||Head<0||Head>n-1 //上下边界
+    )   l=0
+
+    for(let i=0; i<n; i++){
+        let color = '#000000'
         if(food==i){
             color = '#099100'
         } else if(snk.includes(i)){
             color = '#001990'
         }
         ctx.fillStyle = color
-        ctx.fillRect(i%10*40,(i-i%10)*4, 40,40)
+        ctx.fillRect(i%l*w/l,(i-i%l)*h/n,w/l,h/l)
     }
-},100)
+},1000/l)
 </script>
