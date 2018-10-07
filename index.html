@@ -7,31 +7,41 @@
         }        
         body{
             padding: 1em;
-            margin: -2em 0 0 calc(100vw / 2 - 19em);
+            margin:0 0 0 calc(100vw / 2 - 19em);
             width: 38em;
-            box-shadow: 0px 20px 20px 5px #7777;
-            transform: perspective(500px) rotate3d(1,0,0,15deg) ;
+            box-shadow: 0px 16px 20px 5px #7777;
+            transform: perspective(76em) rotate3d(1,0,0,15deg) ;
+        }
+        h1,h2,h3,h4{
+            user-select: none;
+            -webkit-user-select: none;
         }
         h1{
-            margin: 0;
-            color:blueviolet;
+           margin:0;
+        }
+        div#title {
+            margin-left: 0;
+            width: 60%;
+            border-bottom: 1px solid darkgray;
         }
         h2{
-            margin: 0.4em;
+            margin:0.4rem 0 0.4rem -1.5rem;
+            color: teal;
+        }
+        h2>*{
             color: teal;
         }
         h3{
-            margin: 0.2em;
+            margin: 0.2rem 0 0.2rem -1.5rem;
             color:dodgerblue;
         }
-        h4{
-            margin:0.1em;
-            
+        p{
+            margin: 0;
         }
         div{
             width:fit-content;
             /* border: 1px solid grey; */
-            margin-left: 2rem ;
+            margin-left: 1.5rem ;
         }    
         a{
             color:green;
@@ -42,57 +52,95 @@
             background: lightblue;
             border: lightblue solid 1px;
         }
-        li{
-            list-style: none;
+        ul{
+            float: left;
+            /* list-style: armenian; */
         }
     </style>
 </head>
 <body>
-    <h1>introduction to HHZ</h1>
-
-    <div>
-        build new page for every subtitle when there is too much content 
+    <div id="title">
+        <h1>Introduction to HHZ</h1>
     </div>
+    <p>
+        (...)
+    </p>
 
     <div><h2>All Posts</h2>
-        <div>
+        <p>
             origin pdf file was posted here and propagate by two blogs below
-            <br><a href="https://www.cnblogs.com/migeater" target="_blank">cnblog</a>
-            <br><a href="http://uniqueai.wordpress.com" target="_blank">wordpress<sup>cannot afford now</sup></a>
-        </div>
+        </p>
+        <p>
+            <a href="https://www.cnblogs.com/migeater" target="_blank">cnblog</a>
+        </p>
+        <p>
+            <a href="https://uniqueai.wordpress.com" target="_blank">wordpress(cannot afford now)</a>
+        </p>
     </div>
     <div><h2>Games e.g.</h2>
+        <p>Tst</p>
         <div><h3>htmlgames</h3>
-            <div>
-                <li>
-                    <a href="/snakeGame/snakeGame.html" target="_blank">snakeGame</a>
-                </li>            
-            </div>
+            <p>
+                <a href="/snakeGame/snakeGame.html" target="_blank">snakeGame</a>
+            </p>
         </div>
     </div>
+
     <div><h2>Fiction</h2>
     </div>
+    <div><h2>arXiv</h2>
+    </div>
+    <div>
+        <h2>Project</h2>
+        <p>sasdasdasdasd</p>
+        <p>sasdasdasdasd</p>
+        <p>
+            <a href="/Road">Road</a>
+        </p>
+    </div>
+
     <div><h2>Certificate</h2>
-        <div>
-        </div>
     </div>
-    <div><h2>contact</h2>
-        <div>
-            <table>
-                <tr>
-                    <td>github</td>
-                    <td><a href="https://github.com/Haozun/" target="_blank">haozun</a></td>
-                </tr>
-                <tr>
-                    <td>@gmail</td>
-                    <td>huanghaozun</td>
-                </tr>
-                <tr>
-                    <td>LinkedIn</td>
-                    <td><a href="https://www.linkedin.com/in/migeater/" target="_blank">haozun huang</a></td>
-                </tr>
-            </table>
-        </div>
-        
+
+    <div><h2 class="hideTitle">CONTACT</h2>
+        <table>
+            <tr>
+                <td>github</td>
+                <td><a href="https://github.com/Haozun/" target="_blank">haozun</a></td>
+            </tr>
+            <tr>
+                <td>@gmail</td>
+                <td>huanghaozun</td>
+            </tr>
+            <tr>
+                <td>LinkedIn</td>
+                <td><a href="https://www.linkedin.com/in/migeater/" target="_blank">haozun huang</a></td>
+            </tr>
+        </table>
     </div>
+
+<script>
+    d=document,D=console.log
+    $=d.querySelectorAll.bind(d)
+    $$=d.querySelector.bind(d)
+    $('h2').forEach(e=>{
+        e.style.cursor="pointer";
+        e.addEventListener('click',function(){
+
+            for(var nxtchild = this.nextElementSibling;nxtchild != null;nxtchild=nxtchild.nextElementSibling){
+                if(nxtchild.style.display=='none'){
+                    this.style.textDecoration="none";
+                    nxtchild.style.display='block';
+                }
+                else {
+                    this.style.textDecoration="underline overline";  
+                    nxtchild.style.display='none';
+                }
+            }
+        })
+    })
+    $('.hideTitle').forEach(e=>{
+        e.click()
+    })
+</script>
 </body>
