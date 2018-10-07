@@ -1,0 +1,48 @@
+td{
+    border: 1px solid black;
+}        
+
+h1,h2,h3,h4{
+    user-select: none;
+    -webkit-user-select: none;
+}
+h1{
+   margin:0;
+}
+div#title {
+    margin-left: 0;
+    width: 60%;
+    border-bottom: 1px solid darkgray;
+}
+h2{
+    margin:0.4rem 0 0.4rem -1.5rem;
+    color: teal;
+}
+h2>*{
+    color: teal;
+}
+h3{
+    margin: 0.2rem 0 0.2rem -1.5rem;
+    color:dodgerblue;
+}
+p{
+    margin: 0;
+}
+div{
+    width:fit-content;
+    /* border: 1px solid grey; */
+    margin-left: 1.5rem ;
+}    
+a{
+    color:green;
+    text-decoration: none;
+}
+a:hover{
+    transition: all 2s ease;
+    background: lightblue;
+    border: lightblue solid 1px;
+}
+ul{
+    float: left;
+    /* list-style: armenian; */
+}

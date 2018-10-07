@@ -1,60 +1,26 @@
 <!doctype html>
-<meta charset="utf-8">
+<html lang="en-US">
 <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            
+    <title>HHZ's Profile</title>
+    <link rel="stylesheet" href="/lib/common.css">
+
+    <meta name="description" content="">
+    <meta property="og:description" content="">
+
+    <meta property="og:title" content="Profile">
+    <meta property="og:locale" content="en_US">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <script src="/lib/common.js"></script>
     <style>
-        td{
-            border: 1px solid black;
-        }        
         body{
             padding: 1em;
             margin:0 0 0 calc(100vw / 2 - 19em);
             width: 38em;
             box-shadow: 0px 16px 20px 5px #7777;
             transform: perspective(76em) rotate3d(1,0,0,15deg) ;
-        }
-        h1,h2,h3,h4{
-            user-select: none;
-            -webkit-user-select: none;
-        }
-        h1{
-           margin:0;
-        }
-        div#title {
-            margin-left: 0;
-            width: 60%;
-            border-bottom: 1px solid darkgray;
-        }
-        h2{
-            margin:0.4rem 0 0.4rem -1.5rem;
-            color: teal;
-        }
-        h2>*{
-            color: teal;
-        }
-        h3{
-            margin: 0.2rem 0 0.2rem -1.5rem;
-            color:dodgerblue;
-        }
-        p{
-            margin: 0;
-        }
-        div{
-            width:fit-content;
-            /* border: 1px solid grey; */
-            margin-left: 1.5rem ;
-        }    
-        a{
-            color:green;
-            text-decoration: none;
-        }
-        a:hover{
-            transition: all 2s ease;
-            background: lightblue;
-            border: lightblue solid 1px;
-        }
-        ul{
-            float: left;
-            /* list-style: armenian; */
         }
     </style>
 </head>
@@ -71,6 +37,9 @@
             origin pdf file was posted here and propagate by two blogs below
         </p>
         <p>
+            <a href="/blogs" target="_blank">blogs original pdf</a>
+        </p>
+        <p>
             <a href="https://www.cnblogs.com/migeater" target="_blank">cnblog</a>
         </p>
         <p>
@@ -78,7 +47,6 @@
         </p>
     </div>
     <div><h2>Games e.g.</h2>
-        <p>Tst</p>
         <div><h3>htmlgames</h3>
             <p>
                 <a href="/snakeGame/snakeGame.html" target="_blank">snakeGame</a>
@@ -92,17 +60,15 @@
     </div>
     <div>
         <h2>Project</h2>
-        <p>sasdasdasdasd</p>
-        <p>sasdasdasdasd</p>
         <p>
-            <a href="/Road">Road</a>
+            <a href="/road">Road</a>
         </p>
     </div>
 
     <div><h2>Certificate</h2>
     </div>
 
-    <div><h2 class="hideTitle">CONTACT</h2>
+    <div><h2 class="hide">CONTACT</h2>
         <table>
             <tr>
                 <td>github</td>
@@ -139,8 +105,10 @@
             }
         })
     })
-    $('.hideTitle').forEach(e=>{
+    // $('h2').forEach(e=>{
+    $('.hide').forEach(e=>{
         e.click()
     })
 </script>
 </body>
+</html>
