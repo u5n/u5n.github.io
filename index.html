@@ -6,6 +6,10 @@
             
     <title>HHZ's Profile</title>
     <link rel="stylesheet" href="/lib/common.css">
+    <link rel="stylesheet" href="/lib/dark.css">
+    <link rel="stylesheet" href="/lib/metal.css">
+    
+    <link rel="stylesheet" href="/lib/flickity/flickity.css">
 
     <meta name="description" content="">
     <meta property="og:description" content="">
@@ -13,62 +17,148 @@
     <meta property="og:title" content="Profile">
     <meta property="og:locale" content="en_US">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <script src="/lib/common.js"></script>
+    
     <style>
-        body{
+        ::-webkit-scrollbar {
+            width: 0px;
+            background: transparent; /* make scrollbar transparent */
+        }
+        .carousel-cell{
+            min-height: 30em;
             padding: 1em;
-            margin:0 0 0 calc(100vw / 2 - 19em);
-            width: 38em;
+            margin: 0 3em 0 3em;
+            width: calc( 100vw - 9em );
+            max-width: 40em;
             box-shadow: 0px 16px 20px 5px #7777;
-            transform: perspective(76em) rotate3d(1,0,0,15deg) ;
+            transform: perspective(76em) rotate3d(1,0,0,20deg) translateY(-1em);
+        }
+        
+        #carousel-cell1{
+            background: linear-gradient(130deg, #2196f3, #f44336);
+        }
+        #carousel-cell2{
+            background: radial-gradient(ellipse at top, #e66465, transparent),
+            radial-gradient(ellipse at bottom, #4d9f0c, transparent),
+            radial-gradient(ellipse at left, #4d9f0c, transparent),
+            radial-gradient(ellipse at top, #4d9f0c, transparent);
+        }
+        #carousel-cell4{
+            background: radial-gradient(ellipse farthest-corner at right bottom, #FEDB37 0%, #FDB931 8%, #9f7928 30%, #8A6E2F 40%, transparent 80%),
+                radial-gradient(ellipse farthest-corner at left top, #FFFFFF 0%, #FFFFAC 8%, #D1B464 25%, #5d4a1f 62.5%, #5d4a1f 100%);
+        }
+        #carousel-cell5{
+            background: radial-gradient(ellipse at top,#fffd,#0f0a,#f003,#00f3,#f005,#000),radial-gradient(ellipse at bottom,#ffff,#0f07,#f003,#00f3,#000,#fff),conic-gradient(hsla(0, 100%, 50%),hsla(40, 100%, 50%),hsla(80, 100%, 50%),hsla(120, 100%, 50%),hsla(160, 100%, 50%),hsla(200, 100%, 50%),hsla(240, 100%, 50%),hsla(280, 100%, 50%),hsla(320, 100%, 50%),hsla(360, 100%, 50%));
+            
+        }
+        #carousel-cell6{
+            background: radial-gradient(ellipse at 1000%,#fffd,#0f0a,#f003,#00f3,#f005,#000),radial-gradient(ellipse at bottom,#ffff,#0f07,#f003,#00f3,#000,#fff),conic-gradient(hsla(0, 100%, 50%),hsla(40, 100%, 50%),hsla(80, 100%, 50%),hsla(120, 100%, 50%),hsla(160, 100%, 50%),hsla(200, 100%, 50%),hsla(240, 100%, 50%),hsla(280, 100%, 50%),hsla(320, 100%, 50%),hsla(360, 100%, 50%));   
+        }
+        .carousel,.flickity-viewport,.flickity-slider{
+            min-height: calc( 100vh - 1em );
+            margin:0;
+        }
+        h2{
+            text-shadow: hsla(0,0%,40%,.5) 0 -1px 0;
+            margin: 0 0 0.5rem 0;
+        }
+        .flickity-page-dots{
+            background-image: -webkit-repeating-linear-gradient(left, hsla(0,0%,100%,0) 0%, hsla(0,0%,100%,0) 6%, hsla(0,0%,100%, .1) 7.5%), -webkit-repeating-linear-gradient(left, hsla(0,0%, 0%,0) 0%, hsla(0,0%, 0%,0) 4%, hsla(0,0%, 0%,.03) 4.5%), -webkit-repeating-linear-gradient(left, hsla(0,0%,100%,0) 0%, hsla(0,0%,100%,0) 1.2%, hsla(0,0%,100%,.15) 2.2%), linear-gradient(180deg, hsl(0,0%,78%) 0%, hsl(0,0%,90%) 47%, hsl(0,0%,78%) 53%, hsl(0,0%,70%)100%);
+            bottom:-1em;
+        }
+        .flickity-page-dots .dot {
+            color:darkgrey;
+            float: left;
+            bottom:0;
+            display: block;
+            height: 1em;
+            margin:0;
+            background: #fff0;
+            border-radius: 00%;
+            cursor: pointer;
+        }
+        .flickity-page-dots .dot.is-selected {
+            background: transparent;
+            /* background-image: */
+                /* radial-gradient(ellipse farthest-corner at right bottom, #FEDB37 0%, #FDB931 8%, #9f7928 30%, #8A6E2F 40%, transparent 80%), */
+                /* radial-gradient(ellipse farthest-corner at left top, #FFFFFF 0%, #FFFFAC 8%, #D1B464 25%, #5d4a1f 62.5%, #5d4a1f 100%); */
+            color:black;
         }
     </style>
+    <script src="/lib/common.js"></script>
 </head>
 <body>
-    <div id="title">
-        <h1>Introduction to HHZ</h1>
-    </div>
-    <p>
-        (...)
-    </p>
 
-    <div><h2>All Posts</h2>
-        <p>
-            origin pdf file was posted here and propagate by two blogs below
-        </p>
-        <p>
-            <a href="/blogs" target="_blank">blogs original pdf</a>
-        </p>
-        <p>
-            <a href="https://www.cnblogs.com/migeater" target="_blank">cnblog</a>
-        </p>
-        <p>
-            <a href="https://uniqueai.wordpress.com" target="_blank">wordpress(cannot afford now)</a>
-        </p>
+    <div class="carousel"  id="main"
+    data-flickity='{ 
+    "cellAlign": "center",
+    "contain": true,
+    "adaptiveHeight":true,
+    "freeScroll": false,
+    "accessibility":true,
+    "wrapAround": true,
+    "setGallerySize":true,
+    "hash":true,
+    "selectedAttraction": 0.05,
+    "friction": 0.3,
+    "prevNextButtons":false
+    }'
+    >
+
+    <div class="carousel-cell" id="carousel-cell1">
+        <h2>Welcome to My Homepage--<br>Introduction to HHZ</h2>
+        <span
+            class="txt-rotate"
+            data-period="2000"
+            data-rotate='[ "not finished yet","MachineLearning", "DeepLearning", "ReinforcementLearning", "DeepReinforcementLeaning" ]'></span>
+        <div>
+            <h3>All posts</h3>
+            <p>
+                origin pdf file was posted here and propagate by two blogs below
+            </p>
+            <p>
+                <a href="/blogs" target="_blank">blogs original pdf</a>
+            </p>
+            <p>
+                <a href="https://www.cnblogs.com/migeater">cnblog</a>
+            </p>
+            <p>
+                <a href="https://uniqueai.wordpress.com" target="_blank">wordpress(cannot afford now)</a>
+            </p>
+
+        </div>
     </div>
-    <div><h2>Games e.g.</h2>
+    <div class="carousel-cell " id="carousel-cell2"><h2>Games e.g.</h2>
         <div><h3>htmlgames</h3>
             <p>
                 <a href="/snakeGame/snakeGame.html" target="_blank">snakeGame</a>
             </p>
         </div>
     </div>
+    <div class="carousel-cell metal radial" id="carousel-cell3">
+        <h2>ML DL RL</h2>
+        <p>MachineLearning</p>
+        <p>DeepLearning</p>
+        <p>ReinforcementLearning</p>
+        <div>
 
-    <div><h2>Fiction</h2>
+        </div>
     </div>
-    <div><h2>arXiv</h2>
+    <div class="carousel-cell"><h2>Fiction</h2>
+        <p></p>
     </div>
-    <div>
+    <div class="carousel-cell"><h2>arXiv</h2>
+    </div>
+    <div class="carousel-cell">
         <h2>Project</h2>
         <p>
-            <a href="/road">Road</a>
+            <a href="/Road">Road</a>
         </p>
     </div>
 
-    <div><h2>Certificate</h2>
+    <div class="carousel-cell"><h2>Certificate</h2>
     </div>
 
-    <div><h2 class="hide">CONTACT</h2>
+    <div class="carousel-cell"><h2>CONTACT</h2>
         <table>
             <tr>
                 <td>github</td>
@@ -84,11 +174,20 @@
             </tr>
         </table>
     </div>
-
+    </div>
+<script src="/lib/flickity/flickity.js"></script>
+<script src="/lib/text_rotate.js"></script>
 <script>
     d=document,D=console.log
     $=d.querySelectorAll.bind(d)
     $$=d.querySelector.bind(d)
+
+    
+
+    var iter=1;
+    $('.carousel-cell').forEach(e=>{e.id="carousel-cell"+iter;iter+=1})
+    
+
     $('h2').forEach(e=>{
         e.style.cursor="pointer";
         e.addEventListener('click',function(){
@@ -105,10 +204,12 @@
             }
         })
     })
-    // $('h2').forEach(e=>{
     $('.hide').forEach(e=>{
         e.click()
     })
+
+
 </script>
+
 </body>
 </html>
