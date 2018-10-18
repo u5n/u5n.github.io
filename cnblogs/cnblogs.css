@@ -25,18 +25,20 @@ div#main{
     /* unknown BUG for sideBar*/
 #sideBar,#navList,#comment_nav,#footer,.dayTitle,#blog_post_info,.diggword,.c_b_p_desc_readmore{
     display: none
-
 }
-    
 
 a{
     border-style:none;
     text-decoration: none;
-    color:orangered;
+    color:cadetblue;
 }
+
 a:hover{
-    color:blue;
+    color:transparent;
     transition:color 1s;
+    background-image: radial-gradient(circle at 50%,cadetblue,red,cadetblue);
+    background-clip: text;
+    -webkit-background-clip: text;
 }
 
 /* 字体部分 */
@@ -97,6 +99,19 @@ a:hover{
         color:#808080;
         margin-top:2px;
     }
+    /* 博文所在分类 */
+    #blog_post_info_block{
+        margin-top: 0;
+        display: flex;
+        padding: 0.5em 0;
+        width: fit-content;
+    }
+    #blog_post_info_block *{
+        font-family: "华文新魏",consolas, Monaco, monospace;
+    }
+    #BlogPostCategory{
+        margin-right: 1rem;
+    }
     /* 摘要类型 */
     .postCon div{
         font-family: "华文新魏",consolas, Monaco, monospace;
@@ -105,6 +120,15 @@ a:hover{
     /* 评论的字体*/
     #tbCommentBody{
         font-size:2em;
+    }
+    .feedback_area_title{
+        font-size: large;
+        color: red;
+    }
+    .feedbackItem{
+        box-shadow: 0 2px 2px 2px #7777;
+        margin: 0.5rem;
+        width: fit-content;
     }
 
     /* 博客正文行间距控制 */
@@ -116,7 +140,10 @@ a:hover{
         #cnblogs_post_body div{
             margin: 5px 5px ;
         }
-        
+    /* 代码高亮部分 */
+        code.cpp.hljs{
+            padding: 0.5em 1em!important;
+        }
 /* 按结构 */
 
     /* 导航栏 */
