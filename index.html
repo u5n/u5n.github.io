@@ -219,7 +219,15 @@ async></script>
     $('.hide').forEach(e=>{
         e.click()
     })
-
+    var mytag=[
+        "Intro",
+        "x",
+    ]
+    var pageDotLis = $('.flickity-page-dots .dot')
+    for(var i in pageDotLis){
+        if(i<mytag.length)
+        pageDotLis[i].innerText = mytag[i];
+    }
 
 </script>
 </body>
