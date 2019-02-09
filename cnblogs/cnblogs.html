@@ -140,7 +140,7 @@ window.onkeypress=e=>{
 <script>
 
     var href = window.location.href
-    // <!-- 主页 -->
+    // <!-- mainpage -->
     if(href=="http://www.cnblogs.com/migeater/"){
         
         var daycount = 0
@@ -155,10 +155,10 @@ window.onkeypress=e=>{
                 var descs = dayset[d].querySelectorAll('.postDesc')
                 for( var i = 0; i< titlesa.length ;i++){
                     dayset[d].insertBefore(descs[i],digs[i])
-                /*移动postDesc发布时间*/
+                /*move postDesc publish time*/
                     digs[i].setAttribute("onClick","location\.href='"+titlesa[i].href+"'")
                     
-                /*添加div link */
+                /*add div link */
                 }
 
             } 
@@ -229,7 +229,7 @@ window.onkeypress=e=>{
             })
             
             $('.postDesc').css('marginTop','-20px')
-            $('.postTitle').prepend($('#div_digg'))
+            $('.postTitle').append($('#div_digg'))
 
         },1000);
 
