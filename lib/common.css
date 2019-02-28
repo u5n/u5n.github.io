@@ -1,4 +1,5 @@
 body{
+    font-family: "consolas";
     margin:0;
 }
 td{
@@ -11,10 +12,6 @@ h1,h2,h3,h4{
 }
 h1{
    margin:0;
-}
-div#title {
-    margin-left: 0;
-    width: 60%;
 }
 h2{
     margin:0.4rem 0 0.4rem -1.5rem;
