@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en-US">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title></title>
+    <meta name="description" content="">
+    <meta property="og:description" content="">
+    <meta property="og:title" content="">
+    <meta property="og:locale" content="en_US">
+
+    <link rel="stylesheet" href="/lib/common.css">
+    <script src="/lib/common.js"></script>
+    <script src="./lib/lexical.js"></script>
+
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <style>
+        #console {
+            font-size: 2rem;
+            word-break: break-all;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="console">press key, ctrl falling, shift rising</div>
+    <script>
+        class note{
+            constructor(cor,scale,quarter){
+                this.cor=cor
+                this.scale=scale
+                this.quarter=quarter
+            }
+            get note(){
+                return this.cor+this.scale
+            }
+
+        }
+        document.addEventListener("DOMContentLoaded", function () {
+            init();
+        });
+        async function sound_by_note(n,period=667,longing=true) {
+            let A=new Audio('/src/audio/musical_note/' + n.note + '.mp3')
+            A.play()
+            if(!longing){
+                await sleep(n.long*period)
+                A.pause()
+                delete A
+            }
+        }
+
+        function num_to_Note(n,tone=0,quarter=1) {
+            let cor = [, 'C', 'D', 'E', 'F', 'G', 'A', 'B']
+            
+            D(new note(cor[n],tone+4,quarter))
+            return new note(cor[n],tone+4,quarter)
+        }
+        
+        async function play_melody(melody, quarter=1,period = 667) {//90 bpm
+            for (let a of melody) {
+                let tone=0
+                let quarter=1
+                let notation = a.slice(1)
+                D(notation)
+                let ana=lexical_ana(notation) //tone,quarter
+                sound_by_note(num_to_Note(a[0],ana[0]))
+                D(period*ana[1])
+                await sleep(period*ana[1]);
+            }
+        }
+
+        function init() {
+            let melody="12345".split('')
+            melody.push(...['3-','5_','4_'])
+            // play_melody(+)
+            play_melody(melody)
+            
+            let printable = []
+            document.addEventListener('keydown', e => {
+                if (e.code.slice(0, 5) != 'Digit')
+                    return
+                
+                e.preventDefault()
+                
+                let tone = 0;
+                if (e.ctrlKey) tone-=1;
+                if (e.shiftKey) tone+=1;
+
+                let num = e.code.slice(-1).charCodeAt(0) - 48
+                if (num == 0) num += 10
+                if (num > 7) {
+                    tone += 1
+                    num -= 7
+                }
+
+                let note=num_to_Note(num,tone)
+                sound_by_note(note)
+                D(note)
+                printable.push(num)
+                D(printable)
+                document.querySelector('#console').innerText = printable
+            })
+        } 
+    </script>
+</body>

@@ -156,7 +156,7 @@
             <div>
                 <h3>htmlgames</h3>
                 <p>
-                    <a href="./snakeGame/snakeGame.html" target="_blank">example</a>
+                    <a href="./virtual/game/snakeGame/snakeGame.html" target="_blank">example</a>
                 </p>
             </div>
 
@@ -182,7 +182,7 @@
             <p></p>
         </div>
         <div class="carousel-cell">
-            <h2>∅</h2>
+            <h2>demonstration</h2>
             <p>
                 <a href='./Road/web/dhtml/lotus.html'>lotus</a>
                 <a href='./Road/web/dhtml/halftone.html'>halftone</a>
@@ -198,7 +198,10 @@
         </div>
 
         <div class="carousel-cell">
-            <h2>Archievements</h2>
+            <h2>others</h2>
+            <p>
+                <a href="./push/piano">numbered musical notation piano</a>
+            </p>
         </div>
 
         <div class="carousel-cell">
@@ -238,13 +241,8 @@
     </div>
     <script src="./lib/flickity/flickity.js"></script>
     <script src="./lib/text_rotate.js"></script>
-    <script type="text/javascript" src="./lib/counter.js" async></script>
+    <!-- <script type="text/javascript" src="./lib/counter.js" async></script> -->
     <script>
-        d = document, D = console.log
-        $ = d.querySelectorAll.bind(d)
-        $$ = d.querySelector.bind(d)
-
-        
 
         document.addEventListener("DOMContentLoaded", function () {
             init();
@@ -253,13 +251,11 @@
         function init() {
             carousel_init();
             heading_fold();
-
         }
         function heading_fold() {
             $('h2').forEach(e => {
                 e.style.cursor = "pointer";
                 e.addEventListener('click', function () {
-
                     for (let nxtchild = this.nextElementSibling; nxtchild != null; nxtchild = nxtchild.nextElementSibling) {
                         if (nxtchild.style.display == 'none') {
                             this.style.textDecoration = "none";
@@ -294,8 +290,6 @@
                     pageDotLis[i].innerText = mytag[i] || "";
             }
         }
-
     </script>
 </body>
-
 </html>
