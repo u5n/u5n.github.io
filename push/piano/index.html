@@ -44,7 +44,7 @@
         });
         async function sound_by_note(n, period = 667, longing = true) {
             let A = new Audio('/src/audio/musical_note/' + n.note + '.mp3')
-            D(A)
+            
             A.play()
             if (!longing) {
                 await sleep(n.long * period)
@@ -90,7 +90,7 @@
                     }
                 }//white
                 else {
-                    num = e.key.charCodeAt(0) - 48
+                    num = e.key.toLowerCase().charCodeAt(0) - 48
                     if (num == 0) num += 10
 
                 }
