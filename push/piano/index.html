@@ -13,7 +13,8 @@
     <link rel="stylesheet" href="/lib/common.css">
     <script src="/lib/common.js"></script>
     <script src="./lib/lexical.js"></script>
-
+    
+    
 
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <style>
@@ -72,8 +73,8 @@
         function init() {
             let melody = "12345".split('')
             melody.push(...['3-', '5_', '4_'])
-            // play_melody(+)
-            // play_melody(melody)
+            
+            play_melody(melody)
             
             let printable = []
             document.addEventListener('keydown', e => {
@@ -90,7 +91,7 @@
                     }
                 }//white
                 else {
-                    num = e.key.toLowerCase().charCodeAt(0) - 48
+                    num = e.code.slice(-1).charCodeAt(0) - 48
                     if (num == 0) num += 10
 
                 }
