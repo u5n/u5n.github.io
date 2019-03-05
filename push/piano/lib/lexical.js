@@ -19,7 +19,6 @@ function lexical_ana(a){
             tone=1
         else if(a[0]=='_')
             quarter=1/2
-            D([tone,quarter])
     }
     return [tone,quarter]
     

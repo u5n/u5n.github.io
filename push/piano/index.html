@@ -5,11 +5,10 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title></title>
-    <meta name="description" content="">
+    <title>virtual piano</title>
+    <meta name="description" content="virtual piano">
     <meta property="og:description" content="">
     <meta property="og:title" content="">
-    <meta property="og:locale" content="en_US">
 
     <link rel="stylesheet" href="/lib/common.css">
     <script src="/lib/common.js"></script>
@@ -64,10 +63,8 @@
                 let tone=0
                 let quarter=1
                 let notation = a.slice(1)
-                D(notation)
                 let ana=lexical_ana(notation) //tone,quarter
                 sound_by_note(num_to_Note(a[0],ana[0]))
-                D(period*ana[1])
                 await sleep(period*ana[1]);
             }
         }
@@ -98,9 +95,7 @@
 
                 let note=num_to_Note(num,tone)
                 sound_by_note(note)
-                D(note)
                 printable.push(num)
-                D(printable)
                 document.querySelector('#console').innerText = printable
             })
         } 
