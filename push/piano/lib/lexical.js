@@ -11,6 +11,7 @@
 */
 function lexical_ana(a){
     let tone=0
+    let sharp=0
     let quarter=1
     if(a){
         if (a[0]=='-')
@@ -20,6 +21,6 @@ function lexical_ana(a){
         else if(a[0]=='_')
             quarter=1/2
     }
-    return [tone,quarter]
+    return [tone,sharp,quarter]
     
 }

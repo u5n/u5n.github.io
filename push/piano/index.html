@@ -27,76 +27,87 @@
 <body>
     <div id="console">press key, ctrl falling, shift rising</div>
     <script>
-        class note{
-            constructor(cor,scale,quarter){
-                this.cor=cor
-                this.scale=scale
-                this.quarter=quarter
+        class note {
+            constructor(cor, scale, sharp, quarter) {
+                this.cor = cor
+                this.scale = scale
+                this.sharp = sharp
+                this.quarter = quarter
             }
-            get note(){
-                return this.cor+this.scale
+            get note() {
+                return this.cor + ((this.sharp == 0) ? '' : '%23') + this.scale
             }
 
         }
         document.addEventListener("DOMContentLoaded", function () {
             init();
         });
-        async function sound_by_note(n,period=667,longing=true) {
-            let A=new Audio('/src/audio/musical_note/' + n.note + '.mp3')
+        async function sound_by_note(n, period = 667, longing = true) {
+            let A = new Audio('/src/audio/musical_note/' + n.note + '.mp3')
+            D(A)
             A.play()
-            if(!longing){
-                await sleep(n.long*period)
+            if (!longing) {
+                await sleep(n.long * period)
                 A.pause()
                 delete A
             }
         }
 
-        function num_to_Note(n,tone=0,quarter=1) {
+        function num_to_Note(n, tone = 0, sharp, quarter = 1) {
             let cor = [, 'C', 'D', 'E', 'F', 'G', 'A', 'B']
-            
-            D(new note(cor[n],tone+4,quarter))
-            return new note(cor[n],tone+4,quarter)
+            return new note(cor[n], tone + 4, sharp, quarter)
         }
-        
-        async function play_melody(melody, quarter=1,period = 667) {//90 bpm
+
+        async function play_melody(melody, quarter = 1, period = 667) {//90 bpm
             for (let a of melody) {
-                let tone=0
-                let quarter=1
+                let tone = 0
+                let quarter = 1
                 let notation = a.slice(1)
-                let ana=lexical_ana(notation) //tone,quarter
-                sound_by_note(num_to_Note(a[0],ana[0]))
-                await sleep(period*ana[1]);
+                let ana = lexical_ana(notation) //tone,quarter
+                sound_by_note(num_to_Note(a[0], ...ana))
+                await sleep(period * ana[2]);
             }
         }
 
         function init() {
-            let melody="12345".split('')
-            melody.push(...['3-','5_','4_'])
+            let melody = "12345".split('')
+            melody.push(...['3-', '5_', '4_'])
             // play_melody(+)
-            play_melody(melody)
+            // play_melody(melody)
             
             let printable = []
             document.addEventListener('keydown', e => {
-                if (e.code.slice(0, 5) != 'Digit')
-                    return
-                
-                e.preventDefault()
-                
-                let tone = 0;
-                if (e.ctrlKey) tone-=1;
-                if (e.shiftKey) tone+=1;
+                let num, tone=0, sharp = 0;
+                if (e.code.slice(0, 5) != 'Digit') {
+                    let sharpLayout = "qw rty io "
+                    let idx = sharpLayout.indexOf(e.key.toLowerCase()) + 1
+                    if (!idx)
+                        return
+                    // black
+                    else {
+                        sharp = 1
+                        num = idx
+                    }
+                }//white
+                else {
+                    num = e.key.charCodeAt(0) - 48
+                    if (num == 0) num += 10
 
-                let num = e.code.slice(-1).charCodeAt(0) - 48
-                if (num == 0) num += 10
+                }
                 if (num > 7) {
                     tone += 1
                     num -= 7
                 }
 
-                let note=num_to_Note(num,tone)
+                if (e.ctrlKey) tone -= 1;
+                if (e.shiftKey) tone += 1;
+
+                let note = num_to_Note(num, tone, sharp)
+
                 sound_by_note(note)
                 printable.push(num)
                 document.querySelector('#console').innerText = printable
+                e.preventDefault()
             })
         } 
     </script>
