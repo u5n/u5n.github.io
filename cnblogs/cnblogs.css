@@ -291,6 +291,7 @@ a:hover{
 }
 
 .foldbutton{
+    color: transparent;
     cursor: cell;
     float: left;
     width: 16px;
@@ -305,17 +306,17 @@ a:hover{
 .foldbutton:focus{
     outline: none;
 }
-.foldbutton_folded{
+.foldbutton_folded {
     cursor: cell;
     user-select: none;
     width: 16px;
-    border:none;
+    border: none;
     margin-left: -16px;
     float: left;
-    color: black;
-    background: transparent;
+    text-shadow: 0px 0px 0px grey;
+    color: transparent;
+    background: none;
 }
-
 
 /*
 

@@ -1,43 +1,64 @@
-body{
+*{
     font-family: "consolas";
     margin:0;
 }
-td{
-    border: 1px solid sandybrown;
-}        
+table{
+    border-collapse: collapse;
+}
+td,th{
+    border: 1px solid #3333;
+    padding:2px;
+}
 
-h1,h2,h3,h4{
-    user-select: none;
-    -webkit-user-select: none;
+h1,h2,h3,h4,h5,h6{
+    margin-left: -1.5rem;
 }
 h1{
-   margin:0;
+    margin-bottom:0.25em;
+    font-size: 1.45rem;
 }
 h2{
-    margin:0.4rem 0 0.4rem -1.5rem;
+    margin-bottom:0.2em;
+    font-size: 1.28rem;
 }
 
 h3{
-    margin: 0.2rem 0 0.2rem -1.5rem;
+    margin-bottom:0.1em;
+    font-size: 1.1rem;
+}
+h4{
+    font-size: 1rem;
 }
 p{
-    margin: 0;
+    margin: 0;    
 }
 div{
-    /* width:100% */
-    /* border: 1px solid grey; */
     margin-left: 1.5rem ;
-}    
+} 
 a{
-    text-decoration: none;
-}
-a:hover{
-    
-    background: white;
-    color:black;
+    color:unset;
     transition: all 2s ease;
 }
+
 ul{
     float: left;
     /* list-style: armenian; */
+}
+.foldbutton_folded {
+    text-shadow: 0px 0px 0px black;
+}
+.foldbutton {
+    line-height: 0;
+    cursor: cell;
+    margin-left: -16px;
+    width: 16px;
+    padding: 0;
+    float: left;
+    border: none;    
+    background: none;
+    color: transparent;
+    user-select: none;
+}
+.foldbutton:focus {
+    outline: none;
 }

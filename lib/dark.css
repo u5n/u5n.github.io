@@ -1,15 +1,24 @@
 h1{
-    color:white;
+    color:#e1b186;
 }
 h2{
-    color:lightcyan;    
+    color:#d18a4a;
 }
 h3{
-    color:lightcoral;
+    color:#a4342a;
+}
+h4{
+    color:#990410
 }
 a{
-    color:gold;
+    text-decoration-color: cornflowerblue;
 }
-*{
+a:hover{
+    background: cornflowerblue;
+}
+/* *{
     color:white;
+} */
+td,th{
+    border: 1px solid black;
 }

@@ -2,7 +2,7 @@
 <br>
 <!-- 通用script -->
 <!-- firacode -->
-<link rel="stylesheet" href="https://cdn.rawgit.com/tonsky/FiraCode/1.205/distr/fira_code.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/tonsky/FiraCode@1.206/distr/fira_code.css">
 
 <script type="text/javascript">
 const SCROLLSPEED = 68
@@ -249,6 +249,7 @@ window.onkeypress=e=>{
                     continue;
                 var btn = document.createElement("BUTTON");
                 btn.setAttribute('class','foldbutton')
+                btn.innerText="➕"
                 i.appendChild(btn)
             }
         }
@@ -273,13 +274,11 @@ window.onkeypress=e=>{
             if ( start.next().is(":visible"))  {
                 nextFoldTitle.delete(start[0])
                 $(this)[0].setAttribute('class','foldbutton')
-                $(this).text("")
-            
+                
             } else {
                 nextFoldTitle.set(start[0],now[0])
                 nextFoldTitle.has(start[0])
                 $(this)[0].setAttribute('class','foldbutton_folded')
-                $(this).text("➕")
             }
         })
 

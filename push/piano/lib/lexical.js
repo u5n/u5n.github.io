@@ -2,10 +2,10 @@
 1-
 1+
 
-1__ 1/4
-1== 4
+1_ 1/4
+1= 4
 
-1+__ 1* 1/4
+1+_  1*1/4
 
 
 */
@@ -20,6 +20,17 @@ function lexical_ana(a){
             tone=1
         else if(a[0]=='_')
             quarter=1/2
+        else if(a[0]=='=')
+            quarter=2
+        else if(a[0]=='#')
+            sharp=1
+        
+        if(a.length==2){
+            if(a[1]=='_')
+                quarter=1/2
+            else if(a[1]=='=')
+                quarter=2
+        }
     }
     return [tone,sharp,quarter]
     

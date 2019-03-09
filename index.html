@@ -6,13 +6,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
     <title>HHZ's Profile</title>
+    <meta name="description" content="">
     <link rel="stylesheet" href="./lib/common.css">
     <link rel="stylesheet" href="./lib/dark.css">
     <link rel="stylesheet" href="./lib/metal.css">
 
     <link rel="stylesheet" href="./lib/flickity/flickity.css">
+    <link rel="stylesheet" href="./lib/flickity/flickity.indexOverroad.css">
 
-    <meta name="description" content="">
     <meta property="og:description" content="">
     <meta property="og:title" content="Profile">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
@@ -26,15 +27,16 @@
 
         .carousel-cell {
             min-height: 30em;
-            padding: 1em;
+            padding: 0.5em 1em;
             margin: 0 3em 0 3em;
             width: calc(100vw - 9em);
-            max-width: 40em;
+            max-width: 45em;
             box-shadow: 0px 16px 20px 5px #7777;
             transform: perspective(76em) rotate3d(1, 0, 0, 20deg) translateY(-1em);
         }
-        
-        #carousel-cell1 {
+
+        #intro {
+            color: white;
             background: linear-gradient(130deg, #2196f3, #f44336);
         }
 
@@ -45,6 +47,10 @@
                 radial-gradient(ellipse at top, #4d9f0c, transparent);
         }
 
+        #ML {
+            color: black;
+        }
+
         #carousel-cell4 {
             background: radial-gradient(ellipse farthest-corner at right bottom, #FEDB37 0%, #FDB931 8%, #9f7928 30%, #8A6E2F 40%, transparent 80%),
                 radial-gradient(ellipse farthest-corner at left top, #FFFFFF 0%, #FFFFAC 8%, #D1B464 25%, #5d4a1f 62.5%, #5d4a1f 100%);
@@ -52,69 +58,42 @@
 
         #carousel-cell5 {
             background: radial-gradient(ellipse at top, #fffd, #0f0a, #f003, #00f3, #f005, #fff), conic-gradient(hsla(0, 100%, 50%), hsla(40, 100%, 50%), hsla(80, 100%, 50%), hsla(120, 100%, 50%), hsla(160, 100%, 50%), hsla(200, 100%, 50%), hsla(240, 100%, 50%), hsla(280, 100%, 50%), hsla(320, 100%, 50%), hsla(360, 100%, 50%));
-            
+
         }
 
         #carousel-cell6 {
             background: linear-gradient(0deg, #A0B3C430, #20486D99, #1C3F62 90%), linear-gradient(4deg, #c35f11, #c35f1150 25%, transparent 50%);
         }
+
         #carousel-cell7 {
             /* crimonson */
-            background:linear-gradient(0deg,#f008,#0f04,#00f8),
-            linear-gradient(45deg,#f008,#0f04,#00f8),
-            linear-gradient(90deg,#f008,#0f04,#00f8),
-            linear-gradient(135deg,#f008,#0f04,#00f8),
-            linear-gradient(180deg,#f008,#0f04,#00f8);
+            background: linear-gradient(0deg, #f008, #0f04, #00f8),
+                linear-gradient(45deg, #f008, #0f04, #00f8),
+                linear-gradient(90deg, #f008, #0f04, #00f8),
+                linear-gradient(135deg, #f008, #0f04, #00f8),
+                linear-gradient(180deg, #f008, #0f04, #00f8);
         }
 
-        #carousel-cell8 {
-            background: linear-gradient(0deg,#f00a,#0f0a,#00f8);
-            
+        #link {
+            color: white;
+            background: linear-gradient(0deg, #f00a, #0f0a, #00f8);
         }
 
-        .carousel,
-        .flickity-viewport,
-        .flickity-slider {
+        h1 {
+            text-shadow: hsla(0, 0%, 40%, .5) 2px 0px 0;
+        }
+
+        .carousel {
             min-height: calc(100vh - 1em);
             margin: 0;
-        }
-
-        h2 {
-            text-shadow: hsla(0, 0%, 40%, .5) 0 -1px 0;
-            margin: 0 0 0.5rem 0;
-        }
-
-        .flickity-page-dots {
-            background-image: -webkit-repeating-linear-gradient(left, hsla(0, 0%, 100%, 0) 0%, hsla(0, 0%, 100%, 0) 6%, hsla(0, 0%, 100%, .1) 7.5%), -webkit-repeating-linear-gradient(left, hsla(0, 0%, 0%, 0) 0%, hsla(0, 0%, 0%, 0) 4%, hsla(0, 0%, 0%, .03) 4.5%), -webkit-repeating-linear-gradient(left, hsla(0, 0%, 100%, 0) 0%, hsla(0, 0%, 100%, 0) 1.2%, hsla(0, 0%, 100%, .15) 2.2%), linear-gradient(180deg, hsl(0, 0%, 78%) 0%, hsl(0, 0%, 90%) 47%, hsl(0, 0%, 78%) 53%, hsl(0, 0%, 70%)100%);
-            bottom: -1em;
-        }
-
-        .flickity-page-dots .dot {
-            color: darkgrey;
-            float: left;
-            bottom: 0;
-            display: block;
-            height: 1em;
-
-            margin: 0;
-            background: #fff0;
-            border-radius: 00%;
-            cursor: pointer;
-        }
-
-        .flickity-page-dots .dot.is-selected {
-            background: transparent;
-            /* background-image: */
-            /* radial-gradient(ellipse farthest-corner at right bottom, #FEDB37 0%, #FDB931 8%, #9f7928 30%, #8A6E2F 40%, transparent 80%), */
-            /* radial-gradient(ellipse farthest-corner at left top, #FFFFFF 0%, #FFFFAC 8%, #D1B464 25%, #5d4a1f 62.5%, #5d4a1f 100%); */
-            color: black;
         }
     </style>
     <script src="./lib/common.js"></script>
 </head>
 
+
 <body>
-    <div class="carousel" id="main" data-flickity='{ 
+    <div class="carousel" id="main" data-flickity='{
     "cellAlign": "center",
     "contain": true,
     "adaptiveHeight":true,
@@ -128,82 +107,149 @@
     "prevNextButtons":false
     }'>
 
-        <div class="carousel-cell">
-            <h2>Welcome to My Homepage--<br>Introduction to HHZ</h2>
-            <span class="txt-rotate" data-period="2000" type-speed="200"
-                data-rotate='[ "not finished yet","MachineLearning", "DeepLearning", "ReinforcementLearning", "DeepReinforcementLeaning" ]'></span>
-            <div>
-                <h3>All posts</h3>
-                <p>
-                    origin pdf file was posted here and propagate by two blogs below
-                </p>
-                <p>
-                    <a href="https://github.com/Haozun/blogs.docx" target="_blank">blogs original pdf</a>
-                </p>
-                <p>
-                    <a href="https://www.cnblogs.com/migeater" target="_blank">cnblogs(zh)</a>
-                </p>
-                <p>
-                    <a href="https://uniqueai.wordpress.com" target="_blank">wordpress(en)</a>
-                </p>
-            </div>
-        </div>
-        <div class="carousel-cell ">
-            <h2>Virtual Creation</h2>
+        <div class="carousel-cell" id="intro">
 
             <div>
-                <h3>htmlgames</h3>
+                <h1>blogs</h1>
+                <p><a href="https://www.cnblogs.com/migeater" target="_blank">cnblogs(zh)</a></p>
+                <p><a href="https://uniqueai.wordpress.com" target="_blank">wordpress(en)</a></p>
+            </div>
+            <div>
+                <h1><a href="#">resume</a></h1>
+            </div>
+            <div>
+                <h2><a href="#">algo and datastructure</a></h2>
+
+                <p style="color:#03A89E;background: #fff8;width: 5em;">CF<a
+                        href="https://codeforces.com/profile/migeater"><img src="/src/icon/codeforces.png"
+                            width="16px"></a> 1534</p>
+                <p style="color:#000000;background: #fff8;width: 5em;">TP<a
+                        href="https://www.topcoder.com/members/migeater"><img src="/src/icon/topcoder.png"
+                            width="32px"></a> 0</p>
+                <p style="color:#000000;background: #fff8;width: 5em;">LC<a href="https://leetcode.com/migeater/"><img
+                            src="/src/icon/leetcode.png" width="16px"></a> 1496</p>
+                <!-- atcoder -->
+
+            </div>
+            <div>
+                <h1>databases</h1>
+                <div>
+                    <h2>mysql</h2>
+                </div>
+                <div>
+                    <h2>nosql</h2>
+                </div>
+                
+            </div>
+            <div>
+                    <h1>Data Science</h1>
+                </div>
+                <div>
+                        <h1>Artifical Intelligence</h1>
+                        <div><h2>Autonomous Driving</h2></div>
+                        <div><h2>Natural Language Process</h2></div>
+                        <div><h2>Image recognition</h2></div>
+                    </div>
+            <div>
+                    <h1>Computer Network</h1>
+                </div>
+                <div>
+                        <h1>Distributed Sys</h1>
+                    </div>
+            <div>
+                <h1>Principles of Computer Organization</h1>
+            </div>
+            <div>
+                <h1>Operating Sys</h1>
+                <div>
+                    <h2>Linux</h2>
+                </div>
+
+            </div>
+            <div>
+                <h1>Programming lang</h1>
+                <div>
+                    <h2>Compiler</h2>
+
+                </div>
+                <div>
+                    <h2>*C</h2>
+                    <div>
+                        <h3>c</h3>
+                    </div>
+                    <div>
+                        <h3>java</h3>
+                    </div>
+                    <div>
+                        <h3>scale</h3>
+                    </div>
+                    <div>
+                        <h3>golang</h3>
+                    </div>
+                    <div>
+                        <h3>python</h3>
+                    </div>
+                    <div>
+                        <h3>javascript</h3>
+                    </div>
+                </div>
+
+                <div>
+                    <h2>*lisp</h2>
+                    <div>
+                        <h3>scheme</h3>
+                    </div>
+                    <div>
+                        <h3>closure</h3>
+                    </div>
+                    <div>
+                        <h3>standard-ML</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="carousel-cell " id="virtual">
+            <div>
+                <h1>WEB games</h1>
                 <p>
                     <a href="./virtual/game/snakeGame/snakeGame.html" target="_blank">example</a>
                 </p>
             </div>
-
             <div>
-                <h3>SE</h3>
+                <h1>animations</h1>
+                <p>
+                    <a href='./Road/web/dhtml/lotus.html'>lotus</a>
+                    <a href='./Road/web/dhtml/halftone.html'>halftone</a>
+                </p>
+            </div>
+            <div>
+                <h1>worldbuilding</h1>
                 <a href="https://worldbuilding.stackexchange.com/users/61448/rambler"><img
                         src="https://worldbuilding.stackexchange.com/users/flair/61448.png" width="208" height="58"
                         alt="profile for rambler at Worldbuilding Stack Exchange, Q&amp;A for writers/artists using science, geography and culture to construct imaginary worlds and settings"
                         title="profile for rambler at Worldbuilding Stack Exchange, Q&amp;A for writers/artists using science, geography and culture to construct imaginary worlds and settings"></a>
             </div>
         </div>
-        <div class="carousel-cell metal radial">
-            <h2>ML DL RL</h2>
-            <p>MachineLearning</p>
-            <p>DeepLearning</p>
-            <p>ReinforcementLearning</p>
+        <div class="carousel-cell metal radial" id="ML">
+            <span class="txt-rotate" data-period="2000" type-speed="200"
+                data-rotate='[ "MachineLearning", "DeepLearning", "ReinforcementLearning", "DeepReinforcementLeaning" ]'></span>
+        </div>
+        <div class="carousel-cell" id="projects">
+            <p>
+                <a href="./Road">warehouse</a>
+            </p>
+            <p>
+                <a href="./seedcup2018">seedcup</a> a simple NLP competition
+            </p>
             <div>
-
+                <h2>web tools</h2>
+                <p>
+                    <a href="./push/piano">numbered musical notation piano</a>
+                </p>
             </div>
         </div>
-        <div class="carousel-cell">
-            <h2>Fiction</h2>
-            <p></p>
-        </div>
-        <div class="carousel-cell">
-            <h2>demonstration</h2>
-            <p>
-                <a href='./Road/web/dhtml/lotus.html'>lotus</a>
-                <a href='./Road/web/dhtml/halftone.html'>halftone</a>
-            </p>
-            
-            
-        </div>
-        <div class="carousel-cell">
-            <h2>Projects</h2>
-            <p>
-                <a href="./Road">Road</a>
-            </p>
-        </div>
 
-        <div class="carousel-cell">
-            <h2>others</h2>
-            <p>
-                <a href="./push/piano">numbered musical notation piano</a>
-            </p>
-        </div>
-
-        <div class="carousel-cell">
-            <h2>link</h2>
+        <div class="carousel-cell" id="link">
             <table>
                 <tr>
                     <td>github</td>
@@ -214,12 +260,12 @@
                     <td>huanghaozun</td>
                 </tr>
                 <tr>
-                    <td>LinkedIn</td>
+                    <td>linkedIn</td>
                     <td><a href="https://www.linkedin.com/in/migeater/" target="_blank">haozun huang</a></td>
                 </tr>
             </table>
             <div style="display:inline-block">
-                <h3>SO</h3>
+                <h2>SO</h2>
                 <!-- ai -->
                 <!-- <a href="https://ai.stackexchange.com/users/22521/rambler"> -->
                 <!-- <img src="https://ai.stackexchange.com/users/flair/22521.png?theme=hotdog" width="208" height="58" alt="profile for rambler at Artificial Intelligence Stack Exchange, Q&amp;A for people interested in conceptual questions about life and challenges in a world where &quot;cognitive&quot; functions can be mimicked in purely digital environment" title="profile for rambler at Artificial Intelligence Stack Exchange, Q&amp;A for people interested in conceptual questions about life and challenges in a world where &quot;cognitive&quot; functions can be mimicked in purely digital environment"></a> -->
@@ -239,55 +285,59 @@
     </div>
     <script src="./lib/flickity/flickity.js"></script>
     <script src="./lib/text_rotate.js"></script>
-    <script type="text/javascript" src="./lib/counter.js" async></script>
+    <!-- <script type="text/javascript" src="./lib/counter.js" async></script> -->
     <script>
-
+        // start learning react and use it
+        // start learning vue and use it
         document.addEventListener("DOMContentLoaded", function () {
             init();
         });
-
         function init() {
             carousel_init();
-            heading_fold();
+            heading_fold();// until use react
+        }
+        function fold_btn() {
+            if (this.className === 'foldbutton') {
+                this.parentElement.style.visibility = "visible"
+                this.parentElement.parentElement.style.visibility = "hidden"
+                this.className += " foldbutton_folded"
+            }
+            else {
+                this.parentElement.style.visibility = null
+                this.parentElement.parentElement.style.visibility = null
+                this.className = 'foldbutton'
+            }
         }
         function heading_fold() {
-            $('h2').forEach(e => {
-                e.style.cursor = "pointer";
-                e.addEventListener('click', function () {
-                    for (let nxtchild = this.nextElementSibling; nxtchild != null; nxtchild = nxtchild.nextElementSibling) {
-                        if (nxtchild.style.display == 'none') {
-                            this.style.textDecoration = "none";
-                            nxtchild.style.display = 'block';
-                        }
-                        else {
-                            this.style.textDecoration = "underline overline";
-                            nxtchild.style.display = 'none';
-                        }
-                    }
-                })
-            })
-            $('.hide').forEach(e => {
-                e.click()
+            $("h1,h2,h3,h4,h5,h6").forEach(e => {
+                let btn = d.createElement("BUTTON")
+                btn.style.height = e.scrollHeight + 'px'
+                btn.style.fontSize = e.scrollHeight / 2 + 'px'
+                btn.innerText = '➕'
+                btn.className = "foldbutton"
+                btn.onclick = fold_btn
+                e.appendChild(btn)
             })
         }
+
         function carousel_init() {
             let flkty = new Flickity(".carousel");
             flkty.focus();
-
             let iter = 0;
-            $('.carousel-cell').forEach(e => { e.id = "carousel-cell" + (iter+1); iter += 1 })
-
-            let mytag = [
-                "Intro",
-                "x",
-            ]
             let pageDotLis = $('.flickity-page-dots .dot')
-            for (let i in pageDotLis) {
-                if ( i < mytag.length)
-                    pageDotLis[i].style="width:calc( "+100/iter+"% )"
-                    pageDotLis[i].innerText = mytag[i] || "";
+            $('.carousel-cell').forEach(e => {
+                e.className += " carousel-cell" + (iter + 1);
+
+                pageDotLis[iter].innerText = e.id;
+                iter += 1
+            })
+            for (let e of pageDotLis) {
+                e.style = "width:calc( " + 100 / iter + "% )"
             }
+
+
         }
     </script>
 </body>
+
 </html>

@@ -65,8 +65,10 @@
                 let quarter = 1
                 let notation = a.slice(1)
                 let ana = lexical_ana(notation) //tone,quarter
-                sound_by_note(num_to_Note(a[0], ...ana))
-                await sleep(period * ana[2]);
+                D(num_to_Note(a[0], ...ana))
+                D(period * ana[2])
+                sound_by_note(num_to_Note(a[0], ...ana));
+                await sleep(period * ana[2])
             }
         }
         function preload_audio(){
@@ -76,9 +78,8 @@
                 for(let j of '23456')
                 {
                     let url='/src/audio/musical_note/' + i+j + '.mp3'
-                    D(url)
-                    A=new Audio(url)
-                    delete A
+                    A=new Audio()
+                    A.src=url
                 }
         }
         function play_key(e){
@@ -119,8 +120,13 @@
         function init() {
             preload_audio();
 
-            let melody = "12345".split('')
-            melody.push(...['3-', '5_', '4_'])
+            let melody = []
+            melody.push(...['6-_', '1_', '3_','1_','2','1_','7-_',
+            '3','2','6-=','1_','3_','5_','5_','6','5_','4_','3=',
+            '4#','5#','7','6_','3','3_','7-','6-_','3_','2_','4',
+            '4_','0_','5_','4_','3','2_','1_','3','2','6-='
+        ])
+            
             
             play_melody(melody)
             
