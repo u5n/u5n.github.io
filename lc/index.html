@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<head>
+    <meta name="description" content="redirect to leetcode problems page by id">
+    <!-- <link rel="stylesheet" href="index.css"> -->
+    <script src="../lib/common.js"></script>
+    <link rel="stylesheet" href="../lib/common.css">
+    <script src="map_id_name.js"></script>
+    <script src="main.js"></script>
+    <style>
+        /* if have to edit multiple element put style here*/
+        ::placeholder{
+            color: #aeaeae;
+            font-size:1rem;
+        }        
+        .burlywood{
+            background-color:burlywood;
+        }
+        .burlywoodDeep{
+            text-decoration: line-through;
+        }
+        a{
+            color: rgb(36, 35, 131);
+            text-decoration: none;
+        }
+        a:hover{
+            text-decoration: underline;
+        }
+        #main>form{
+            margin-left: 9vw;
+            margin-right: 9vw;
+        }
+    </style>
+</head>
+<body>
+    <div id="main" style="margin: 0 0 2rem 0;">
+        <form>
+            <br/>
+            <a id="input-id-link"
+                style="font-size: 2rem;"> 
+            </a>
+            <br>
+            <input 
+                type="number" 
+                style="font-size: 2rem;"
+                onkeypress="return event.key==='Enter' 
+                    || (event.charCode >= 48 && event.charCode <= 57)" 
+                onkeyup="inputkeyUpFunc(this);"
+                min = "1"
+                placeholder="open problem by id"
+                name="id" 
+                autofocus
+                autocomplete="off"
+            >
+            <br>
+            <label 
+                for="id"
+                style="font-size: 1.2rem;text-align: left;"
+            > <br> press Enter to open that problem page or click hyperlink </label> 
+        </form>
+        <br><hr><br>
+        
+        <form
+            style="
+                display:flex;
+                flex-direction:column"
+            onsubmit="
+                event.preventDefault();
+                let firstId = document.querySelector('table>tbody td');
+                if(firstId) {
+                    window.location.href=id_to_url(firstId.innerText);
+                    document.querySelector('body').innerHTML='';
+                }
+            "
+        >
+            <input
+                style="font-size: 2rem;width: 700px;"
+                type="text"
+                onkeyup="searchKeyUpFunc(this)"
+                name="problem-name"
+            >
+            <label for="problem-name">
+                search problem by name, use * to match any single character, or use `/REGEXP/`
+                <br> press enter to redirect to first problem
+            </label>
+            <br>
+            <table 
+            id="search-result-table"
+            style="text-align: left;"
+            >
+                <thead>
+                    <tr>
+                        <th
+                            style="width: 3rem;"
+                        >id</th>
+                        <th>name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </form> 
+    </div>
+</body>

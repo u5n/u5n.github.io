@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+
+<head>
+</head>
+
+<body style="background: #222">
+    <canvas width="600" height="600"></canvas>
+    <script>
+        let canvas = document.querySelector('canvas');
+        let context = canvas.getContext('2d');
+        let t = 0.0010 * Math.PI, w = canvas.width;
+
+        function animate() {
+            context.clearRect(0, 0, w, w);
+            t -= 0.000001 * Math.PI;
+            for (let i = 0; i < 2 ** 13; i += 1) {
+                let r = Math.min(1, Math.abs(Math.tan(Math.sin(t) * i / 5)/Math.PI*3));
+                let x = w / 2 * (1 + Math.sin(i + t * 2e3) * r);
+                let y = w / 2 * (1 + Math.cos(i + t * 2e3) * r);
+                context.fillStyle = "#" + (4096 - i / 2).toString(16);
+                context.fillRect(x, y, 1+r*2, 1+r*2);
+            }
+            setTimeout(animate, 16);
+        }
+        animate(); 
+    </script>
+</body>

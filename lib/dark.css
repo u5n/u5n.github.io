@@ -1,0 +1,24 @@
+h1{
+    color:#e1b186;
+}
+h2{
+    color:#d18a4a;
+}
+h3{
+    color:#a4342a;
+}
+h4{
+    color:#990410
+}
+a{
+    text-decoration-color: cornflowerblue;
+}
+a:hover{
+    background: cornflowerblue;
+}
+/* *{
+    color:white;
+} */
+td,th{
+    border: 1px solid black;
+}

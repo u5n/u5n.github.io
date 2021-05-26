@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<canvas></canvas>
+<script>
+let l=20//地图大小,地图标量场分布如下
+/* 以3*3地图为例
+0 1 2
+3 4 5
+6 7 8
+*/
+let n=l*l
+let can=document.querySelector("canvas")
+let ctx=can.getContext("2d")
+let h=l*33,w=l*33 //格子大小决定canvas大小
+can.height=h
+can.width=w
+let dir=1 //用位置的变化量表示方向,10*10地图的方向 [-1,-10,1,10]
+let food=3 //食物位置
+//js 里的数组可以像堆栈和队列一样操作
+//,用array表示蛇身,蛇头在数组开头
+let snk=[1,0] 
+document.onkeydown=function(e){
+    dirnxt = [-1,-l,1,l][e.keyCode-37]||dir //js数组越界后是undefined
+    if(snk[0]-snk[1]!=-dirnxt)
+        dir = dirnxt
+}
+setInterval(function(){
+    let Head = snk[0] + dir
+    snk.unshift(Head) //push_front
+    if(Head!=food){
+        snk.pop() //pop_back
+    } else {
+        do{
+            food = parseInt(Math.random()*n)
+        }
+        while(snk.includes(food))
+    }
+    
+    if(snk.indexOf(Head,1)!=-1 //从index1开始搜索数组:是否撞到头
+        ||(dir==1&&Head%l==0) //左边界
+        ||(dir==-1&&Head%l+1==l) //右边界
+        ||Head<0||Head>n-1 //上下边界
+    )   l=0
+
+    for(let i=0; i<n; i++){
+        let color = '#000000'
+        if(food==i){
+            color = '#099100'
+        } else if(snk.includes(i)){
+            color = '#001990'
+        }
+        ctx.fillStyle = color
+        ctx.fillRect(i%l*w/l,(i-i%l)*h/n,w/l,h/l)
+    }
+},1000/l)
+</script>
