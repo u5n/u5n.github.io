@@ -65,13 +65,7 @@ def search_wild_match2(T, P):
 	'*' can match any word with any length including 0
 	time:O((|T|/k)^k)
 	"""
-	# start * and ending * is meaningless, this is substring match
-	P = P.strip('*')
 	np = len(P)
-	if np == 0:
-		# this is meaningless and time complexity become O(2^t)
-		raise Exception("not valid")
-	
 	Ps = []
 
 	prv = 0
@@ -86,6 +80,10 @@ def search_wild_match2(T, P):
 			prv = cur + 1
 	# similar to combinations
 	nk = len(Ps)
+	if nk == 0:
+		# this is meaningless and time complexity become O(2^t)
+		raise Exception("not valid")
+
 	def iToiT(i):
 		return Ps[i][1][ Ps[i][2] ]
 	for i in range(1, nk):
