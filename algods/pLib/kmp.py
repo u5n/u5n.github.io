@@ -1,4 +1,8 @@
 def border(s):
+    """ 
+    B[i] is length of longest proper border of s[i+1] 
+    where border means a string that is the prefix and suffix of s[:i+1]
+    """
     n = len(s)
     B = [None] * n
     B[0] = ml = 0
