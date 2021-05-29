@@ -8,10 +8,9 @@ class ListNode:
         while cur:
             ret.append(cur.val)
             cur=cur.nxt
-        return ret
-# head = z.senhead.nxt
-# z.sentail.prv.nxt = None
-# print(head.asHead())
+        return ret[:-1] # no sentail
+
+# senhead <-> L[0] <-> L[1] <-> ... L[n-1] <-> sentail
 class DoublyLinkedList:
     def __init__(self, arr=None):
         self.senhead = ListNode("senhead") # L[-1]
@@ -49,15 +48,14 @@ class DoublyLinkedList:
         self.detach(cur)
         return cur
     def popleft(self): return self.pop(0)
-    def detach(self, *nodes):
-        for node in nodes:
-            prvNode = node.prv
-            nxtNode = node.nxt
-            if prvNode:
-                prvNode.nxt = nxtNode
-            if nxtNode:
-                nxtNode.prv = prvNode
-            self.sz -= 1
+    def detach(self, node):
+        prvNode = node.prv
+        nxtNode = node.nxt
+        if prvNode:
+            prvNode.nxt = nxtNode
+        if nxtNode:
+            nxtNode.prv = prvNode
+        self.sz -= 1
     def index(self, i, sentinel=False):
         if i<0 or i>=self.sz:
             if sentinel:
@@ -73,3 +71,8 @@ class DoublyLinkedList:
             for _ in range(self.sz-1-i):
                 cur=cur.prv
         return cur
+
+
+if __name__ == "__main__":
+    L = DoublyLinkedList([10,2,3,4,5])
+    print(L)
