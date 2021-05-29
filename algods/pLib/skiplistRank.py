@@ -13,7 +13,7 @@ import operator
 
 class SkiplistNode:
     class skiplistLevel:
-        def __init__(self) -> None:
+        def __init__(self):
             # skiplistNode
             self.forward = None  
             # number of nodes between node and node.levels[i].forward
@@ -21,7 +21,7 @@ class SkiplistNode:
             # exclude node itself
             self.span = 0
 
-    def __init__(self, level: int, val) -> None:
+    def __init__(self, level: int, val):
         """ parameter level means number of levels """
         self.val = val
         # index start from 0
@@ -30,7 +30,7 @@ class SkiplistNode:
         return str(self.val)
 
 class Skiplist:
-    def __init__(self, maxlevel=32, p=0.5, opt=operator.lt) -> None:
+    def __init__(self, maxlevel=32, p=0.5, opt=operator.lt):
         self.MAXLEVEL = maxlevel
         self.P = p
         # the header.val is only used for repr
@@ -42,37 +42,10 @@ class Skiplist:
         # opeartor.gt: desc
         # first asc, second desc
             # lambda l,r: return l[0]<r[0] if l[0]!=r[0] else l[1]>r[1]
-        self.ltopt = opt
+        self.opt_lt = opt
     
-    def __iter__(self):
-        """ iterate levels[0] in O(n),O(1) """
-        x = self.header.levels[0].forward
-        while x:
-            yield x
-            x=x.levels[0].forward
-    def __len__(self): return self.length
-    def __repr__(self):
-        mat = [[None]*(self.length+1) for _ in range(self.level)]
-        maxlen = 0
-        for i,x in enumerate(self):
-            for l in range(len(x.levels)):
-                mat[l][i] = str(x)
-                maxlen = max(maxlen, len(str(x)))
-        
-        sbuilder = []
-        for level in mat[::-1]:
-            level_sbuilder = []
-            for e in level:
-                if e!=None:
-                    level_sbuilder.append(str(e).ljust(maxlen))
-                else:
-                    level_sbuilder.append("".ljust(maxlen))
-            sbuilder.append("  ".join(level_sbuilder))
 
-        return "-"*5+f" size:{self.length}  level:{self.level} "+'-'*5+\
-            '\n'+"\n".join(sbuilder)+'\n'+'-'*30
-
-    def find(self, pred):
+    def _find(self, pred):
         """
         return 
             update[i]: 
@@ -97,12 +70,12 @@ class Skiplist:
 
         return update, rank
 
-    def insert(self, val):
+    def add(self, val):
         """
         create a new node with val and insert it into zsl
         return (pointer to )new node
         """
-        update, rank = self.find(lambda l_val,_: self.ltopt(l_val,val))
+        update, rank = self._find(lambda l_val,_: self.opt_lt(l_val,val))
         level = min(1-int(math.log(1/random.random(), self.P)), self.MAXLEVEL)
         # for those new levels
         for i in range(self.level, level):
@@ -135,17 +108,16 @@ class Skiplist:
         while self.level > 1 and self.header.levels[self.level-1].forward == None:
             self.level -= 1
         self.length -=1 
-    def eq_opt(self, lval, val):
-        # (not < ) and (not >)
-        return not self.ltopt(lval, val) and not self.ltopt(val, lval)
-    def delete(self, val):
+    def opt_le(self, lval, val): return not self.opt_lt(val, lval)
+    def opt_eq(self, lval, val): return not self.opt_lt(val, lval) and not self.opt_lt(lval, val)
+    def discard(self, val):
         """ 
         delete first node that node.val == val    
         return 1 if delete successful else fail 
         """
-        update, _ = self.find(lambda lval,_: self.ltopt(lval,val))
+        update, _ = self._find(lambda lval,_: self.opt_lt(lval,val))
         x = update[0].levels[0].forward
-        if x!=None and self.eq_opt(x.val,val):
+        if x!=None and self.opt_eq(x.val,val):
             self.deleteNode(x, update)
             # del skiplistNode x
             return 1
@@ -154,13 +126,13 @@ class Skiplist:
     def bisect_right(self, val):
         # find first node opt(val, node.val)
         # return node and its index
-        update, updaterank = self.find(lambda lval,_: not self.ltopt(val, lval))
+        update, updaterank = self._find(lambda lval,_: self.opt_le(lval, val))
         return update[0].levels[0].forward, updaterank[0]
         
     def bisect_left(self, val):
         # find first node not opt(node.val, val)
         # return node and its index
-        update, updaterank = self.find(lambda lval,_: self.ltopt(lval,val))
+        update, updaterank = self._find(lambda lval,_: self.opt_lt(lval,val))
         return update[0].levels[0].forward, updaterank[0]
     
     def __getitem__(self, idx):
@@ -170,41 +142,70 @@ class Skiplist:
         # different from compare val, compare of rank is O(1), 
         # so the find process can terminate when node.rank ==rank
         # here for convenience, I reuse zslFind function
-        update, _ = self.find(lambda _,rrank:rrank<=rank)
+        update, _ = self._find(lambda _,rrank:rrank<=rank)
         return update[0]
     def __delitem__(self, idx):
         if not 0<=idx<self.length: raise IndexError
         rank = idx + 1 
         # different from __getitem__, it can't terminate when node.levels[0].forward.rank==rank
-        update, _ = self.find(lambda _,rrank:rrank<rank)
-        self.deleteNode(update[0].levels[0].forward, update)
+        update, _ = self._find(lambda _,rrank:rrank<rank)
+        self.discardNode(update[0].levels[0].forward, update)
+
+# below for debug 
+    def __iter__(self):
+        """ iterate levels[0] in O(n),O(1) """
+        x = self.header.levels[0].forward
+        while x:
+            yield x
+            x=x.levels[0].forward
+    def __len__(self): return self.length
+    def __repr__(self):
+        mat = [[None]*(self.length+1) for _ in range(self.level)]
+        maxlen = 0
+        for i,x in enumerate(self):
+            for l in range(len(x.levels)):
+                mat[l][i] = str(x)
+                maxlen = max(maxlen, len(str(x)))
+        
+        sbuilder = []
+        for level in mat[::-1]:
+            level_sbuilder = []
+            for e in level:
+                if e!=None:
+                    level_sbuilder.append(str(e).ljust(maxlen))
+                else:
+                    level_sbuilder.append("".ljust(maxlen))
+            sbuilder.append("  ".join(level_sbuilder))
+
+        return "-"*5+f" size:{self.length}  level:{self.level} "+'-'*5+\
+            '\n'+"\n".join(sbuilder)+'\n'+'-'*30
 
 if __name__ == "__main__":
     if True:
         print("test case 1\n")
         z = Skiplist()
-        z.insert((9, 'a'))
-        z.insert((2, 'b'))
-        z.insert((1, 'd'))
-        z.insert((4, 'c'))
-        z.insert((5, 'e'))
-        assert z.delete((1, 'd')) == 1
-        assert z.delete((1, 'd')) == 0
-        z.insert((0, 'g'))
+        z.add((9, 'a'))
+        z.add((2, 'b'))
+        z.add((1, 'd'))
+        z.add((4, 'c'))
+        z.add((5, 'e'))
+        assert z.discard((1, 'd')) == 1
+        assert z.discard((1, 'd')) == 0
+        z.add((0, 'g'))
         print(z)
         
     if True:
         print("test case 2\n")
         s = Skiplist()
         for e in 1,2,3,3,2,4,2:
-            s.insert(e)
+            s.add(e)
         print(s[2])
         print(s)
-        assert s.delete(3)==1
+        assert s.discard(3)==1
         print(s)
-        assert s.delete(3)==1
+        assert s.discard(3)==1
         print(s)
-        assert s.delete(3)==0
+        assert s.discard(3)==0
         print(s)
         print(s.bisect_left(100))
         print(s.bisect_left(-100))
