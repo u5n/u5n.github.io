@@ -99,6 +99,9 @@ class Skiplist:
         return x
 
     def deleteNode(self, x, update):
+        """
+        delete skiplistnode, but require a `update` information see self._find 
+        """
         for i in range(len(x.levels)):
             update[i].levels[i].span += x.levels[i].span - 1
             update[i].levels[i].forward = x.levels[i].forward
@@ -149,7 +152,7 @@ class Skiplist:
         rank = idx + 1 
         # different from __getitem__, it can't terminate when node.levels[0].forward.rank==rank
         update, _ = self._find(lambda _,rrank:rrank<rank)
-        self.discardNode(update[0].levels[0].forward, update)
+        self.deleteNode(update[0].levels[0].forward, update)
 
 # below for debug 
     def __iter__(self):
@@ -181,7 +184,8 @@ class Skiplist:
             '\n'+"\n".join(sbuilder)+'\n'+'-'*30
 
 if __name__ == "__main__":
-    if True:
+    d = [0,0,1]
+    if d[0]:
         print("test case 1\n")
         z = Skiplist()
         z.add((9, 'a'))
@@ -193,25 +197,34 @@ if __name__ == "__main__":
         assert z.discard((1, 'd')) == 0
         z.add((0, 'g'))
         print(z)
-        
-    if True:
+    # as multiset
+    if d[1]:
         print("test case 2\n")
-        s = Skiplist()
+        z2 = Skiplist()
         for e in 1,2,3,3,2,4,2:
-            s.add(e)
-        print(s[2])
-        print(s)
-        assert s.discard(3)==1
-        print(s)
-        assert s.discard(3)==1
-        print(s)
-        assert s.discard(3)==0
-        print(s)
-        print(s.bisect_left(100))
-        print(s.bisect_left(-100))
-        print(s.bisect_right(100))
-        print(s.bisect_right(-100))
-        print(s.bisect_left(2))
-        print(s.bisect_right(2))
-        print(list(s))
-        
+            z2.add(e)
+        print(z2[2])
+        print(z2)
+        assert z2.discard(3)==1
+        print(z2)
+        assert z2.discard(3)==1
+        print(z2)
+        assert z2.discard(3)==0
+        print(z)
+        print(z2.bisect_left(100))
+        print(z2.bisect_left(-100))
+        print(z2.bisect_right(100))
+        print(z2.bisect_right(-100))
+        print(z2.bisect_left(2))
+        print(z2.bisect_right(2))
+        print(list(z2))
+    # as min priority_queue
+    if d[2]:
+        print("test case 2\n")
+        z3 = Skiplist()
+        for e in range(10):
+            z3.add(e)
+        print(z3)
+        print(z3.header.levels[0].forward.val) # O(1)
+        del z3[0] # O(lg(n))
+        print(z3)

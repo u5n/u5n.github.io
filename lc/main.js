@@ -23,7 +23,7 @@ function inputkeyUpFunc(obj) {
 // lru_cache with size 1
 let prePattern;
 function searchKeyUpFunc(obj) {
-    let pattern = obj.value.trim();
+    let pattern = obj.value.trim().toLowerCase();
     if (pattern === prePattern) {
         prePattern = pattern;
         return;

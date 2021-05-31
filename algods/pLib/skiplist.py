@@ -84,7 +84,8 @@ class Skiplist:
             '\n'+"\n".join(sbuilder)+'\n'+'-'*30
 
 if __name__ == "__main__":
-    if True:
+    d = [0,0,1]
+    if d[0]:
         print("test case 1\n")
         z = Skiplist()
         z.add((9, 'a'))
@@ -97,23 +98,33 @@ if __name__ == "__main__":
         z.add((0, 'g'))
         print(z)
         
-    if True:
+    if d[1]:
         print("test case 2\n")
-        s = Skiplist()
+        z2 = Skiplist()
         for e in 1,2,3,3,2,4,2:
-            s.add(e)
-        print(s)
-        assert s.discard(3)==1
-        print(s)
-        assert s.discard(3)==1
-        print(s)
-        assert s.discard(3)==0
-        print(s)
-        print(s.bisect_left(100))
-        print(s.bisect_left(-100))
-        print(s.bisect_right(100))
-        print(s.bisect_right(-100))
-        print(s.bisect_left(2))
-        print(s.bisect_right(2))
-        print(list(s))
+            z2.add(e)
+        print(z2)
+        assert z2.discard(3)==1
+        print(z2)
+        assert z2.discard(3)==1
+        print(z2)
+        assert z2.discard(3)==0
+        print(z2)
+        print(z2.bisect_left(100))
+        print(z2.bisect_left(-100))
+        print(z2.bisect_right(100))
+        print(z2.bisect_right(-100))
+        print(z2.bisect_left(2))
+        print(z2.bisect_right(2))
+        print(list(z2))
+    
+    if d[2]:
+        print("test case 2\n")
+        z3 = Skiplist()
+        for e in range(10):
+            z3.add(e)
+        v = z3.header.levels[0].val # O(1)
+        print(v)
+        z3.discard(v) # O(lg(n))
+        print(z3)
         
