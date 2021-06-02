@@ -140,7 +140,7 @@ function filterNames(pattern) {
             if (checked[id] === 1) continue;
             let target = map_id_name[id].replaceAll('-',' ');
             let [sz, diffIdx] = sub_hamming(target, pattern);
-            // if (sz / n >= 0.8) resultArr.push([id, diffIdx]);
+            if (sz / n >= 0.8) resultArr.push([id, diffIdx]);
         }
     }
     return resultArr;
