@@ -34,7 +34,9 @@ class BinaryTreeNode:
 
 def decode(datastr):
     """ decode use level order """
-    if datastr=='': return None
+    if not datastr: return None
+    if not isinstance(datastr, str):
+        datastr = str(datastr)
     datastrlist = datastr.strip('[]').split(',')
     data=deque(int(e) if e.strip().isdigit() else None for e in datastrlist)
     root = BinaryTreeNode(data.popleft())

@@ -45,7 +45,29 @@ class Skiplist:
         self.opt_lt = opt
     
 
-    def _find(self, pred):
+    def find_val(self, pred):
+        """
+        return 
+            update[i]: 
+                at level i, update[i] is the last node that 
+                    pred((update[i].val,update[i].rank))
+                if no such node, it's header
+                update[i] is guaranteed not None
+        """
+        update = [None] * self.level
+        rank = [None] * self.level
+        x = self.header
+        traversed = 0
+        for i in range(self.level - 1, 0 - 1, -1):
+            while x.levels[i].forward!=None and pred(x.levels[i].forward.val):
+                traversed += x.levels[i].span
+                x = x.levels[i].forward
+            update[i] = x
+            rank[i] = traversed
+
+        return update, rank
+
+    def find_rank(self, pred):
         """
         return 
             update[i]: 
@@ -56,26 +78,22 @@ class Skiplist:
             rank[i]: rank of update[i], rank of header is 0
         """
         update = [None] * self.level
-        rank = [None] * self.level
         x = self.header
         traversed = 0
         for i in range(self.level - 1, 0 - 1, -1):
-            # compare val or compare rank
-            while x.levels[i].forward!=None and\
-                pred(x.levels[i].forward.val, traversed + x.levels[i].span):
+            while x.levels[i].forward!=None and pred(traversed + x.levels[i].span):
                 traversed += x.levels[i].span
                 x = x.levels[i].forward
             update[i] = x
-            rank[i] = traversed
 
-        return update, rank
-
+        return update
+        
     def add(self, val):
         """
         create a new node with val and insert it into zsl
         return (pointer to )new node
         """
-        update, rank = self._find(lambda l_val,_: self.opt_lt(l_val,val))
+        update, rank = self.find_val(lambda l_val: self.opt_lt(l_val,val))
         level = min(1-int(math.log(1/random.random(), self.P)), self.MAXLEVEL)
         # for those new levels
         for i in range(self.level, level):
@@ -118,7 +136,7 @@ class Skiplist:
         delete first node that node.val == val    
         return 1 if delete successful else fail 
         """
-        update, _ = self._find(lambda lval,_: self.opt_lt(lval,val))
+        update, _ = self.find_val(lambda lval: self.opt_lt(lval,val))
         x = update[0].levels[0].forward
         if x!=None and self.opt_eq(x.val,val):
             self.deleteNode(x, update)
@@ -129,13 +147,13 @@ class Skiplist:
     def bisect_right(self, val):
         # find first node opt(val, node.val)
         # return node and its index
-        update, updaterank = self._find(lambda lval,_: self.opt_le(lval, val))
+        update, updaterank = self.find_val(lambda lval: self.opt_le(lval, val))
         return update[0].levels[0].forward, updaterank[0]
         
     def bisect_left(self, val):
         # find first node not opt(node.val, val)
         # return node and its index
-        update, updaterank = self._find(lambda lval,_: self.opt_lt(lval,val))
+        update, updaterank = self.find_val(lambda lval: self.opt_lt(lval,val))
         return update[0].levels[0].forward, updaterank[0]
     
     def __getitem__(self, idx):
@@ -145,13 +163,13 @@ class Skiplist:
         # different from compare val, compare of rank is O(1), 
         # so the find process can terminate when node.rank ==rank
         # here for convenience, I reuse self._find function
-        update, _ = self._find(lambda _,rrank:rrank<=rank)
-        return update[0]
+        update = self.find_rank(lambda rrank:rrank<=rank)
+        return update[0].val
     def __delitem__(self, idx):
         if not 0<=idx<self.length: raise IndexError
         rank = idx + 1 
         # different from __getitem__, it can't terminate when node.levels[0].forward.rank==rank
-        update, _ = self._find(lambda _,rrank:rrank<rank)
+        update = self.find_rank(lambda rrank:rrank<rank)
         self.deleteNode(update[0].levels[0].forward, update)
 
 # below for debug 

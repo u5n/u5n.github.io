@@ -33,7 +33,7 @@ def search(T, P):
 
 def search_wild(T, P):
     """ P maybe contain asterisks, such as 'abc*ef', 
-    '*' can be used to match any char 
+    '*' can be used to match any single char 
     time: O(|P|+k|T|), O(k)
     """
     np = len(P)

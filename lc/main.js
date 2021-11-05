@@ -118,8 +118,8 @@ function filterNames(pattern) {
             }
         }
 
-        // check if b is substring of map_id_name.values
         // add at most 1 char
+        // check if b is substring of map_id_name.values
         for (let i = 0; i <= n; i += 1) {
             let pat_add = pattern.slice(0, i) + '[a-zA-Z0-9 ]' + pattern.slice(i);
             let re = new RegExp(pat_add.replace('*','[a-zA-Z0-9 ]'));

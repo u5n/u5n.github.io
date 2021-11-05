@@ -51,7 +51,7 @@ let map_id_name = {
     47 : "permutations-ii",
     48 : "rotate-image",
     49 : "group-anagrams",
-    50 : "powx,-n",
+    50 : "powx-n",
     51 : "n-queens",
     52 : "n-queens-ii",
     53 : "maximum-subarray",
