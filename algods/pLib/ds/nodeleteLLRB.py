@@ -2,12 +2,12 @@ import bisect
 from collections import defaultdict
 from functools import partial
 import operator
-from naryTree import pprint
-pprint = partial(pprint, repr=lambda x:f"{x.key}({x.size})" if x else 'Nil')
+from tree import binary_pprint
+pprint = partial(binary_pprint, repr=lambda x:f"{x.key}({x.size})" if x else 'Nil')
 lessthan = lambda l,r: l-r
 # left lean red black tree
 # top down implement
-# for convenience, can't delete treenode, 
+# for convenience, only an Immutable version, 
 # refer to <Algorithm 4th ed.> https://algs4.cs.princeton.edu/33balanced/RedBlackBST.java
 # similar to std::dict
 class Node:

@@ -7,7 +7,7 @@ TOC
         is_prime
         prime_factors
         prime_factors_exp
-        phi
+        euler_totient
 
 """
 from math import gcd
@@ -37,6 +37,7 @@ def solve_linear_congruences(a,b,m):
     if b%d!=0: return 
     x0 = extended_gcd(a,m)[0]
     x0*=b//d
+    # min(x0, (x0+n//d)%n) is the minimum solve >= 0
     for _ in range(d):
         yield x0%m
         x0 += m//d
@@ -60,8 +61,8 @@ def extended_gcd(a,b):
 
 def _namespace_single_point():
     def modular_multiplication_inverse(a):
-        # assert gcd(a,Mod)==1
-        return extended_gcd(a,Mod)[0]%Mod
+        # assert gcd(a, Mod)==1
+        return extended_gcd(a, Mod)[0]%Mod
         
     def is_prime(n:int):
         if n<=1: return False
@@ -86,7 +87,7 @@ def _namespace_single_point():
         if x>1: ret.append(x)
         return ret
     
-    # with exponent 
+    # prime factors in order, with exponent 
     def prime_factors_exp(x):
         ret = []
         i = 2
@@ -102,7 +103,7 @@ def _namespace_single_point():
         return ret
 
     # euler totient function
-    def phi(x):
+    def euler_totient(x):
         ret = x
         for p in prime_factors(x):
             ret=ret//p*(p-1)

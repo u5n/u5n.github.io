@@ -5,6 +5,7 @@ class NaryTreeNode:
         self.val,self.children = val,children
         
 class BinaryTreeNode:
+    __slots__ = 'val','left','right'
     def __init__(self,val,left=None,right=None):
         self.val,self.left,self.right=val,left,right
     def __repr__(self):
@@ -15,7 +16,7 @@ class BinaryTreeNode:
         return str(x) if x!=None else 'N'
     def copy(self):
         return decode(self.encode())
-    def pprint(self): pprint(self, self.repr)
+    def pprint(self): binary_pprint(self, self.repr)
     def encode(self, returnType="str"):
         q=[self]
         i = 0
@@ -55,7 +56,7 @@ def decode(datastr):
                 q.append(cur.right)
     return root
     
-def pprint(root, repr, compact=False):
+def binary_pprint(root, repr, compact=False):
     """
     pprint a binary tree at root, stringify each node use `vrepr` function
 

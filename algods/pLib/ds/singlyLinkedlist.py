@@ -13,7 +13,7 @@ class ListNode:
             cur = cur.next
         return ret
 
-def toLinkedlist(A):
+def toLinkedlist(A: list):
     sen = ListNode()
     cur = sen
     for e in A:
@@ -24,6 +24,7 @@ def toLinkedlist(A):
 """
 TOC
     reverse
+    reverse_n
     getMedium
     size
     merge two sorted list
@@ -31,7 +32,7 @@ TOC
 """
 
 def reverse(pre, end=None):
-    """ reverse linkedlist begin at pre.next, end before end """
+    """ reverse linkedlist begin at pre.next, end before(exclude) `end` """
     head = pre.next
     while head.next!=end:
         tomove = head.next
@@ -39,11 +40,24 @@ def reverse(pre, end=None):
         tomove.next = pre.next
         pre.next = tomove
         head.next = nxttomoved
-
+def reverse_n(pre, n):
+    """ reverse size `n` linkedlist begin at pre.next
+        return the first unreversed node
+    """
+    head = pre.next
+    for _ in range(n-1):
+        if head.next == None:
+            return None
+        tomove = head.next
+        nxttomoved = tomove.next
+        tomove.next = pre.next
+        pre.next = tomove
+        head.next = nxttomoved
+    return head.next
 # pre -> sta -> sta2 -> ... -> last -> end
 # pre -> sta
 # pre -> sta2 -> sta
-def getMedium(sta, end=None,left=True):
+def getMedium(sta, end=None, left=True):
     """ 
     if left: return L[(n-1)//2]
     else: return L[n//2] 
@@ -64,7 +78,8 @@ def size(sta, end=None):
         sta = sta.next
     return ans
 
-def mergeTwoLists(l1: ListNode, l2: ListNode):
+def mergeTwoSortedLists(l1: ListNode, l2: ListNode):
+
     pre = ListNode()
     cur = pre
     while l1 and l2:
@@ -81,9 +96,10 @@ def mergeTwoLists(l1: ListNode, l2: ListNode):
 def remove(prv):
     prv.next = prv.next.next
 
-head = toLinkedlist([1])
-# print(getMedium(head))
-pre=ListNode(0,head)
-reverse(pre)
-print(pre.next.tolistAsHead())
-# print(isPalindrome(head))
+if __name__ == "__main__":
+    head = toLinkedlist([1,2,3,4,5])
+    # print(getMedium(head))
+    pre=ListNode(0,head)
+    reverse_n(pre.next,3)
+    print(pre.next.tolistAsHead())
+    # print(isPalindrome(head))

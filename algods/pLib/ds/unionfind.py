@@ -9,11 +9,9 @@ class UnionFind():
         self.sz = [1]*n
         self.cnt = n
     def find(self,u):
-        if self.p[u]==u:
-            return u
-        else:
+        if self.p[u]!=u:
             self.p[u]=self.find(self.p[u])
-            return self.p[u]
+        return self.p[u]
 
     def union(self,l,r):
         p,sz = self.p, self.sz

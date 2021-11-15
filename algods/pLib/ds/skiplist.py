@@ -1,4 +1,5 @@
 # skiplist, for explanation refer to skiplistRank.py
+# without rank
 import random
 import math
 import operator
@@ -84,7 +85,7 @@ class Skiplist:
             '\n'+"\n".join(sbuilder)+'\n'+'-'*30
 
 if __name__ == "__main__":
-    d = [0,0,1]
+    d = [1,1,1]
     if d[0]:
         print("test case 1\n")
         z = Skiplist()

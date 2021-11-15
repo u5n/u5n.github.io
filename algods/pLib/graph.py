@@ -1,6 +1,6 @@
 from collections import deque
 def topo_sort(G):
-    """ topological sort for adjacent list """
+    """ topological sort for adjacent list graph """
     n = len(G)
     q = deque()
     inds = [0]*n

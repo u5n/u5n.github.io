@@ -64,6 +64,7 @@ def rhs_prefix(s):
 # for fixed size RHS
 def rhs_fixsize(s, sz, base, mod):
     ns = len(s)
+    if ns<sz: return
     pasz = pow(base, sz, mod)
     hs = 0
     for ri in range(sz):

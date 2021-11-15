@@ -1,4 +1,6 @@
 from copy import deepcopy
+# decorator to print what the function return
+# shorthand for "debug"
 def D(func):
     def wrapper(*args, **kwargs):
         parg = deepcopy(args)

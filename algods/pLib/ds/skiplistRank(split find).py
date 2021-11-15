@@ -11,6 +11,7 @@ import operator
 # header rank is 0, the first node rank is 1, and so on
 # header has no index, node index = rank -1
 
+# there are two function: find by rank and find by val
 class SkiplistNode:
     class skiplistLevel:
         def __init__(self):

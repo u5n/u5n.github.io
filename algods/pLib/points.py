@@ -1,5 +1,6 @@
 from numbers import Number
 from math import hypot, nan, inf
+# shorthand of vector
 class V:
     __slots__ ='x','y'
     def __init__(self, *args):
