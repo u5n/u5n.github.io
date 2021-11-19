@@ -20,5 +20,5 @@ def count_inversion(A):
             inv_cnt += ri-m
             ret.append(A[li])
         A[l:ri] = ret
-    mergesort(A,0,n)
+    mergesort(0,n)
     return inv_cnt

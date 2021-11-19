@@ -1,5 +1,5 @@
 // check current url 
-let maxsz = Object.keys(map_id_name).length;
+let maxsz = Object.keys(map_id_slug).length;
 let url = new URL(window.location.href);
 let c = url.searchParams.get("id");
 if (c !== null) {
@@ -11,8 +11,8 @@ function inputkeyUpFunc(obj) {
         obj.value = maxsz;
     }
     let hyperlink = document.getElementById("input-id-link");
-    if (obj.value in map_id_name) {
-        hyperlink.text = map_id_name[obj.value];
+    if (obj.value in map_id_slug) {
+        hyperlink.text = map_id_slug[obj.value];
         hyperlink.href = id_to_url(obj.value);
     } else {
         hyperlink.text = "";
@@ -35,7 +35,7 @@ function searchKeyUpFunc(obj) {
     if (pattern === "") return;
 
     let resultArr = filterNames(pattern);
-
+    // different keyword use different algorithm, so that size of `res` is different
     for (let res of resultArr) {
         let id = res[0];
         let newRow = tbody.insertRow();
@@ -45,7 +45,7 @@ function searchKeyUpFunc(obj) {
         problemlink = document.createElement('a');
         problemlink.href = id_to_url(id);
         // problem link innerHTML
-        let plIH = map_id_name[id].replaceAll('-', ' ');
+        let plIH = map_id_title[id];
         if (res.length == 4) {
             let [_, l, m, r] = res;
             plIH = plIH.slice(0, l) +
@@ -81,7 +81,7 @@ function filterNames(pattern) {
     // match prefix
     if (n <= 2) {
         for (let id = 1; id <= maxsz; id += 1) {
-            let name = map_id_name[id];
+            let name = map_id_title[id];
             if (name.startsWith(pattern)) {
                 resultArr.push([id, 0, n]);
             }
@@ -97,7 +97,7 @@ function filterNames(pattern) {
             return resultArr;
         }
         for (let id = 1; id <= maxsz; id += 1) {
-            let target = map_id_name[id].replaceAll('-',' ');
+            let target = map_id_title[id];
             let matchres = target.match(re);
             if(matchres!==null){
                 resultArr.push([id, matchres.index, matchres.index + matchres[0].length]);
@@ -106,11 +106,12 @@ function filterNames(pattern) {
     } 
     // similar match 
     else {
-        // check if b is substring of map_id_name.values
+        // ensure one question is selected by only one rule
         let checked = Array(maxsz + 1);
+        // check if b is substring of map_id_title.values
         let re = new RegExp(pattern.replace('*','[a-zA-Z0-9 ]'));
         for (let id = 1; id <= maxsz; id += 1) {
-            let target = map_id_name[id].replaceAll('-',' ');
+            let target = map_id_title[id];
             let matchres = target.match(re);
             if (matchres !== null) {
                 resultArr.push([id, matchres.index, matchres.index + matchres[0].length]);
@@ -119,13 +120,13 @@ function filterNames(pattern) {
         }
 
         // add at most 1 char
-        // check if b is substring of map_id_name.values
+        // check if b is substring of map_id_title.values
         for (let i = 0; i <= n; i += 1) {
             let pat_add = pattern.slice(0, i) + '[a-zA-Z0-9 ]' + pattern.slice(i);
             let re = new RegExp(pat_add.replace('*','[a-zA-Z0-9 ]'));
             for (let id = 1; id <= maxsz; id += 1) {
                 if (checked[id] === 1) continue;
-                let target = map_id_name[id].replaceAll('-',' ');
+                let target = map_id_title[id];
                 let matchres = target.match(re);
                 if (matchres !== null) {
                     resultArr.push([id, matchres.index, matchres.index + i, matchres.index + matchres[0].length]);
@@ -138,7 +139,7 @@ function filterNames(pattern) {
         // refer to function of sub_hamming, simulate multiple substitute operation
         for (let id = 1; id <= maxsz; id += 1) {
             if (checked[id] === 1) continue;
-            let target = map_id_name[id].replaceAll('-',' ');
+            let target = map_id_title[id];
             let [sz, diffIdx] = sub_hamming(target, pattern);
             if (sz / n >= 0.8) resultArr.push([id, diffIdx]);
         }

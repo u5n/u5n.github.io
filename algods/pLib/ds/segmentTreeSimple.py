@@ -1,5 +1,5 @@
 # range sum query
-# single point update
+# single point assign
 # data stores on hashtable
 from collections import defaultdict
 import operator
@@ -11,7 +11,7 @@ class SegmentTree:
     def build(self,A,i=0,l=0,r=None):
         """A can be a List or Dict"""
         # assert len(A)>=self.n
-        if r==None: r=self.n
+        if r==None: r=self.n-1
         if r==l: 
             self.seg[i]=A[l]
             return
@@ -23,7 +23,7 @@ class SegmentTree:
         self.seg[i]=self.seg[i*2+1]+self.seg[i*2+2]
     def query(self,l,r):
         return reduce(operator.add, map(lambda e:self.seg[e], self.subsegment(l,r)), 0)
-    def update(self,Ai,new):
+    def assign(self,Ai,new):
         seg=self.seg
         p = self.ancestor(Ai)
         seg[next(p)]=new

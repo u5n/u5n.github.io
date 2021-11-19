@@ -12,7 +12,9 @@ import operator
 # header has no index, node index = rank -1
 
 class SkiplistNode:
+    __slots__ = 'levels','val'
     class skiplistLevel:
+        __slots__ = 'forward','span'
         def __init__(self):
             # skiplistNode
             self.forward = None  
@@ -36,6 +38,7 @@ class Skiplist:
         # the header.val is only used for repr
         self.header = SkiplistNode(maxlevel, '/')
         self.length = 0
+        # `self.level` is the max level of inner skiplistnodes (except `self.header`)
         self.level = 1
         # operator to compare node.val
         # operator.lt: asc
@@ -120,24 +123,28 @@ class Skiplist:
         """
         update, _ = self._find(lambda lval,_: self.opt_lt(lval,val))
         x = update[0].levels[0].forward
-        if x!=None and self.opt_eq(x.val,val):
-            self.deleteNode(x, update)
-            # del skiplistNode x
-            return 1
-        return 0
+        if x==None or not self.opt_eq(x.val,val):
+            return 0
+
+        self.deleteNode(x, update)
+        # delete skiplistNode x
+        return 1
 
     def bisect_right(self, val):
+        # because __getitem__ is not O(1), so not only return index
         # find first node opt(val, node.val)
         # return node and its index
         update, updaterank = self._find(lambda lval,_: self.opt_le(lval, val))
-        return update[0].levels[0].forward, updaterank[0]
+        return update[0].levels[0].forward.val, updaterank[0]
         
     def bisect_left(self, val):
         # find first node not opt(node.val, val)
         # return node and its index
         update, updaterank = self._find(lambda lval,_: self.opt_lt(lval,val))
-        return update[0].levels[0].forward, updaterank[0]
+        return update[0].levels[0].forward.val, updaterank[0]
     
+    def top(self):
+        return self.header.levels[0].forward.val
     def __getitem__(self, idx):
         # transfrom idx to rank
         if not 0<=idx<self.length: raise IndexError
@@ -146,22 +153,22 @@ class Skiplist:
         # so the find process can terminate when node.rank ==rank
         # here for convenience, I reuse self._find function
         update, _ = self._find(lambda _,rrank:rrank<=rank)
-        return update[0]
+        return update[0].val
     def __delitem__(self, idx):
         if not 0<=idx<self.length: raise IndexError
         rank = idx + 1 
         # different from __getitem__, it can't terminate when node.levels[0].forward.rank==rank
         update, _ = self._find(lambda _,rrank:rrank<rank)
         self.deleteNode(update[0].levels[0].forward, update)
-
-# below for debug 
+    def __len__(self): return self.length
     def __iter__(self):
         """ iterate levels[0] in O(n),O(1) """
         x = self.header.levels[0].forward
         while x:
             yield x
             x=x.levels[0].forward
-    def __len__(self): return self.length
+
+# below for debug 
     def __repr__(self):
         mat = [[None]*(self.length+1) for _ in range(self.level)]
         maxlen = 0
@@ -184,7 +191,7 @@ class Skiplist:
             '\n'+"\n".join(sbuilder)+'\n'+'-'*30
 
 if __name__ == "__main__":
-    d = [0,1,0]
+    d = [1,0,0]
     if d[0]:
         print("test case 1\n")
         z = Skiplist()
@@ -197,6 +204,7 @@ if __name__ == "__main__":
         assert z.discard((1, 'd')) == 0
         z.add((0, 'g'))
         print(z)
+        print(len(z[0].levels))
     # as multiset
     if d[1]:
         print("test case 2\n")

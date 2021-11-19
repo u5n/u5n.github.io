@@ -1,10 +1,12 @@
-# skiplist, for explanation refer to skiplistRank.py
-# without rank
+# file: skiplist, for explanation and application refer to skiplistRank.py
+# usg: educational, intend a min code size 
+# impl: without rank
 import random
 import math
 import operator
 
 class SkiplistNode:
+    __slots__ = 'levels','val'
     def __init__(self, level: int, val):
         self.val = val
         self.levels = [None for _ in range(level)]
@@ -41,14 +43,15 @@ class Skiplist:
     def discard(self, val):
         update = self._find(val, self.opt_lt)
         x = update[0].levels[0]
-        if x==None or (self.opt_lt(x.val, val) or self.opt_lt(val, x.val)):
+        if x==None or not self.opt_eq(x.val, val):
             return 0
         for i in range(len(x.levels)):
             update[i].levels[i] = x.levels[i]
         self.length -=1 
         return 1
-
+    # only return node
     def bisect_right(self, val): return self._find(val, self.opt_le)[0].levels[0]
+    # only return node
     def bisect_left(self, val): return self._find(val, self.opt_lt)[0].levels[0]
     def opt_le(self, lval, val): return not self.opt_lt(val, lval)
     def opt_eq(self, lval, val): return not self.opt_lt(val, lval) and not self.opt_lt(lval, val)
@@ -85,7 +88,7 @@ class Skiplist:
             '\n'+"\n".join(sbuilder)+'\n'+'-'*30
 
 if __name__ == "__main__":
-    d = [1,1,1]
+    d = [1,0,0]
     if d[0]:
         print("test case 1\n")
         z = Skiplist()
@@ -94,11 +97,14 @@ if __name__ == "__main__":
         z.add((1, 'd'))
         z.add((4, 'c'))
         z.add((5, 'e'))
+        z.add((3, 'e'))
         assert z.discard((1, 'd')) == 1
         assert z.discard((1, 'd')) == 0
         z.add((0, 'g'))
         print(z)
-        
+        print(len(z.header.levels))
+        print(z._find((11212,'a'), z.opt_lt))
+    # as multiset
     if d[1]:
         print("test case 2\n")
         z2 = Skiplist()
@@ -118,13 +124,14 @@ if __name__ == "__main__":
         print(z2.bisect_left(2))
         print(z2.bisect_right(2))
         print(list(z2))
-    
+    # as min priority_queue
     if d[2]:
         print("test case 2\n")
         z3 = Skiplist()
         for e in range(10):
             z3.add(e)
-        v = z3.header.levels[0].val # O(1)
+        # get heap top
+        v = z3.header.levels[0].val
         print(v)
         z3.discard(v) # O(lg(n))
         print(z3)

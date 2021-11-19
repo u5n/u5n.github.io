@@ -99,6 +99,9 @@ class SortedIntervals:
 
 if __name__ == "__main__":
     tree = SortedIntervals()
+    tree.add(1,1)
+    tree.break_at(0)
+    tree.break_at(1)
     tree.add(-100,100)
     tree.break_at(23)
     tree.break_at(24)
@@ -109,4 +112,5 @@ if __name__ == "__main__":
     tree.add_overlap(24, 30)
     tree.add_overlap(24, 3000)
     print(tree.ints, tree.sizes)
+
 

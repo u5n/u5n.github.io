@@ -9,7 +9,7 @@ class Data:
     def __repr__(self):
         return f"[s:{self.sum} ma:{self.ma} mi:{self.mi} a:{self.add} p:{self.prop}]"
 class SegmentTree:
-    def __init__(self,n):
+    def __init__(self,n): 
         self.n,self.seg=n,defaultdict(Data)
     def reinit(self,n):
         self.n=n

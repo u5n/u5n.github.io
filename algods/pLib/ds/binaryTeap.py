@@ -8,10 +8,10 @@ def make_heap(A, l, r, opt=lt):
     time O(r-l), O(1)
     """
     for i in range((r+l)//2-1,l-1,-1):
-        heapify(A, l, r, i, opt)
+        heapnode_fall(A, l, r, i, opt)
 
-def heapify(A, l, r, i, opt=lt):
-    """ heapify tree at A[l+i], assume two subtrees is a heap
+def heapnode_fall(A, l, r, i, opt=lt):
+    """ assume sub sth to A[i], then make A[l:r] heap again
     time O(lg(r-l)), O(1) """
     ext = i
     while True:
@@ -22,19 +22,23 @@ def heapify(A, l, r, i, opt=lt):
         A[i], A[ext] = A[ext], A[i]
         i = ext
 
-def pop_heap(A, l, r, opt=lt):
-    A[l], A[r-1] = A[r-1], A[l]
-    heapify(A, l, r-1, l, opt)
-
-def push_heap(A, l, r, opt=lt):
-    i = r
-    while i>0:
+def heapnode_lift(A, l, r, i, opt):
+    """ assume add sth to A[i], then make A[l:r] heap again
+    time O(lg(r-l)), O(1) """
+    while i>l:
         par = (i+l-1)//2
         if opt(A[par], A[i]):
             A[i], A[par] = A[par], A[i]
             i = par
 
-def heap_sort(A,l,r,opt=lt):
+def pop_heap(A, l, r, opt=lt):
+    A[l], A[r-1] = A[r-1], A[l]
+    heapnode_fall(A, l, r-1, l, opt)
+
+def push_heap(A, l, r, opt=lt):
+    heapnode_lift(A,l,r+1,r,opt)
+
+def sort_heap(A,l,r,opt=lt):
     make_heap(A,l,r)
     for i in range(r-l):
         pop_heap(A,l,r-i,opt)

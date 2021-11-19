@@ -1,12 +1,11 @@
-# copy problem information from "https://leetcode.com/problemset/all/"
-# and then parse it, with "id:name" format
-import sys
-i = 0
-lines = list(sys.stdin)
-for i,line in enumerate(lines):
-    line=line.strip()
-    if line.isdigit():
-        name = lines[i+1].strip().split("    ")[0]
-        name = name.replace(' ','-').replace('(','').replace(')','')
-        name = name.lower()
-        print(f"{int(line)} : \"{name}\",")
+import json
+map_id_slug = {}
+map_id_title = {}
+with open("allproblems.json") as f:
+    data = json.load(f)
+    for row in data:
+        map_id_slug[ row["stat"]["frontend_question_id"] ] = row["stat"]["question__title_slug"]
+        map_id_title[ row["stat"]["frontend_question_id"] ] = row["stat"]["question__title"]
+
+# print(map_id_slug)
+print(map_id_title)
