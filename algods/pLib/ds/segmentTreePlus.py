@@ -9,13 +9,17 @@ class Data:
     def __repr__(self):
         return f"[s:{self.sum} ma:{self.ma} mi:{self.mi} a:{self.add} p:{self.prop}]"
 class SegmentTree:
-    def __init__(self,n): 
-        self.n,self.seg=n,defaultdict(Data)
-    def reinit(self,n):
-        self.n=n
-        self.seg.clear()
-    def build(self,A,i=0,l=0,r=None):
-        if r==None: r=self.n-1 
+    """ segment tree build on closed interval [lbor, rbor]
+    """
+    def __init__(self, lbor, rbor): 
+        self.rbor,self.lbor=rbor,lbor
+        self.seg=defaultdict(Data)
+        # self.seg=[Data() for _ in range( 2**ceil(log2(rbor-lbor+1) +1))]
+    def reinit(self, lbor, rbor):
+        self.lbor, self.rbor = lbor, rbor
+        self.seg.assign(lbor, rbor, 0)
+    def build(self,A,i=0,l=None,r=None):
+        if r==None: l=self.lbor; r=self.rbor
         if r==l: 
             self.seg[i]=Data(A[l],A[l],A[l])
             return
@@ -64,9 +68,9 @@ class SegmentTree:
             seg[i*2+2].mi+=add
             seg[i*2+2].sum+=add*(r-m)
             seg[i].add=0
-    def subsegment(self,Al,Ar,i=0,l=0,r=None,update=False):
-        if r==None: r=self.n-1
-        if Ar>r or l>Ar: return
+    def subsegment(self,Al,Ar,i=0,l=None,r=None,update=False):
+        if r==None: l=self.lbor; r=self.rbor
+        if Al>r or l>Ar: return
         elif Al<=l and r<=Ar: 
             if update: yield i,l,r
             else: yield i
@@ -76,3 +80,14 @@ class SegmentTree:
             yield from self.subsegment(Al,Ar,i*2+1,l,m,update)
             yield from self.subsegment(Al,Ar,i*2+2,m+1,r,update)
             if update:self.pushup(i)
+
+if __name__ == "__main__":
+    A = [1,2,2,3,1,1,0]
+    S1 = SegmentTree(0,len(A)-1)
+    S1.build(A)
+    print(S1.query_max(0,5))
+
+    n=10
+    S2 = SegmentTree(0, n-1)
+    S2.assign(0,n-1,0) # initilize `A` to `[0]*n`
+    print([S2.query_min(i,i) for i in range(n)]) # query `A[i]` in `log(n)`

@@ -1,5 +1,5 @@
 from collections import deque
-from types import List
+from typing import List
 """
 TOC:
     find inversion pairs

@@ -81,8 +81,8 @@ function filterNames(pattern) {
     // match prefix
     if (n <= 2) {
         for (let id = 1; id <= maxsz; id += 1) {
-            let name = map_id_title[id];
-            if (name.startsWith(pattern)) {
+            let target = map_id_title[id].toLowerCase();
+            if (target.startsWith(pattern)) {
                 resultArr.push([id, 0, n]);
             }
         }
@@ -97,7 +97,7 @@ function filterNames(pattern) {
             return resultArr;
         }
         for (let id = 1; id <= maxsz; id += 1) {
-            let target = map_id_title[id];
+            let target = map_id_title[id].toLowerCase();
             let matchres = target.match(re);
             if(matchres!==null){
                 resultArr.push([id, matchres.index, matchres.index + matchres[0].length]);
@@ -108,10 +108,10 @@ function filterNames(pattern) {
     else {
         // ensure one question is selected by only one rule
         let checked = Array(maxsz + 1);
-        // check if b is substring of map_id_title.values
+        // check if `pattern` is substring of map_id_title.values
         let re = new RegExp(pattern.replace('*','[a-zA-Z0-9 ]'));
         for (let id = 1; id <= maxsz; id += 1) {
-            let target = map_id_title[id];
+            let target = map_id_title[id].toLowerCase();
             let matchres = target.match(re);
             if (matchres !== null) {
                 resultArr.push([id, matchres.index, matchres.index + matchres[0].length]);
@@ -120,13 +120,13 @@ function filterNames(pattern) {
         }
 
         // add at most 1 char
-        // check if b is substring of map_id_title.values
+        // check if `pattern` is substring of `map_id_title[i]`
         for (let i = 0; i <= n; i += 1) {
             let pat_add = pattern.slice(0, i) + '[a-zA-Z0-9 ]' + pattern.slice(i);
             let re = new RegExp(pat_add.replace('*','[a-zA-Z0-9 ]'));
             for (let id = 1; id <= maxsz; id += 1) {
                 if (checked[id] === 1) continue;
-                let target = map_id_title[id];
+                let target = map_id_title[id].toLowerCase();
                 let matchres = target.match(re);
                 if (matchres !== null) {
                     resultArr.push([id, matchres.index, matchres.index + i, matchres.index + matchres[0].length]);
@@ -139,7 +139,7 @@ function filterNames(pattern) {
         // refer to function of sub_hamming, simulate multiple substitute operation
         for (let id = 1; id <= maxsz; id += 1) {
             if (checked[id] === 1) continue;
-            let target = map_id_title[id];
+            let target = map_id_title[id].toLowerCase();
             let [sz, diffIdx] = sub_hamming(target, pattern);
             if (sz / n >= 0.8) resultArr.push([id, diffIdx]);
         }
@@ -159,13 +159,20 @@ function isEqual(c1, c2) {
 }
 
 function sub_hamming(a, b) {
-    // find substring of a @ asub, substring of b @ bsub, 
-    // that has mininum `a.length-hamming_distance(asub,bsub)`
-    // O(mn), O(min(m,n))
+    /*
+    usg: find substring of a @ asub, substring of b @ bsub, that
+         has maximum of `a.length-hamming_distance(asub,bsub)`
+    ret: 
+        `match`: maximum of `a.length-hamming_distance(asub,bsub)`
+        `bestDiffIdx`: 
+            of the best match method (`b` align to `a`)
+            it's the collections of indeices `i` that `a[i]!=b[i+shi]`
+    time: O(mn), O(min(m,n))
+     */
     let m = a.length, n = b.length;
     let diffIdx; // index of different chars
     let bestDiffIdx; // best `diffIdx`
-    let match = 0; // length of `minDiffIdx`
+    let match = 0;
     for (let shi = -m + 1; shi < n; shi += 1) {
         let l = Math.max(-shi, 0), r = Math.min(n - shi, m);
         diffIdx = [l - 1];
