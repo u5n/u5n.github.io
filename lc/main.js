@@ -78,6 +78,7 @@ function searchKeyUpFunc(obj) {
 function filterNames(pattern) {
     let n = pattern.length;
     let resultArr = [];
+    let re;
     // match prefix
     if (n <= 2) {
         for (let id = 1; id <= maxsz; id += 1) {
@@ -109,7 +110,12 @@ function filterNames(pattern) {
         // ensure one question is selected by only one rule
         let checked = Array(maxsz + 1);
         // check if `pattern` is substring of map_id_title.values
-        let re = new RegExp(pattern.replace('*','[a-zA-Z0-9 ]'));
+        try{
+            re = new RegExp(pattern.replace('*','[a-zA-Z0-9 ]'));
+        } catch (err) {
+            console.log(err)
+            return resultArr;
+        }
         for (let id = 1; id <= maxsz; id += 1) {
             let target = map_id_title[id].toLowerCase();
             let matchres = target.match(re);
@@ -123,7 +129,12 @@ function filterNames(pattern) {
         // check if `pattern` is substring of `map_id_title[i]`
         for (let i = 0; i <= n; i += 1) {
             let pat_add = pattern.slice(0, i) + '[a-zA-Z0-9 ]' + pattern.slice(i);
-            let re = new RegExp(pat_add.replace('*','[a-zA-Z0-9 ]'));
+            try{
+                re = new RegExp(pat_add.replace('*','[a-zA-Z0-9 ]'));
+            } catch(err){
+                console.log(err);
+                return resultArr;
+            }
             for (let id = 1; id <= maxsz; id += 1) {
                 if (checked[id] === 1) continue;
                 let target = map_id_title[id].toLowerCase();
