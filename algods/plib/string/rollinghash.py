@@ -1,5 +1,5 @@
 from collections import deque
-from copy import copy
+import copy 
 import random
 """
 linear congruential generator + cyclic polynomial
@@ -15,73 +15,96 @@ linear congruential generator + cyclic polynomial
     32 bit candidate 2**32-x, x\in [5, 17, 65, 99, 107, 135, 153, 185, 209, 267 ]
 
 """
-prime64bit = [2**64-x for x in [59, 83, 95, 179, 189, 257, 279, 323, 353, 363]]
-prime32bit = [2**32-x for x in [5, 17, 65, 99, 107, 135, 153, 185, 209, 267 ]]
-prime128bit = [2**128-x for x in [159, 173, 233, 237, 275, 357, 675, 713, 797, 1193]]
 # https://primes.utm.edu/curios/index.php?stop=1
-bigprimes = [10**600+543, 10**776 + 1777,3*10**910-1,10**1000-8202269, 4*10**1473+1 ,10**1748+1] 
-# def val(v): return ord(v)-ord('a')
-def val(v): return v
+# bigprimes = [10**600+543, 10**776 + 1777,3*10**910-1,10**1000-8202269, 4*10**1473+1 ,10**1748+1] 
+
+prime16bit = [2**16-x for x in [15, 17, 39, 57, 87, 89, 99, 113, 117, 123]]
+prime32bit = [2**32-x for x in [5, 17, 65, 99, 107, 135, 153, 185, 209, 267 ]]
+prime64bit = [2**64-x for x in [59, 83, 95, 179, 189, 257, 279, 323, 353, 363]]
+prime128bit = [2**128-x for x in [159, 173, 233, 237, 275, 357, 675, 713, 797, 1193]]
 
 class RHS:
+    """ rollinghash for deque/arraylist
     """
-    only for variable length
-    """
-    __slots__ = 'v','n','mod','base'
-    def __init__(self,base,mod,s=''):
-        self.mod = mod
-        self.base=base
-        self.v = self.n = 0
-        for c in s: self.append(c)
-    def reset(self): self.v = self.n = 0
-    def append(self, c): 
-        self.v = (self.base*self.v + val(c))%self.mod
-        self.n += 1
-    def pop(self, c): 
-        self.v = ((self.v-val(c))*pow(self.a,-1,self.mod))%self.mod
-        self.n -= 1
-    def popleft(self, c): 
-        self.v = (self.v-val(c)*pow(self.a,self.n-1,self.mod))%self.mod
-        self.n -= 1
-    def appendleft(self, c): 
-        self.v = (self.v+val(c)*pow(self.a,self.n,self.mod))%self.mod
-        self.n += 1
-    def subprefix(self, pre): 
-        return (self.v - pre.v*pow(self.a,self.n-pre.n,self.mod))%self.mod
-    def __eq__(self, oth): return self.v==oth.v and self.n==oth.n
-    def __hash__(self): return hash(self.v, self.n)
-
-# generate list of RHS object of prefixes
-def rhs_prefix(s):
-    n = len(s)
-    hs = RHS()
-    pre = [None]*(n+1); pre[0] = copy(hs)
-    for i in range(n):
-        hs.append(s[i])
-        pre[i+1] = copy(hs)
-    return pre
-
-# for fixed size RHS
-def rhs_fixsize(s, sz, base, mod):
-    ns = len(s)
-    if ns<sz: return
-    pasz = pow(base, sz, mod)
-    hs = 0
-    for ri in range(sz):
-        hs = (base*hs + val(s[ri]))%mod
-    yield hs
-    for ri in range(sz,ns):
-        li = ri - sz + 1
-        hs = (base*hs + val(s[ri]))%mod
-        hs = (hs-val(s[li-1])*pasz)%mod
-        yield hs
-
-if __name__ == "__main__":
-    # case1 https://codeforces.com/blog/entry/4898
-    s = deque([0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1])
+    __slots__ = 'v','n'
     mod = random.choice(prime128bit)
     base = random.choice(prime32bit)
-    tmp1 = RHS(base,mod,s).v
-    s.rotate(1)
-    assert tmp1 != RHS(base,mod,s).v
+    def __init__(self, n, v=0):
+        self.v, self.n = v,n
+    def reset(self): self.v = self.n = 0
+    def append(self, e: int): 
+        self.v = (RHS.base*self.v + e)%RHS.mod
+        self.n += 1
+    def pop(self, e: int): 
+        self.v = ((self.v-e)*pow(RHS.base,-1,RHS.mod))%RHS.mod
+        self.n -= 1
+    def popleft(self, e: int): 
+        self.v = (self.v-e*pow(RHS.base,self.n-1,RHS.mod))%RHS.mod
+        self.n -= 1
+    def appendleft(self, e: int): 
+        self.v = (self.v+e*pow(RHS.base,self.n,RHS.mod))%RHS.mod
+        self.n += 1
+    def __sub__(self, left): 
+        """ difference of prefixes to get rollinghash of an interval """
+        return (self.v - left.v*pow(RHS.base,self.n-left.n,RHS.mod))%RHS.mod
+    def __eq__(self, oth): return self.v==oth.v and self.n==oth.n
+    def __hash__(self): return hash((self.v, self.n))
+
+def val(v): return ord(v)-97
+# for prefixes: generate list of RHS object
+def rhs_prefix(A):
+    n = len(A)
+    pre = [None]*(n+1)
+    pre[0] = RHS(0, 0)
+    for i in range(n):
+        pre[i+1] = copy.copy(pre[i])
+        pre[i+1].append(val(A[i]))
+    return pre
+
+"""
+below don't need `RHS().n` attribute
+""" 
+
+mod = random.choice(prime128bit)
+base = random.choice(prime32bit)
+
+# for an iterable
+def rhs_iterable(A):
+    hs = 0
+    for ri in range(len(A)):
+        hs = (base*hs + val(A[ri]))%mod
+    return hs
+# for subarray of a iterable
+def rhs_subarray(A):
+    n = len(A)
+    for l in range(n):
+        hs = 0
+        for r in range(l+1,n+1):
+            hs = (base*hs + val(A[r-1]))%mod
+            yield l,r,hs
+
+# for fixsize subarray of a iterable
+def rhs_fixsize(A, sz):
+    ns = len(A)
+    if ns<sz: return
+    pbsz = pow(base, sz, mod) ## base**sz
+    hs = 0
+    for ri in range(sz):
+        hs = (base*hs + val(A[ri]))%mod
+    yield 0,hs
+    for ri in range(sz,ns):
+        li = ri - sz + 1
+        hs = (base*hs + val(A[ri]))%mod
+        hs = (hs-val(A[li-1])*pbsz)%mod
+        yield li,hs
+
+if __name__ == "__main__":
+    # hash collision case1 https://codeforces.com/blog/entry/4898
+    s = deque([0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1,0,1,2,1,2,1,0,1,0,1,2,1,2,1,0,1,2,1,0,1,0,1,2,1])
     
+    tmp1 = rhs_iterable(s, RHS.base, RHS.mod)
+    s.rotate(1)
+    assert tmp1 != rhs_iterable(s, RHS.base, RHS.mod)
+
+    pre = rhs_prefix("01212")
+    print(pre[0].v)

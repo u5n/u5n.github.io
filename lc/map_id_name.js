@@ -1,4 +1,5 @@
-function id_to_url(id){
+function id_to_url(id, cn=0){
+    if(cn) return "https://leetcode-cn.com/problems/"+map_id_slug[id];
     return "https://leetcode.com/problems/"+map_id_slug[id];
 }
 

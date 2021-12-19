@@ -28,7 +28,7 @@ class SkiplistNode:
         self.val = val
         # index start from 0
         self.levels = [self.skiplistLevel() for _ in range(level)]
-    def __repr__(self):
+    def __str__(self):
         return str(self.val)
 
 class Skiplist:
@@ -169,7 +169,7 @@ class Skiplist:
             x=x.levels[0].forward
 
 # below for debug 
-    def __repr__(self):
+    def __str__(self):
         mat = [[None]*(self.length+1) for _ in range(self.level)]
         maxlen = 0
         for i,x in enumerate(self):

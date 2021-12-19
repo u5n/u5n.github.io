@@ -1,30 +1,31 @@
+"""
+TOC
+    class TreeNode
+    def decode
+    def pprint
+    def size_cache
+"""
 from collections import deque
-
-class NaryTreeNode:
-    def __init__(self, val, children=None):
-        self.val,self.children = val,children
-        
-class BinaryTreeNode:
+class TreeNode:
     __slots__ = 'val','left','right'
     def __init__(self,val,left=None,right=None):
         self.val,self.left,self.right=val,left,right
-    def __repr__(self):
-        return self.repr(self.val)
+    def __str__(self):
+        return f'TreeNode({TreeNode.rep(self)})'
     @staticmethod
-    def repr(x):
-        """ input node or node.val or None """
-        return str(x) if x!=None else 'N'
+    def rep(x):
+        """ input node or None """
+        return str(x.val) if x!=None else 'N'
     def copy(self):
         return decode(self.encode())
-    def pprint(self): binary_pprint(self, self.repr)
+    def pprint(self): pprint(self, TreeNode.rep)
     def encode(self, returnType="str"):
         q=[self]
         i = 0
         while i<len(q):
-            cur = q[i]
-            if cur:
-                q.append(cur.left)
-                q.append(cur.right)
+            if q[i]:
+                q.append(q[i].left)
+                q.append(q[i].right)
             i+=1
         while q[-1]==None:
             q.pop()
@@ -34,29 +35,32 @@ class BinaryTreeNode:
             return list(q)
 
 def decode(datastr):
-    """ decode use level order """
+    """ decode by level order """
     if not datastr: return None
     if not isinstance(datastr, str):
         datastr = str(datastr)
     datastrlist = datastr.strip('[]').split(',')
-    data=deque(int(e) if e.strip().isdigit() else None for e in datastrlist)
-    root = BinaryTreeNode(data.popleft())
+
+    data= deque(int(e) if e.strip().isdigit() else None for e in datastrlist)
+    root = TreeNode(data.popleft())
     q=deque([root])
     while q:
         cur=q.popleft()
-        if data:
-            v=data.popleft()
-            if v!=None:
-                cur.left=BinaryTreeNode(v)
-                q.append(cur.left)
-        if data:
-            v=data.popleft()
-            if v!=None:
-                cur.right=BinaryTreeNode(v)
-                q.append(cur.right)
+        if not data: break
+        v=data.popleft()
+        if v!=None:
+            cur.left=TreeNode(v)
+            q.append(cur.left)
+    
+        if not data: break
+        v=data.popleft()
+        if v!=None:
+            cur.right=TreeNode(v)
+            q.append(cur.right)
+
     return root
     
-def binary_pprint(root, repr, compact=False):
+def pprint(root, rep, compact=False):
     """
     pprint a binary tree at root, stringify each node use `vrepr` function
 
@@ -95,8 +99,8 @@ def binary_pprint(root, repr, compact=False):
     def emptyspace(A):
         n = len(A)
         ret=[None]*n
-        maxnumberlength_list = lambda l:max(map(lambda node:len(repr(node)),l))
-        epArr = [ maxnumberlength_list(e) for e in A ]
+        maxnumberlength_list = lambda layer:max(map(lambda node:len(rep(node)),layer))
+        epArr = [ maxnumberlength_list(layer) for layer in A ]
         maxi = max(range(n),key=lambda i:epArr[i])
         INI_SPACES = 2
         def choose_bottomspace(x):
@@ -128,14 +132,46 @@ def binary_pprint(root, repr, compact=False):
         return ' '*(spa//2)+s+' '*(spa-spa//2)
     eltrans = []
     for i,e in enumerate(el):
+        # `ee` is TreeNode
         if compact:
-            toappend = ''.join( map(lambda ee: ' '+repr(ee)+' ', e) )
+            toappend = ''.join( map(lambda ee: ' '+rep(ee)+' ', e) )
         else:
-            toappend = '|'.join( map(lambda ee: paddingaround(repr(ee), epArr[i], emptyspaceArr[i]), e) )
+            toappend = '|'.join( map(lambda ee: paddingaround(rep(ee), epArr[i], emptyspaceArr[i]), e) )
         eltrans.append(" "+toappend)
     
-    print("BinaryTree[\n"+"\n".join(eltrans)+"\n]")
+    print("BinaryTree[\n"+"\n".join(eltrans)+"\n]")    
 
+def postorder(root):
+    """ visit node in postorder, ensure child is visited before parent """
+    sta = [[0, root]]
+    while sta:
+        bpt, cur = sta[-1]
+        if bpt==0:
+            sta[-1][0] = 2
+            if cur.right: sta.append([0,cur.right])
+            if cur.left: sta.append([0,cur.left])
+        else:
+            sta.pop()
+            yield cur
+
+import sys
+
+sys.setrecursionlimit(1000000000)
+    
 if __name__=="__main__":
-    r = decode("[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]")
-    r.pprint()
+    def f():
+        d = 0
+        root = r = TreeNode(d); d+=1
+        for _ in range(10000):
+            r.left = TreeNode(d); d+=1
+            r = r.left
+        c = 0
+        def dfs(x, d):
+            # A = d*[1]
+            if x.left:
+                dfs(x.left, d+1)
+            if x.right:
+                dfs(x.right, d+1)
+            # c+=d+sum(A)
+        dfs(root, d)
+    f()

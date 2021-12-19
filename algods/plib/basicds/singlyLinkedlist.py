@@ -1,17 +1,16 @@
-# template for some tricky interviewer problem
+# template for some tricky interview problem
+# especially for leetcode problems 
 class ListNode:
     def __init__(self, val=0, next=None):
         self.val = val
         self.next = next
-    def __repr__(self):
-        return str(self.val)
-    def tolistAsHead(self):
-        ret = []
+    def __str__(self):
+        return f'ListNode({self.val})'
+    def __iter__(self):
         cur = self
         while cur!=None:
-            ret.append(cur.val)
+            yield cur.val
             cur = cur.next
-        return ret
 
 def toLinkedlist(A: list):
     sen = ListNode()
@@ -32,31 +31,34 @@ TOC
 """
 
 def reverse(pre, end=None):
-    """ reverse linkedlist begin at pre.next, end before(exclude) `end` """
+    """ reverse linkedlist begin at `pre.next`, end before (exclude)`end` """
     head = pre.next
+    if head is None: return # reverse empty linkedlist
     while head.next!=end:
-        tomove = head.next
-        nxttomoved = tomove.next
-        tomove.next = pre.next
-        pre.next = tomove
-        head.next = nxttomoved
+        cur = head.next
+        nxt = cur.next 
+
+        cur.next = pre.next 
+        pre.next = cur
+        head.next = nxt
+
 def reverse_n(pre, n):
     """ reverse size `n` linkedlist begin at pre.next
-        return the first unreversed node
+        return #reversed
     """
     head = pre.next
-    for _ in range(n-1):
+    if head is None: return 0
+    for n_rev in range(1, n):
         if head.next == None:
-            return None
-        tomove = head.next
-        nxttomoved = tomove.next
-        tomove.next = pre.next
-        pre.next = tomove
-        head.next = nxttomoved
-    return head.next
-# pre -> sta -> sta2 -> ... -> last -> end
-# pre -> sta
-# pre -> sta2 -> sta
+            return n_rev
+        cur = head.next # L[head + n_rev]
+        nxt = cur.next
+
+        cur.next = pre.next
+        pre.next = cur
+        head.next = nxt
+    return n
+
 def getMedium(sta, end=None, left=True):
     """ 
     if left: return L[(n-1)//2]
@@ -101,5 +103,5 @@ if __name__ == "__main__":
     # print(getMedium(head))
     pre=ListNode(0,head)
     reverse_n(pre.next,3)
-    print(pre.next.tolistAsHead())
+    print(list(pre.next))
     # print(isPalindrome(head))

@@ -1,9 +1,10 @@
 // check current url 
 let maxsz = Object.keys(map_id_slug).length;
 let url = new URL(window.location.href);
-let c = url.searchParams.get("id");
-if (c !== null) {
-    window.location.href = id_to_url(c);
+let url_whetherlccn = url.searchParams.get("cn");
+let url_problemid = url.searchParams.get("id");
+if (url_problemid !== null) {
+    window.location.href = id_to_url(url_problemid, url_whetherlccn);
 }
 
 function inputkeyUpFunc(obj) {

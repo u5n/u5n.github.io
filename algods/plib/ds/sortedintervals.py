@@ -3,6 +3,7 @@ from sortedcontainers import SortedDict, SortedList
 #   have no complicated structures than sortedcontainers
 # usg: get related operation access `self.sizes` or `self.ints` directly
 # req: every inveral [l,r] appears, l should <= r 
+# tc: `log(self.size)` each operation
 class SortedIntervals:
     def __init__(self):
         # key: left endpoint
@@ -19,6 +20,7 @@ class SortedIntervals:
             if self.ints.peekitem(lfind - 1)[1] >= l:
                 lfind -= 1
         return lfind, rfind
+        
     def get_sub(self, l, r):
         # fully contained in [l,r]
         lfind = self.ints.bisect_left(l)

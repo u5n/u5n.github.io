@@ -1,4 +1,9 @@
-from math import inf
+"""
+range change(addition/assign)
+range query
+on any associative opeartion
+"""
+from math import *
 from collections import defaultdict
 import operator
 from functools import reduce
@@ -6,15 +11,14 @@ class Data:
     __slots__="sum","ma","mi","add","prop"
     def __init__(self,sum=None,ma=None,mi=None,add=0,prop=None):
         self.sum,self.ma,self.mi,self.add,self.prop = sum,ma,mi,add,prop
-    def __repr__(self):
+    def __str__(self):
         return f"[s:{self.sum} ma:{self.ma} mi:{self.mi} a:{self.add} p:{self.prop}]"
 class SegmentTree:
     """ segment tree build on closed interval [lbor, rbor]
     """
     def __init__(self, lbor, rbor): 
         self.rbor,self.lbor=rbor,lbor
-        self.seg=defaultdict(Data)
-        # self.seg=[Data() for _ in range( 2**ceil(log2(rbor-lbor+1) +1))]
+        self.seg=[Data() for _ in range( 2**ceil(log2(rbor-lbor+1) +1))]
     def reinit(self, lbor, rbor):
         self.lbor, self.rbor = lbor, rbor
         self.seg.assign(lbor, rbor, 0)
@@ -79,7 +83,7 @@ class SegmentTree:
             self.pushdown(i,l,m,r)
             yield from self.subsegment(Al,Ar,i*2+1,l,m,update)
             yield from self.subsegment(Al,Ar,i*2+2,m+1,r,update)
-            if update:self.pushup(i)
+            if update: self.pushup(i)
 
 if __name__ == "__main__":
     A = [1,2,2,3,1,1,0]

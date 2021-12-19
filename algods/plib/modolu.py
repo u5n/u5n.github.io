@@ -1,6 +1,6 @@
 """
 TOC
-    {combinatorial}
+    _combinatorial_cache
         fac;invfac;inv;perm;comb
     solve_linear_congruence
     extended_gcd
@@ -15,15 +15,15 @@ TOC
 from math import gcd, isqrt
 from typing import List
 
-def _namespace_combinatorial(Mod, maxn):
+def _combinatorial_cache(Mod, maxn):
     fac = [1]*(maxn+1)
     invfac = [1]*(maxn+1)
-    inv = [1]*(maxn+1)
+    # inv = [1]*(maxn+1)
     for i in range(2,maxn+1):
         fac[i]=fac[i-1]*i%Mod
         invfac[i]=pow(fac[i], -1, Mod)
         
-        inv[i]=Mod-((Mod//i)*inv[Mod%i])%Mod
+        # inv[i]=Mod-((Mod//i)*inv[Mod%i])%Mod
     def perm(n, r):
         return fac[n]*invfac[n-r]%Mod
     def comb(n, r):

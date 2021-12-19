@@ -10,7 +10,7 @@ class SkiplistNode:
     def __init__(self, level: int, val):
         self.val = val
         self.levels = [None for _ in range(level)]
-    def __repr__(self):
+    def __str__(self):
         return str(self.val)
 
 class Skiplist:
@@ -63,7 +63,7 @@ class Skiplist:
             yield x
             x=x.levels[0]
     def __len__(self): return self.length
-    def __repr__(self):
+    def __str__(self):
         selflevel = self.MAXLEVEL
         while selflevel>1 and self.header.levels[selflevel-1]==None:
             selflevel -= 1
