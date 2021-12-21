@@ -1,14 +1,15 @@
 from collections import defaultdict
 import string
 def next_char(s):
-    """ next[i][ch] -> MIN{j; s[j]==ch; j>=i; default=n+1} 
+    """ 
+    assume s only contain lowercases
+    next[i][ch] -> MIN{j; ord(s[j])-97==ch; j>=i; default=n+1} 
     """
     n = len(s)
-    next = [defaultdict(lambda:n) for _ in range(n+1)]
-    for c in string.ascii_lowercase:
-        ic = n
-        for i in reversed(range(n)):
-            if s[i]==c:
-                ic = i
-            next[i][c] = ic
+    next = [None]*n
+    next_arr = [n]*26
+    for i in reversed(range(n)):
+        e = ord(s[i])-97
+        next_arr[e] = i
+        next[i] = tuple(next_arr)
     return next

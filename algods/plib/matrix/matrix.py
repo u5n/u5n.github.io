@@ -41,34 +41,3 @@ def adj(ux, uy, m, n):
         x,y = ux+dx,uy+dy
         if 0<=x<m and 0<=y<n:
             yield x,y
-
-def topo_sort(M, f):
-    """ topological sort """
-    m,n = len(M),len(M[0])
-    ind = [[0]*n for _ in range(m)]
-    for ux in range(m):
-        for uy in range(n):
-            for v in adj(ux, uy, m, n):
-                if f((ux, uy), v):
-
-    for u in range(n):
-        for v in G[u]:
-            ind[v]+=1
-    
-    q = deque()
-    for u in range(n):
-        if ind[u]==0:
-            q.append(u)
-    
-    ret = []
-    while q:
-        u = q.pop()
-        ret.append(u)
-        for v in G[u]:
-            ind[v]-=1
-            if ind[v]==0:
-                q.append(v)
-    
-    if len(ret)==n:
-        return ret
-    raise Exception("not DAG")

@@ -23,8 +23,8 @@ class SegmentTree:
         m=(r+l)//2 # floor division
         self.build(A,i*2+1,l,m)
         self.build(A,i*2+2,m+1,r)
-        self.pushup(i)
-    def pushup(self,i):
+        self.pull(i)
+    def pull(self,i):
         self.seg[i] = self.opt(self.seg[i*2+1]+self.seg[i*2+2])
     def query(self,l,r):
         return reduce(self.opt, map(lambda e:self.seg[e], self.subsegment(l,r)), 0)
@@ -32,7 +32,7 @@ class SegmentTree:
         seg=self.seg
         p = self.ancestor(Ai)
         seg[next(p)]=new # seg[next(p)]+=new # for addition opearation
-        for i in p: self.pushup(i)
+        for i in p: self.pull(i)
 
     def subsegment(self,Al,Ar,i=0,l=None,r=None):
         if r==None: l=self.lbor; r=self.rbor

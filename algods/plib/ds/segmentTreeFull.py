@@ -30,7 +30,7 @@ class SegmentTree:
         m=l+(r-l)//2
         self.build(A,i*2+1,l,m)
         self.build(A,i*2+2,m+1,r)
-        self.pushup(i)
+        self.pull(i)
     def query_max(self,Al,Ar):
         return reduce(lambda l,r:max(l,self.seg[r].ma),self.subsegment(Al,Ar),-inf)
     def query_min(self,Al,Ar):
@@ -46,12 +46,12 @@ class SegmentTree:
     def assign(self,Al,Ar,val):
         for i,l,r in self.subsegment(Al,Ar,update=True):
             self.seg[i]=Data(val*(r-l+1),val,val,0,val)
-    def pushup(self,i):
+    def pull(self,i):
         seg=self.seg
         seg[i]=Data(seg[i*2+1].sum+seg[i*2+2].sum,
                     max(seg[i*2+1].ma,seg[i*2+2].ma),
                     min(seg[i*2+1].mi,seg[i*2+2].mi))
-    def pushdown(self,i,l,m,r):
+    def push(self,i,l,m,r):
         seg=self.seg
         if seg[i].prop!=None:
             prop = seg[i].prop
@@ -80,10 +80,10 @@ class SegmentTree:
             else: yield i
         else:
             m = l+(r-l)//2
-            self.pushdown(i,l,m,r)
+            self.push(i,l,m,r)
             yield from self.subsegment(Al,Ar,i*2+1,l,m,update)
             yield from self.subsegment(Al,Ar,i*2+2,m+1,r,update)
-            if update: self.pushup(i)
+            if update: self.pull(i)
 
 if __name__ == "__main__":
     A = [1,2,2,3,1,1,0]

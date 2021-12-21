@@ -52,10 +52,16 @@ class _namespace_monoqueue:
 
     class MonoQueue:
         """  
-        des: monoqueue on an arraylist, store its indices
+        des: 
+            monoqueue on an arraylist, store its indices
+            use it like a sliding window
         application: 
-            max queue: opt=operator.gt
-            min queue: opt=operator.lt
+            max queue: 
+                opt=operator.le
+                    if equal, select rightmost
+                opt=operator.lt
+                    if equal, select leftmost
+            min queue: opt=operator.ge
             it's an encapsulated data structure, don't use it to find nearest left/right element that ...
         """
         def __init__(self, A, opt):
@@ -73,14 +79,14 @@ class _namespace_monoqueue:
                 self.q.popleft()
             self.l += 1
         def get(self):
-            return self.A[self.q[0]]
+            return self.q[0]
 
     class MonoQueueVal: 
         """  
         des: monoqueue on an streaming, store the value
         appliation:
-            max queue: opt=operator.gt
-            min queue: opt=operator.lt
+            max queue: opt=operator.le
+            min queue: opt=operator.ge
             it's an encapsulated data structure, don't use it to find nearest left/right element that ...
         """
         def __init__(self, opt):

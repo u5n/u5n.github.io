@@ -123,3 +123,46 @@ def Dl(detail = False, selected=None):
             return
     else:
         raise Exception("don't have a `Solution` class")
+
+def C(filename, template=None, leetcode=True):
+    """ find code complexity """
+    import tokenize
+    import io
+    def update_d(token, add=1):
+        if token.type==1: 
+            if token.string == 'False' or token.string == 'True':
+                d['LITERAL'] += add
+            else:
+                d['NAME'] += add
+        elif token.type==54: 
+            if token.string != ';':
+                d['OP'] += add
+        elif token.type in {2,3}: d['LITERAL'] += add
+    def checkfile(filename):
+        with tokenize.open(filename) as f:
+            if template is None and leetcode: f.readline(); f.readline()
+            tokens = tokenize.generate_tokens(f.readline)
+            for token in tokens:
+                update_d(token)
+        if template:
+            for token in tokenize.generate_tokens(io.StringIO(template).readline):
+                update_d(token, -1)
+
+    d  = {'NAME':0, 'OP':0, 'LITERAL':0,'LINE':0}
+    with open(filename) as f:
+        multilineString = False
+        for line in f.readlines():
+            if multilineString:
+                if line.rstrip().endswith('"""'):
+                    multilineString = False
+                continue
+            if line.lstrip().startswith('#'): continue
+            elif line.strip() == '': continue
+            elif line.lstrip().startswith('"""'):
+                multilineString = True
+            d['LINE'] += 1
+    if leetcode: d['LINE'] -= 2
+    checkfile(filename)
+    # print(f"code complexity: {{words:{d['NAME']+d['LITERAL']}, opt:{d['OP']} }}")
+    print(d)
+    print(f"code complexity: {d['NAME']+d['LITERAL']+d['OP']}")
