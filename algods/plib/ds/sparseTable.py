@@ -5,7 +5,6 @@ range max/min query in O(1)
 """
 import operator
 
-# _ilog2_cache
 maxn = 1000000
 ilog2 = [0]*(maxn+1)
 for i in range(1, maxn+1):

@@ -4,7 +4,9 @@ TOC
         fac;invfac;inv;perm;comb
     solve_linear_congruence
     extended_gcd
+    chinese_remainder_theorem
     {single point calculation}
+        modular_multiplication_inverse
         is_prime
         factors
         prime_factors
@@ -12,8 +14,11 @@ TOC
         euler_totient
 
 """
+from functools import reduce
 from math import gcd, isqrt
+from operator import *
 from typing import List
+from itertools import count
 
 def _combinatorial_cache(Mod, maxn):
     fac = [1]*(maxn+1)
@@ -47,9 +52,8 @@ def extended_gcd(a,b):
     return old_s, old_t
 
 def solve_linear_congruences(a,b,m):
-    """ 
-    solve equation ax ≡ b (mod m) && 0<=x<m
-    reduce to ax+my = b
+    """ solve equation ax ≡ b (mod m) && 0<=x<m
+    i.e. ax+my = b
     """
     d = gcd(a,m)
     if b%d!=0: return 
@@ -60,11 +64,48 @@ def solve_linear_congruences(a,b,m):
         yield x0%m
         x0 += m//d
 
+def chinese_remainder_theorem(A:List[int], mods:List[int]) -> int:
+    """ 
+    M[i] is prime
+    solve equation of x: 
+        x ≡ A[i] mod M[i] for all i
+    """
+    P = reduce(mul, mods)
+    M = [P//mod for mod in mods]
+    T = list(pow(Mi, -1, mi) for Mi,mi in zip(M, mods))
+    return sum(Ai*Ti*Mi for Ai,Ti,Mi in zip(A,T,M))%P
+
+
+def prime_generator():
+    """ infinite prime generator 
+    performance: 2μs per prime (first 1000000)
+    original: https://stackoverflow.com/a/10733621/7721525
+    space: O(√n); where n is number of primes produced
+    """
+    yield 2; yield 3; yield 5; yield 7;  # original code David Eppstein, 
+    sieve = {}                           #   Alex Martelli, ActiveState Recipe 2002
+    ps = prime_generator()               # a separate base Primes Supply:
+    p = next(ps) and next(ps)            # (3) a Prime to add to dict
+    q = p*p                              # (9) its sQuare 
+    for c in count(9,2):                 # the Candidate
+        if c in sieve:               # c's a multiple of some base prime
+            s = sieve.pop(c)         #     i.e. a composite ; or
+        elif c < q:  
+             yield c                 # a prime
+             continue              
+        else:   # (c==q):            # or the next base prime's square:
+            s=count(q+2*p,2*p)       #    (9+6, by 6 : 15,21,27,33,...)
+            p=next(ps)               #    (5)
+            q=p*p                    #    (25)
+        for m in s:                  # the next multiple 
+            if m not in sieve:       # no duplicates
+                break
+        sieve[m] = s                 # original test entry: ideone.com/WFv4f
+
 def _namespace_single_point(Mod):
-    def modular_multiplication_inverse(a):
-        # assert gcd(a, Mod)==1
+    def modular_multiplication_inverse(a, Mod):
+        assert gcd(a, Mod)==1
         return extended_gcd(a, Mod)[0]%Mod
-        
     def is_prime(n:int):
         if n<=1: return False
         elif n<=3: return True

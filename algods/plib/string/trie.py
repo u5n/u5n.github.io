@@ -11,9 +11,8 @@ class TrieNode:
         return f"TrieNode(val:{repr(self.val)} nchi:{len(self.chi)})"
 
 class Trie:
-    """ implement as a `defaultdict`, 
+    """ implement like a `defaultdict`, 
     theoretical data structure, cost too much memory
-    target: 
     key is `str` (allow empty), value can't store `None` 
     """
     def __init__(self):
@@ -78,6 +77,7 @@ class Trie:
                 path.pop()
         yield from dfs(root)
     def pop(self, key, default=None):
+        """ """
         cur = self.root
         nodes = deque([(None,cur)]) # from childs to parent
         for c in key:
@@ -145,12 +145,12 @@ class BinaryTrieNode:
         self.c0 = self.c1 = None
 
 class BinaryTrie:
+    """ implement like a set"""
     def __init__(self, digit):
         self.root = BinaryTrieNode()
         self.mask = [1<<(digit-1-i) for i in range(digit)]
         # self.U = (1<<digit) - 1
     def set(self, num):
-        """ trigger parity of `num` """
         cur = self.root
         for e in self.mask:
             if num&e:
@@ -160,8 +160,9 @@ class BinaryTrie:
                 if not cur.c1: cur.c1 = BinaryTrieNode()
                 cur = cur.c1
         # when cur at bottom, use cur.c0 to store additional information
-        if cur.c0 is None : cur.c0 = 1
-        else: cur.c0 = 1^cur.c0
+        cur.c0 = 1
+    def remove(self, num):
+        pass
     def contains(self, num):
         """ whether has odd number of `num` """
         cur = self.root

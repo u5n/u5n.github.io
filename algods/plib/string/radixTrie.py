@@ -101,13 +101,13 @@ class RadixTrie:
 if __name__ == "__main__":
     def test1():
         T = RadixTrie()
-        # with open as f
-        with open("in", 'r') as f:
+        with open("radixTrie.py", 'r') as f:
             for i,line in enumerate(f.readlines()):
-                T.set(line.strip(), i)
+                T[line.strip()] = i
         T.pprint()
+    test1()
     T = RadixTrie()
     T['apple'] = 1
     print(T._get('apple'))
-    T.pprint()
     T['app'] = 1
+    T.pprint()

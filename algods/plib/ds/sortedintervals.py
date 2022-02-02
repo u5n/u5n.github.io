@@ -1,118 +1,109 @@
+from dataclasses import dataclass
 from sortedcontainers import SortedDict, SortedList
-# def: a collection of disjoint closed intervals ( endpoint only integers )
-#   have no complicated structures than sortedcontainers
-# usg: get related operation access `self.sizes` or `self.ints` directly
-# req: every inveral [l,r] appears, l should <= r 
-# tc: `log(self.size)` each operation
+
+class Interval:
+    __slots__ = 'l', 'r', 'val'
+    def __init__(self, l, r, val=None):
+        self.l, self.r, self.val = l, r, val
+
+
 class SortedIntervals:
+    """ a collection of ordered and disjoint closed intervals ( endpoint is integers )
+    """
     def __init__(self):
-        # key: left endpoint
-        # val: right endpoint
-        self.ints = SortedDict()
-        # enable to process interval by priority of interval size
-        # (size, left endpoint)
-        self.sizes = SortedList()
-    
+        self.ints = SortedList(key=lambda x: x.l)
+
+    def get_sub(self, l, r):
+        """ find all intervals in `self` that fully contained in [l,r] 
+        return two indices on `self.ints`, `self.ints[lfind:rfind+1]` are fully contained in [l,r]
+        if no such interval, `rfind-lfind<=0`
+        """
+        # find all intervals that left endpoint in [l,r]
+        lfind = self.ints.bisect_key_left(l)
+        rfind = self.ints.bisect_key_right(r) - 1
+        if rfind >= lfind:
+            if self.ints[rfind].r > r:
+                return lfind, rfind - 1
+        return lfind, rfind
+
     def get_overlap(self, l, r):
-        lfind = self.ints.bisect_left(l)
-        rfind = self.ints.bisect_right(r) - 1
+        """  similar to `self.get_sub` """
+        lfind = self.ints.bisect_key_left(l)
+        rfind = self.ints.bisect_key_right(r) - 1
         if lfind > 0:
-            if self.ints.peekitem(lfind - 1)[1] >= l:
+            if self.ints[lfind - 1].r >= l:
                 lfind -= 1
         return lfind, rfind
-        
-    def get_sub(self, l, r):
-        # fully contained in [l,r]
-        lfind = self.ints.bisect_left(l)
-        rfind = self.ints.bisect_right(r) - 1
-        # left endpoint in [l,r]
-        if rfind >= lfind:
-            if self.ints.peekitem[rfind][1] > r:
-                return lfind, rfind-1
-        return lfind, rfind
+
     def get_super(self, l, r):
-        # [l,r] fully contained in
-        lfind = self.ints.bisect_right(l) - 1
-        if self.ints.peekitem[lfind][1] >= r:
+        """ return index of interval on `self` in which the [l,r] fully contained"""
+        lfind = self.ints.bisect_key_right(l) - 1
+        if self.ints[lfind].r >= r:
             return lfind
         return -1
-    def add(self, l, r):
-        """ add interval [l,r] 
-        if overlap 
-            return None
-        else 
-            add this and automatically merge into big interval if possible 
-            then return the merged interval
-        """
-        # rfind means first right interval of l
-        # overlap_rfind means last right interval before r
-        rfind, overlap_rfind = self.get_overlap(l, r)
-        if rfind <= overlap_rfind: return None
-        if rfind > 0:
-            ll,lr = self.ints.peekitem(rfind-1)
-            if lr == l-1:
-                l = ll
-                self.sizes.remove((lr-ll+1, ll))
-        
-        self.sizes.add((r-l+1,l))
-        self.ints[l] = r
-        if rfind != len(self.ints):
-            rl, rr = self.ints.peekitem(rfind)
-            if rl == r+1:
-                r = rr
-                self.ints[l] = r
-                self.sizes.add((r-l+1, l))
-                self.ints.pop(rl)
-                self.sizes.remove(rr-rl+1, rl)
-        return l,r
-    
-    def add_overlap(self, l, r):
-        """ add interval [l,r]
-        add this and automatically merge into big interval if possible 
-        """
-        lfind, rfind = self.get_overlap(l ,r)
-        if lfind<=rfind:
-            l = min(l, self.ints.peekitem(lfind)[0])
-            r = max(r, self.ints.peekitem(rfind)[1])
-            for _ in range(rfind-lfind+1):
-                pop_l, pop_r = self.ints.popitem(lfind)
-                self.sizes.remove((pop_r-pop_l+1, pop_l))
-        self.ints[l] = r
-        self.sizes.add((r-l+1,l))
 
-    def break_at(self, x):
-        """ break interval into less than 2 intervals at point x """
-        # rightmost interval with left endpoint <= x
-        find = self.ints.bisect_right(x) - 1
+    def add(self, l, r):
+        """ add interval [l,r],
+        automatically merge exactly adjacent interval
+            eg. intervals `[1,2],[4,10]`, add `[3,3]` it becomes `[1,10]`
+        then return the merged interval
+        """
+        lfind, rfind = self.get_overlap(l, r)
+        # if `self` exist overlaping intervals, merge into [l,r]
+        if lfind <= rfind:
+            for _ in range(rfind - lfind + 1):
+                poped = self.ints.pop(lfind)
+                l = min(l, poped.l)
+                r = max(r, poped.r)
+
+        # if a left interval can merge with [l,r]
+        if lfind > 0:
+            ll = self.ints[lfind - 1]
+            if ll.r == l - 1:
+                l = ll.l
+                self.ints.pop(lfind - 1)
+
+        # if a right interval can merge with [l,r]
+        if rfind < len(self.ints) - 1:
+            rr = self.ints[rfind + 1]
+            if rr.l == r + 1:
+                r = rr.r
+                self.ints.pop(rfind + 1)
+
+        new = Interval(l, r)
+        self.ints.add(new)
+        return new
+
+    def erasepoint(self, x):
+        """ erasepoint `x` and break interval into less than 2 intervals at point x """
+        # the rightmost interval with left endpoint <= x
+        find = self.ints.bisect_key_right(x) - 1
         if find == -1: return
-        l,r = self.ints.peekitem(find)
-        if r>=x:
-            self.sizes.remove((r-l+1, l))
-            self.ints.popitem(find)
-            if l!=r:
-                if l!=x:
-                    self.ints[l] = x-1
-                    self.sizes.add((x-l, l))
-                if r!=x:
-                    self.ints[x+1] = r
-                    self.sizes.add((r-x, x+1))
+        tar = self.ints[find]
+        if tar.r >= x:
+            self.ints.pop(find)
+            if tar.l != tar.r:
+                if tar.l != x:
+                    self.ints.add(Interval(tar.l, x - 1))
+                if tar.r != x:
+                    self.ints.add(Interval(x + 1, tar.r))
+
     def __len__(self):
         return len(self.ints)
 
+
 if __name__ == "__main__":
     tree = SortedIntervals()
-    tree.add(1,1)
-    tree.break_at(0)
-    tree.break_at(1)
-    tree.add(-100,100)
-    tree.break_at(23)
-    tree.break_at(24)
-    tree.break_at(25)
-    tree.break_at(100)
-    tree.break_at(1022)
+    tree.add(1, 1)
+    tree.erasepoint(0)
+    tree.erasepoint(1)
+    tree.add(-100, 100)
+    tree.erasepoint(23)
+    tree.erasepoint(24)
+    tree.erasepoint(25)
+    tree.erasepoint(100)
+    tree.erasepoint(1022)
     tree.add(239, 10000)
-    tree.add_overlap(24, 30)
-    tree.add_overlap(24, 3000)
-    print(tree.ints, tree.sizes)
-
-
+    tree.add(24, 30)
+    tree.add(24, 3000)
+    print([(x.l, x.r) for x in tree.ints])

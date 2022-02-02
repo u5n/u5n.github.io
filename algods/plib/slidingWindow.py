@@ -9,6 +9,7 @@ TOC
             MonoQueueVal
     
 """
+import operator
 from collections import defaultdict, deque
 from math import *
 
@@ -30,17 +31,19 @@ class _namespace_monoqueue:
             sta.append(i)
     
     @staticmethod
-    def nearest_larger(A, opt):
-        """ yield i0, i1, i2 
-        paras: opt: examples: `[opeartor.lt, opeartor.gt, opeartor.ge, operator.le]`
-        usage:
-            i0 is largest i(i0<i1) that cmp(i0, i1)==1
-            i2 is smallest i(i0>i1) that cmp(i2, i1)==1
-            def cmp(i, j):
-                if 0!=opt(A[i], A[j]): opt(A[i], A[j])
-                if opt(0, 0):
-                    return i-j # if A[j], A[i] equal smaller index its cmp is larger
-                return j-i # if A[i] A[j] equal larger index its cmp is larger
+    def nearest_larger(A, opt=operator.gt):
+        """ 
+        paras: opt: example: `[opeartor.lt, opeartor.gt, opeartor.ge, operator.le]`
+        des:
+            yield i0, i1, i2 for index i1 in `A`
+                def cmp(i, j):
+                    if 0!=opt(A[i], A[j]): opt(A[i], A[j])
+                    if opt(0, 0):
+                        return i-j # if A[j], A[i] equal, smaller index's cmp is larger
+                    return j-i # if A[i] A[j] equal, larger index's cmp is larger
+                    
+                i0 is largest index(i0<i1) that cmp(i0, i1)==1
+                i2 is smallest index(i2>i1) that cmp(i2, i1)==1
         """
         n = len(A)
         sta = [-1]

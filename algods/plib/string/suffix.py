@@ -6,7 +6,9 @@ import random
 def suffix_array(A):
     n = len(A)
     cnt = [0]*n 
+    # rank -> suffix number
     sa = sorted(range(n), key=lambda i:A[i])
+    # suffix number -> rank
     rk = [0]*n
     rkp = [-1]*(2*n)
     ids = [0]*n
@@ -38,8 +40,10 @@ def suffix_array(A):
             rk[sa[i_sa]] = i_class
         if i_class == n-1: break
         k = k*2
+
     return sa, rk
     
+
 def test():
     A = [random.random() for _ in range(100)]
     sa, rk = suffix_array(A)

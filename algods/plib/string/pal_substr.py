@@ -7,7 +7,7 @@ TOC
 """
 from collections import namedtuple
 
-from linear_search import groupby
+from ..linear_search import groupby
 def longestPalindrome(s):
     """ des: groupby then expand around
     time:
@@ -15,18 +15,21 @@ def longestPalindrome(s):
         perform better under random data
     """
     n = len(s)
-    maxl = 0
+    ans = 0
     for prv, cur in groupby(s):
         left, right = prv-1, cur
         while left >= 0 and right < n and s[left]==s[right]:
             left-=1; right+=1
-        maxl = max(maxl, right - left -1)
+        ans = max(ans, right - left -1)
 
-    return maxl
+    return ans
 
 Center = namedtuple('Center', ('i', 'r'))
 def manacher_parity(s, parity):
-    # P[i]*2+parity is length of longest palindrome center at { s[i] || gap after s[i] }
+    """ return P, 
+    if parity==1: P[i]*2+parity is length of odd length longest palindrome center at s[i] 
+    else: ... even length longest palindrome center at  gap after s[i]
+    """
     n = len(s)
     P = [0]*n
     cen = Center(0, 0)
@@ -51,10 +54,9 @@ def is_pal_query(s):
     P0 = manacher_parity(s, 0)
     P1 = manacher_parity(s, 1)
     def is_pal(l, r):
+        """ query whether s[l:r] palindromic """
         if r-l<=1: return True
-        if (r-l)%2==0: return P0[(l+r-1)//2]==(r-l)
-        else: return P1[(l+r)//2]==(r-l)
+        if (r-l)%2==0: return P0[(l+r-1)//2]==(r-l)//2
+        else: return P1[(l+r)//2]==(r-l-1)//2
     return is_pal
 
-if __name__ == "__main__":
-    print(manacher_parity('1232', 1))

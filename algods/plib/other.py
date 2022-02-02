@@ -1,24 +1,61 @@
-from collections import deque
-from typing import List
 """
 TOC:
     find inversion pairs
     mergesort
+    countsort
     cyclesort
     quicksort
     pivot partition into three interval
     pivot partition into two interval
-    
-    2d point class
-    
-    {matrix}
-        transpose
-        square matrix transpose_inplace
 
-        mul_mod
-        pow_mod
-        spiral matrix traverse by layer
 """
+from collections import deque
+from typing import List
+import random
+
+def _ilog2_cache(maxn):
+    ilog2 = [0]*(maxn+1)
+    for i in range(1, maxn+1):
+        ilog2[i] = ilog2[i-1] + (i%2==0)
+
+def merge_sort(A):
+    """ application: count inversions
+    """
+    n = len(A)
+    def mergesort(l,r):
+        if r-l<=1: return
+        m = (l+r)//2
+        mergesort(l,m)
+        mergesort(m,r)
+        merge(l,m,r)
+    def merge(l,m,r):
+        ret = []
+        ri=m
+        # available O(r-l) algorithm
+        
+        for li in range(l, m):
+            while ri<r and A[ri]<A[li]:
+                ret.append(A[ri])
+                ri+=1
+            ret.append(A[li])
+        A[l:ri] = ret
+    mergesort(0,n)
+
+def countsort(A, key=lambda x:x):
+    """ assume key >= 0, key is int """
+    maxk = max(key(e) for e in A)
+    count = [0]*(1+maxk)
+    for e in A: count[key(e)] += 1
+    for i_count in range(1, maxk+1): count[i_count] += count[i_count-1]
+    
+    # sorted A
+    As = [None]*len(A)
+    for e in reversed(A):
+        k = key(e)
+        count[k] -= 1
+        As[count[k]] = e
+    return As
+
 def cyclesort(A):
     n = len(A)
     for i in range(n):
@@ -42,15 +79,16 @@ def quicksort(A, l, r):
     quicksort(A,l,p1)
     quicksort(A,p2,r)
 
-def three_partition(A,l,r):
+def three_partition(A, l, r, pivot=None):
     """
-    pivot partition into three interval
+    pivot partition A[l:r] into three interval A[l:i], A[i:j], A[j:r]
     interval: [,)
-    assert: not empty interval
     """
+    # assert l!=r
     i = j = l
     k = r-1
-    pivot = A[r-1]
+    if pivot is None:
+        pivot = A[random.randrange(l,r)]
     while j<=k:
         # [l:i] < ; [i:j] == ; [k:] >
         if A[j]<pivot:
@@ -63,123 +101,17 @@ def three_partition(A,l,r):
             A[j],A[k]=A[k],A[j]
             k-=1
     return i,j
-def partition(A, l, r):
+
+def partition(A, l, r, pivot=None):
+    """ inplace, not stable 
+    return new position of pivot
     """
-    pivot partition into two interval
-    interval: [,)
-    assert: not empty interval
-    """
+    if pivot is None:
+        pivot = A[random.randrange(l,r)]
     i = l
-    pivot = A[r-1]
-    for j in range(l,r):
-        # [l:i] <= ; [i:j] >
-        if A[j]<=pivot:
-            A[i],A[j]=A[j],A[i]
+    for j in range(l, r):
+        # loop inv: A[l:i] <= pivot < A[i:j]
+        if A[j] <= pivot:
+            A[i],A[j] = A[j],A[i]
             i+=1
-    return i
-
-from points import V
-def _namespace_matrix():
-    Mod = int(1e9+7)
-    def mul_mod(matL, matR):
-        m,n,p = len(matL), len(matR), len(matR[0])
-        assert n==len(matL[0])
-        ret = [[None]*p for _ in range(m)]
-        for i in range(m):
-            for j in range(p):
-                val = 0
-                for k in range(n):
-                    val = (val + matL[i][k]*matR[k][j])%Mod
-                ret[i][j] = val
-        return ret
-    def mat_pow_mod(mat: List[List[int]], b) -> List[List[int]]:
-        n = len(mat)
-        ret= [ [0]*n for _ in range(n) ]
-        for i in range(n): ret[i][i]=1
-        
-        while b:
-            if b%2:
-                ret = mul_mod(ret, mat)
-            mat = mul_mod(mat, mat)
-            b>>=1
-        return ret
-    def square_rotate_inplace2(mat, tim=1):
-        """ 试着用中心对称写 """
-    def square_rotate_inplace(mat, tim=1):
-        """
-        rotate clockwise 90deg `tim` times
-        or `mat[:] = np.rot90(mat,-tim).tolist()`
-        """
-        m = len(mat)
-        maxl = (m+1)//2
-        di = [V(0,1),V(1,0),V(0,-1),V(-1,0)]
-        for l in range(maxl):
-            w = m - l*2
-            poi = [V(l,l),V(l,l+w-1),V(l+w-1,l+w-1),V(l+w-1,l)]
-            for d in range(w-1):
-                newpoi = [poi[i]+di[i]*d for i in range(4)]
-                print(newpoi)
-                dq = deque([newpoi[i].getAsIndex(mat) for i in range(4)])
-                dq.rotate(tim)
-                for i in range(4):
-                    newpoi[i].setAsIndex(mat, dq.popleft())
-
-    def square_transpose_inplace(mat):
-        m = len(mat)
-        for i in range(m):
-            for j in range(i+1,m):
-                mat[i][j],mat[j][i]=mat[j][i],mat[i][j]
-        return mat
-
-    def transpose(mat):
-        m,n = len(mat),len(mat[0])
-        ans = [[0]*m for _ in range(n)]
-        for i in range(m):
-            for j in range(n):
-                ans[j][i]=mat[i][j]
-        return ans
-
-    def spiral_traverse(mat):
-        """
-        spiral matrix generator
-        start at topleft
-        clockwise
-        """
-        m,n=len(mat),len(mat[0])
-        maxl = (min(m,n)+1)//2
-        for l in range(maxl):
-            h = m - l*2
-            w = n - l*2
-            if w==1:
-                # right
-                for i in range(h):
-                    yield l+i,l
-            elif h==1:
-                # down
-                for i in range(w):
-                    yield l,l+i
-            else:
-                # topleft: l,l
-                # topright: l,l+w-1
-                # bottomright: l+h-1,l+w-1
-                # bottomleft: l+h-1,l
-                x = y = l
-                # go right
-                for _ in range(w-1):
-                    yield x,y
-                    y+=1
-                # go down
-                for _ in range(h-1):
-                    yield x,y
-                    x+=1
-                # go left
-                for _ in range(w-1):
-                    yield x,y
-                    y-=1
-                # go up
-                for _ in range(h-1):
-                    yield x,y
-                    x-=1
-                
-
-
+    return i-1

@@ -9,7 +9,7 @@ lessthan = lambda l,r: l-r
 # top down implement
 # for convenience, only an Immutable version, 
 # refer to <Algorithm 4th ed.> https://algs4.cs.princeton.edu/33balanced/RedBlackBST.java
-# similar to std::dict
+# similar to std::map
 class Node:
     __slots__ = 'key','val','color','left','right','size'
     def __init__(self, key, val, color=0, size=1, left=None, right=None):
@@ -108,7 +108,7 @@ def index(x, key, cmp=lessthan):
             x = x.right
     return acc
 
-#####  debug function
+""" debug function """
 def inorder(x):
     ret = []
     def dfs(x):

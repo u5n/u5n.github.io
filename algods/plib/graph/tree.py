@@ -1,6 +1,6 @@
 """
 convention 
-    the tree stored in adjacent list
+    the tree stored in adjacent list, which is a out-tree
     the tree root has id `0`
 """
 # backup, inferior to postorder
@@ -32,7 +32,6 @@ def postorder(G):
             sta.append([0, G[u][bpt]])
         else:
             yield sta.pop()[1]
-        
 
 def to_array_preorder(G):
     """ in preorder seq, every subtree@u is a continuous subarrays `preorder[mp[u][0]:mp[u][1]]` """

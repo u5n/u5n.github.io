@@ -1,5 +1,9 @@
+"""
+test at @luogu#P7912 
+    https://www.luogu.com.cn/record/66812285
+    https://www.luogu.com.cn/record/66813662
+"""
 from typing import Iterable
-
 
 class ListNode:
     __slots__ = 'val','next','prev'
@@ -7,6 +11,7 @@ class ListNode:
         self.val,self.next,self.prev = val,next,prev
     def __str__(self): return f'DListNode({self.val})'
     def asHead(self):
+        """ transfrom linkedlist start from `self` to list, """
         ret = []
         cur = self
         while cur:
@@ -16,57 +21,63 @@ class ListNode:
 
 # senhead <-> L[0] <-> L[1] <-> ... L[n-1] <-> sentail
 # senhead -> ( <-> L[0] <-> L[1] <-> ... L[n-1] <-> L[0] <->) <- sentail
-class DoublyLinkedList:
-    """ there won't be any cycle """
-    def __init__(self, A:Iterable):
+class LinkedList:
+    """ there won't be any cycle 
+    """
+    def __init__(self, A:Iterable = None):
         self.senhead = ListNode("senhead") # L[-1]
         self.sentail = ListNode("sentail") # L[n]
         self.senhead.next = self.sentail
         self.sentail.prev = self.senhead
         self.sz = 0
-        if A: 
-            for e in A: self.append(e)
+        self.extend(A)
 
     def begin(self): return self.senhead.next
     def end(self): return self.sentail
-    def append(self, val): self.insert_after(self.sentail.prev, val)
-    def appendleft(self, val): self.insert_before(self.senhead.next, val)
-    def popleft(self): return self.erase(self.senhead.next).val
-    def pop(self): return self.erase(self.sentail.prev).val
+    # queue like function
+    def append(self, val): self.insert_between(self.sentail.prev, self.sentail, val)
+    def appendleft(self, val): self.insert_between(self.senhead, self.senhead.next, val)
+    def pop(self): 
+        tormv = self.sentail.prev
+        self.erase(tormv)
+        return tormv.val
+    def popleft(self): 
+        tormv = self.senhead.next 
+        self.erase(tormv)
+        return tormv.val
 
-    def insert_before(self, iter, val):
-        if iter is self.senhead: raise IndexError("insert before senhead")
-        self.insert_between(iter.prev, iter, val)
+    def insert_before(self, node, val):
+        if node is self.senhead: raise IndexError("insert before senhead")
+        self.insert_between(node.prev, node, val)
     
-    def insert_after(self, iter, val):
-        if iter is self.sentail: raise IndexError("insert after sentail")
-        self.insert_between(iter, iter.next, val)
+    def insert_after(self, node, val):
+        if node is self.sentail: raise IndexError("insert after sentail")
+        self.insert_between(node, node.next, val)
 
     def insert_between(self, prv, nxt, val):
         new = ListNode(val, prev=prv, next= nxt)
         prv.next = new
         nxt.prev = new
         self.sz+=1
-    def pop(self, i):
-        """ remove a ListNode by its rank """
-        if self.i<0 or self.i>=self.sz: raise IndexError(f"can't pop with rank {i}")
-        self.erase(self.index(i))
-    def erase(self, iter):
+    
+    def erase(self, node):
         """ remove a ListNode from its LinkedList
         not sure if it's in `self`
         """
         if self.sz==0: raise IndexError("erase from empty list")
-        prv, nxt = iter.prev, iter.next
+        prv, nxt = node.prev, node.next
         prv.next = nxt
         nxt.prev = prv
         self.sz -= 1
 
     def index(self, i):
-        """ `i=-1` return `senhead`, `i=n` return `sentail` """
+        """ get ListNode by rank
+        `i=-1` return `senhead`, `i=n` return `sentail` """
         if i<0 or i>=self.sz:
             if i==-1: return self.senhead
             elif i==self.sz: return self.sentail
             else: raise IndexError
+        
         if i<=self.sz-1-i:
             cur = self.senhead.next
             for _ in range(i):
@@ -76,9 +87,20 @@ class DoublyLinkedList:
             for _ in range(self.sz-1-i):
                 cur=cur.prev
         return cur
-
+    def extend(self, iterable):
+        if isinstance(iterable, LinkedList):
+            lastnode = self.sentail.prev
+            lastnode.next = iterable.senhead.next
+            iterable.senhead.prev = lastnode
+            self.sentail = iterable.sentail
+            self.sz += iterable.sz
+        else:
+            for v in iterable:
+                self.insert_after(self.sentail.prev, v)
+    def __getitem__(self, i):
+        return self.index(i).val
     def __len__(self): return self.sz
-    def __str__(self): return f"LL({list(self)})"
+    def __str__(self): return f"LL{list(node.val for node in self)}"
     def __iter__(self):
         cur = self.senhead.next
         for _ in range(self.sz):
@@ -86,5 +108,7 @@ class DoublyLinkedList:
             cur = cur.next
 
 if __name__ == "__main__":
-    L = DoublyLinkedList([1,2,3])
+    L = LinkedList([[1,2], 3,4])
+    L[0][0] += 10
+    print(L.pop())
     print(L)

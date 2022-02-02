@@ -1,8 +1,3 @@
-"""
-range change(addition/assign)
-range query
-on any associative opeartion
-"""
 from math import *
 from collections import defaultdict
 import operator
@@ -15,6 +10,8 @@ class Data:
         return f"[s:{self.sum} ma:{self.ma} mi:{self.mi} a:{self.add} p:{self.prop}]"
 class SegmentTree:
     """ segment tree build on closed interval [lbor, rbor]
+    all use closed interval
+    usg: range change(addition/assign), range query
     """
     def __init__(self, lbor, rbor): 
         self.rbor,self.lbor=rbor,lbor
@@ -67,6 +64,7 @@ class SegmentTree:
             seg[i*2+1].mi+=add
             seg[i*2+1].sum+=add*(m-l+1)
             seg[i*2+1].add+=add
+
             seg[i*2+2].add+=add
             seg[i*2+2].ma+=add
             seg[i*2+2].mi+=add
@@ -89,7 +87,7 @@ if __name__ == "__main__":
     A = [1,2,2,3,1,1,0]
     S1 = SegmentTree(0,len(A)-1)
     S1.build(A)
-    print(S1.query_max(0,5))
+    print(S1.query_max(0,3))
 
     n=10
     S2 = SegmentTree(0, n-1)

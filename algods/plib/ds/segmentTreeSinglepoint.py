@@ -1,13 +1,11 @@
-""" range max/min query with single point assign
-    todo: change to range max/min query, range sum can be substitute by BIT
-    adv: 
-        faster on single point assign
-            because `self.ancestor` is faster then `self.subsegment`
-"""
 from collections import defaultdict
 from functools import reduce
 from math import log2,ceil
 class SegmentTree:
+    """ segment tree build on closed interval [lbor, rbor]
+    all use closed interval 
+    usg: range max/min query with single point assign
+    """
     __slots__='n','seg'
     def __init__(self, lbor, rbor, opt):
         self.lbor = lbor
