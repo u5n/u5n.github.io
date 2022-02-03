@@ -72,9 +72,9 @@ class BIT_range:
 class BIT2d:
     """ des: for an static 2darray `A`, it support point addition and rectangle query on `A` """
     __slots__='m', 'n', 'bit'
-    def __init__(self, shape):
-        self.m, self.n = shape
-        self.bit = defaultdict(int)
+    def __init__(self, m, n):
+        self.m, self.n = m, n
+        self.bit = [[0]*n for _ in range(m)]
         
     def add(self, idx, delta):
         """ A[idx] += delta """
@@ -101,7 +101,9 @@ class BIT2d:
         return ret
 
 class BIT2d_diff(BIT2d):
-    """ des: for an static 2darray `A`, it support rectangle addition and single point query on `A` """
+    """ des: for an static 2darray `A`, it support rectangle addition and single point query on `A` 
+    time: each O(lg(m)*lg(n))
+    """
     def interval_add(self, idx, idx2, delta):
         """ A[idx[0]:idx2[0], idx[1]:idx2[1]] += delta """
         self.add(idx, delta)
