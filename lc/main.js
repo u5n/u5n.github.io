@@ -1,7 +1,7 @@
 // check current url 
 let maxsz = Object.keys(map_id_slug).length;
 let url = new URL(window.location.href);
-let url_whetherlccn = url.searchParams.get("cn");
+let url_whetherlccn = (url.searchParams.get("cn") === "1" );
 let url_problemid = url.searchParams.get("id");
 if (url_problemid !== null) {
     window.location.href = id_to_url(url_problemid, url_whetherlccn);
