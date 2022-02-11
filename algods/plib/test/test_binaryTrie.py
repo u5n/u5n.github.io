@@ -1,8 +1,7 @@
-from bisect import bisect_left
 import sys 
 sys.path.append('..')
 
-from ds.binaryTrie import BinaryTrie 
+from ds.trie.binaryTrie import BinaryTrie 
 from sortedcontainers import SortedList
 from collections import Counter
 from random import *

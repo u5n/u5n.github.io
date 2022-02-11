@@ -9,7 +9,7 @@ class SkiplistNode:
         __slots__ = 'forward','span'
         def __init__(self):
             # skiplistNode
-            self.forward = None  
+            self.forward = None
             # number of nodes between node and node.levels[i].forward
             # including node.levels[i].forward
             # exclude node itself
@@ -61,7 +61,7 @@ class Skiplist:
         rank = [None] * self.level
         x = self.header
         traversed = 0
-        for i in range(self.level - 1, 0 - 1, -1):
+        for i in reversed(range(self.MAXLEVEL)):
             # compare val or compare rank
             while x.levels[i].forward!=None and\
                 pred(x.levels[i].forward.val, traversed + x.levels[i].span):
@@ -115,7 +115,7 @@ class Skiplist:
         self.length -=1 
     def opt_le(self, lval, val): return not self.opt_lt(val, lval)
     def opt_eq(self, lval, val): return not self.opt_lt(val, lval) and not self.opt_lt(lval, val)
-    def discard(self, val):
+    def remove(self, val):
         """ 
         delete first node that node.val == val    
         return 1 if delete successful else fail 
@@ -201,8 +201,8 @@ if __name__ == "__main__":
         z.add((1, 'd'))
         z.add((4, 'c'))
         z.add((5, 'e'))
-        assert z.discard((1, 'd')) == 1
-        assert z.discard((1, 'd')) == 0
+        assert z.remove((1, 'd')) == 1
+        assert z.remove((1, 'd')) == 0
         z.add((0, 'g'))
         print(z)
         print(len(z[0].levels))
@@ -214,11 +214,11 @@ if __name__ == "__main__":
             z2.add(e)
         print(z2[2])
         print(z2)
-        assert z2.discard(3)==1
+        assert z2.remove(3)==1
         print(z2)
-        assert z2.discard(3)==1
+        assert z2.remove(3)==1
         print(z2)
-        assert z2.discard(3)==0
+        assert z2.remove(3)==0
         print(z2)
         print(z2.bisect_left(100))
         print(z2.bisect_left(-100))

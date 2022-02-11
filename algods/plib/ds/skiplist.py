@@ -9,7 +9,7 @@ class SkiplistNode:
     __slots__ = 'levels','val'
     def __init__(self, level: int, val):
         self.val = val
-        self.levels = [None for _ in range(level)]
+        self.levels = [None]*level
     def __str__(self):
         return str(self.val)
 
@@ -24,7 +24,7 @@ class Skiplist:
     def _find(self, val, opt):
         update = [self.header] * self.MAXLEVEL
         x = self.header
-        for i in range(self.MAXLEVEL - 1, -1, -1):
+        for i in reversed(range(self.MAXLEVEL)):
             while x.levels[i]!=None and opt(x.levels[i].val, val):
                 x = x.levels[i]
             update[i] = x
@@ -40,15 +40,15 @@ class Skiplist:
         self.length += 1
         return x
 
-    def discard(self, val):
+    def remove(self, val):
         update = self._find(val, self.opt_lt)
         x = update[0].levels[0]
         if x==None or not self.opt_eq(x.val, val):
-            return 0
+            return False
         for i in range(len(x.levels)):
             update[i].levels[i] = x.levels[i]
         self.length -=1 
-        return 1
+        return True
     # only return node
     def bisect_right(self, val): return self._find(val, self.opt_le)[0].levels[0]
     # only return node
@@ -98,8 +98,8 @@ if __name__ == "__main__":
         z.add((4, 'c'))
         z.add((5, 'e'))
         z.add((3, 'e'))
-        assert z.discard((1, 'd')) == 1
-        assert z.discard((1, 'd')) == 0
+        assert z.remove((1, 'd')) == 1
+        assert z.remove((1, 'd')) == 0
         z.add((0, 'g'))
         print(z)
         print(len(z.header.levels))
@@ -111,11 +111,11 @@ if __name__ == "__main__":
         for e in 1,2,3,3,2,4,2:
             z2.add(e)
         print(z2)
-        assert z2.discard(3)==1
+        assert z2.remove(3)==1
         print(z2)
-        assert z2.discard(3)==1
+        assert z2.remove(3)==1
         print(z2)
-        assert z2.discard(3)==0
+        assert z2.remove(3)==0
         print(z2)
         print(z2.bisect_left(100))
         print(z2.bisect_left(-100))
@@ -133,6 +133,6 @@ if __name__ == "__main__":
         # get heap top
         v = z3.header.levels[0].val
         print(v)
-        z3.discard(v) # O(lg(n))
+        z3.remove(v) # O(lg(n))
         print(z3)
         
