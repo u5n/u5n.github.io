@@ -70,7 +70,7 @@ class BinaryTrie:
             `self.nodes[0]` represent a null node, its size is 0
     """
     def __init__(self, nbit):
-        self.nodes = [[-1,-1,0],[0,0,0]]
+        self.nodes = [[-1,-1],[0,0]]
         self.nbit = nbit
     def additem(self, num, cnt=1):
         """ add(decrease) `cnt` number of `num` into `self` """
