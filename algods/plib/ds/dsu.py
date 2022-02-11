@@ -30,7 +30,7 @@ class DsuList:
         self.cnt -= 1
         return True
 
-    def to_lists(self, withkey=False):
+    def to_lists(self):
         """
         key is representative
         value is element in the set
@@ -38,9 +38,7 @@ class DsuList:
         ret = defaultdict(list)
         for k in range(len(self.p)):
             ret[self.find(k)].append(k)
-        if withkey:
-            return ret
-        return [e for e in ret.values()]
+        return ret
     def __str__(self):
         return str(self.to_lists())
         

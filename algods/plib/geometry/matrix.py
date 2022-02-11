@@ -77,7 +77,7 @@ class DiffArray:
         self.m, self.n = m, n
     def add_interval(self, lx, ly, rx, ry, d):
         """ M[lx:ly, rx:ry] += d 
-        assert 0<=lx<=rx, 0<=ly<=ry
+        assert 0<=lx<=rx, lx<m, 0<=ly<=ry, ly<n
         """
         diff = self.diff
         diff[lx][ly] += d
@@ -98,11 +98,12 @@ def bfs(A, start: Iterable):
         # top tr right rd down dl left lt
         # (-1,0),(-1,1),(0,1),(1,1),(1,0),(1,-1),(0,-1),(-1,-1)
         # top right down left 
+        ret = []
         for dx,dy in (-1,0),(0,1),(1,0),(0,-1):
             x,y = ux+dx,uy+dy
             if 0<=x<m and 0<=y<n: # and A[x][y]
-                yield x,y
-    
+                ret.append((x,y))
+        return ret
     q = list(start)
     vis = set(q)
     d = 0
@@ -120,7 +121,7 @@ Mod = int(1e9+7)
 # if numpy is not available, use c++
 import numpy as np
 def matpow_mod(mat, b):
-    # np.power(mat, b)
+    """ np.power(mat, b)%Mod """
     n = len(mat)
     ret = np.eye(n, n, dtype=np.uint64) 
     while b:

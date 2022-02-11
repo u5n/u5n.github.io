@@ -34,7 +34,6 @@ def binary_search_first(l, r, f):
         else: l=m+1
     return l
 
-# useful
 def binary_search_last(l, r, f):
     """ 
     des: 
@@ -60,10 +59,10 @@ def binary_search(l, r, f):
     return None
 
 def binary_search_continuous(l, r, f, precision=1e-9):
-    """ f is an increasing continuous function in [l,r], return the approximate zero point of f 
+    """ f is an increasing function defined in real number [l,r], return the approximate zero point of f 
     """
-    # if f(l)>0 or f(r)<0: return None
     # assume zero point in [l,r]
+    # if f(l)>0 or f(r)<0: return None
     while r-l > precision:
         m = (l+r)/2
         ret = f(m)
@@ -76,21 +75,33 @@ def binary_search_continuous(l, r, f, precision=1e-9):
     return l
     
 def tarnary_search_continuous(l, r, f, precision=1e-9):
-    """ f is an continuous function with Δf>0, return the minimum point"""
+    """ f is an continuous function with Δf>0, return the approx minimum point"""
     while r-l>precision:
         lmid = l + (r-l)/3
         rmid = r - (r-l)/3
-        if f(lmid) > f(rmid): # concave use `>`, convex  use `<`
+        if f(lmid) > f(rmid):
             l = lmid
         else:
             r = rmid
     return l
 
-def tarnary_search():
-    """ f is an discrete function with Δf>0, ... 
+def tarnary_search(l, r, f):
+    """ f is an discrete function defined on [l,r] with Δf>0, ... 
     todo: https://codeforces.com/contest/1633
+    ret: argmin(f)
+    test: @lc#852
+    assert l<=r
     """
-    pass
+    while r-l>=1:
+        lmid = l+(r-l)//3
+        rmid = r-(r-l)//3
+        if f(lmid) > f(rmid):
+            l = lmid+1
+        else:
+            r = rmid-1
+    return l
+
+
 def exponential_search_last(l, f):
     """ `binary_search_last` that don't have a right bound  """
     step = 1

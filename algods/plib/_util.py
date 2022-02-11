@@ -48,33 +48,43 @@ def str_return(ret, argtype):
         ret = list(ret)
     
     return str(ret)
-def run_function_usestd(f, detail, selected):
+def run_function_usestd(f, detail, selected, custom_input):
     paras = inspect.getfullargspec(f)
     narg = len(paras.args)-1 # exclude `self` parameter
     
     i_cases = 0
     while True:
-        try:
-            raw_args = [input() for _ in range(narg)]
-            args = [None]*narg
-            for i in range(narg):
-                arg_type =  paras.annotations[paras.args[1+i]]
-                if arg_type == typing.Union[TreeNode, type(None)]:
-                    args[i] = binaryTree_decode(raw_args[i])
-                elif arg_type == typing.Union[ListNode, type(None)] or arg_type == ListNode:
-                    args[i] = toLinkedlist(eval(raw_args[i]))
-                else:
-                    args[i] = eval(raw_args[i])
-
-            if selected and i_cases not in selected:
-                i_cases += 1
-                continue
+        if None!=custom_input:
+            args = custom_input
+            custom_input = None
+            i_cases = -1
+            selected = {-1} # don't run anyother testcase from input
+            print("Custom Test\t")
+        else:
+            try:
+                # get arg from stdin and change to python type
+                raw_args = [input() for _ in range(narg)]
             
-            if detail:
-                str_raw_args  = "; ".join(map(lambda rarg: rarg if len(rarg)<100 else rarg[:100]+'......', raw_args))
-                print(f"Test {i_cases}\n\tinput:", str_raw_args)
-        except EOFError:
-            return
+                args = [None]*narg
+                for i in range(narg):
+                    arg_type =  paras.annotations[paras.args[1+i]]
+                    if arg_type == typing.Union[TreeNode, type(None)]:
+                        args[i] = binaryTree_decode(raw_args[i])
+                    elif arg_type == typing.Union[ListNode, type(None)] or arg_type == ListNode:
+                        args[i] = toLinkedlist(eval(raw_args[i]))
+                    else:
+                        args[i] = eval(raw_args[i])
+
+                if selected and i_cases not in selected:
+                    i_cases += 1
+                    continue
+                
+                if detail:
+                    str_raw_args  = "; ".join(map(lambda rarg: rarg if len(rarg)<100 else rarg[:100]+'......', raw_args))
+                    print(f"Test {i_cases}\n\tinput:", str_raw_args)
+            except EOFError:
+                return
+
         start = time(); ret = f(*args); duration = time() - start
 
         arg_type = paras.annotations['return']
@@ -118,7 +128,7 @@ def run_multifunction_usestd(cls, detail):
         print(rets)
     return obj
         
-def Dl(selected=None, detail = False, solution_cls=None):
+def Dl(selected=None, detail = False, solution_cls=None, custom_input=None):
     """ 
     name: Debug for leetcode
     des:
@@ -130,6 +140,12 @@ def Dl(selected=None, detail = False, solution_cls=None):
         else:
             example: @lc#2102
         return: return the object used to run 
+    paras:
+        selected: 
+            type:list
+            allow run specific testcases
+        custom_input:
+            when `solution_cls` is None, allow change input in code file, only contain one testcase 
     """
     if solution_cls is None:
         for name, cls in inspect.getmembers(sys.modules["__main__"]):
@@ -160,7 +176,7 @@ def Dl(selected=None, detail = False, solution_cls=None):
                     else:
                         raise Exception("no function has annotations ")
                 
-                run_function_usestd(f, detail, selected)
+                run_function_usestd(f, detail, selected, custom_input)
                 return obj
         else:
             raise Exception(f"don't have a `Solution` class")

@@ -13,10 +13,10 @@ convention
     vertices numbered from `0` to `n-1`
     `G` is graph adjacent list whose length is `n`, type is `list`
 """
-from collections import deque
 from typing import *
 from math import *
 from heapq import *
+import copy
 
 def bfs(G, start: Iterable):
     """ bfs traverse on graph adjacent list `G`
@@ -91,10 +91,21 @@ def topo_sort(adj):
     # if len(ret)<n: raise Exception("not DAG")
     return ret
 
+def floyd(adjmat):
+    n = len(adjmat)
+    dp = copy.deepcopy(adjmat)
+    for med in range(n):
+        for i in range(n):
+            for j in range(n):
+                dpv = dp[i][med] + dp[med][j]
+                if dpv < dp[i][j]:
+                    dp[i][j] = dpv
+    return dp
     
+###########################################################################
 
-def read_graph_from_std(matrix=False, directed=False, weighted=False):
-    """ construct a graph from a codeforce style stdinput"""
+def read_graph(matrix=False, directed=False, weighted=False):
+    """ construct a graph from a codeforces style stdinput """
     n,m=map(int, input().split())
     # read m edges with format `f"{from} {to} {weight}"`
     if matrix:
@@ -124,7 +135,7 @@ def read_graph_from_std(matrix=False, directed=False, weighted=False):
                 if not directed: G[to].append(fr)
     return G
 
-def get_raw_edges(G, weighted=False):
+def print_graph(G, weighted=False):
     """ can be used to draw a graph https://csacademy.com/app/graph_editor/ """
     n = len(G)
     ret = []
@@ -136,4 +147,4 @@ def get_raw_edges(G, weighted=False):
         for u in range(n):
             for v in G[u]:
                 ret.append(f'{u} {v}')
-    return "\n".join(ret)
+    print("\n".join(ret))

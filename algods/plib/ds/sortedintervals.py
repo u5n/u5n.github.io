@@ -139,7 +139,7 @@ class ChthollyTree:
         example: ChthollyTree([10,20,30]), then self.nodes is {0:10, 1:20, 2:30}, only store left endpoints, it's enough to represent all the three intervals
         app: huge of random assign operations
         time complexity: O(nlg(lg(n))) on random data
-        testOJ: @cf#896C
+        testOJ: @cf#896C(TLE) https://codeforces.com/contest/896/submission/142823477
     """
     def __init__(self, A): 
         self.lpts = SortedDict(enumerate(A))
@@ -209,7 +209,7 @@ class ChthollyTreeList:
         time complexity: 
             O(nlgn) on random data
         compare: slightly faster than ChthollyTree which is far complex than list impl
-        testOJ: @cf#896C(TLE though)
+        testOJ: @cf#896C(TLE) https://codeforces.com/contest/896/submission/145106218
     """
     def __init__(self, A): 
         self.A = [Interval(i,i,v) for i,v in enumerate(A)]

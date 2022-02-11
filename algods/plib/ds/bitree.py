@@ -1,5 +1,7 @@
-# index start from 0
-# use Left-closed, right-open interval
+"""
+ index start from 0
+each method use Left-closed, right-open interval
+"""
 
 from collections import defaultdict
 
@@ -59,9 +61,10 @@ class BIT_range:
         self.bit1 = BIT(n)
         self.n = n
     def range_add(self, l, r, v):
+        """ assert 0<=l<=r; l<n; r can exceed n """
         self.bit0.add(l, v)
         self.bit1.add(l, (l-1)*v)
-        if r!=self.n:
+        if r<self.n:
             self.bit0.add(r , -v)
             self.bit1.add(r, -(r-1)*v)
     def sum(self, idx, idx2=None):
@@ -75,7 +78,7 @@ class BIT2d:
     def __init__(self, m, n):
         self.m, self.n = m, n
         self.bit = [[0]*n for _ in range(m)]
-        
+
     def add(self, idx, delta):
         """ A[idx] += delta """
         x = idx[0]
@@ -105,14 +108,17 @@ class BIT2d_diff(BIT2d):
     time: each O(lg(m)*lg(n))
     """
     def interval_add(self, idx, idx2, delta):
-        """ A[idx[0]:idx2[0], idx[1]:idx2[1]] += delta """
-        self.add(idx, delta)
+        """ A[idx[0]:idx2[0], idx[1]:idx2[1]] += delta 
+        this is designed to allow idx2[0]>=m and idx2[1]>=n; add a sentry line and column to avoid lots of `if` 
+        """
+        add = self.add
+        add(idx, delta)
         if idx2[1]<self.n:
-            self.add((idx[0], idx2[1]), -delta)
+            add((idx[0], idx2[1]), -delta)
             if idx2[0] < self.m:
-                self.add(idx2, delta)
+                add(idx2, delta)
         if idx2[0]<self.m:
-            self.add((idx2[0], idx[1]), -delta)
+            add((idx2[0], idx[1]), -delta)
     def query(self, idx):
         """ return A[idx] """
         return self.sum((idx[0]+1, idx[1]+1))

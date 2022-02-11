@@ -3,14 +3,6 @@ import random
 import math
 import operator
 
-# example structure by node rank
-# [0] ---------------> [3] -> None
-# [0] -> [1] --------> [3] -> None
-# [0] -> [1] -> [2] -> [3] -> None
-# usage: similar to multiset in c++, support operation by index/rank
-# header rank is 0, the first node rank is 1, and so on
-# header has no index, node index = rank -1
-
 class SkiplistNode:
     __slots__ = 'levels','val'
     class skiplistLevel:
@@ -32,6 +24,14 @@ class SkiplistNode:
         return str(self.val)
 
 class Skiplist:
+    """
+    example structure by node rank
+    [0] ---------------> [3] -> None
+    [0] -> [1] --------> [3] -> None
+    [0] -> [1] -> [2] -> [3] -> None
+    usage: similar to multiset in c++
+    header rank is 0, the first node rank is 1, and so on
+    """
     def __init__(self, maxlevel=32, p=0.5, opt=operator.lt):
         self.MAXLEVEL = maxlevel
         self.P = p
@@ -46,7 +46,6 @@ class Skiplist:
         # first asc, second desc
             # lambda l,r: return l[0]<r[0] if l[0]!=r[0] else l[1]>r[1]
         self.opt_lt = opt
-    
 
     def _find(self, pred):
         """
@@ -146,6 +145,7 @@ class Skiplist:
     def top(self):
         return self.header.levels[0].forward.val
     def __getitem__(self, idx):
+        """ get item like a SortedList"""
         # transfrom idx to rank
         if not 0<=idx<self.length: raise IndexError
         rank = idx + 1 
@@ -155,6 +155,7 @@ class Skiplist:
         update, _ = self._find(lambda _,rrank:rrank<=rank)
         return update[0].val
     def __delitem__(self, idx):
+        """ delete item like a SortedList"""
         if not 0<=idx<self.length: raise IndexError
         rank = idx + 1 
         # different from __getitem__, it can't terminate when node.levels[0].forward.rank==rank

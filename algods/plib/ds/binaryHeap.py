@@ -1,9 +1,9 @@
-""" this page don't intend to write a binaryHeap datastructure, it wants useful PriorityQueue
+""" this page wants a useful PriorityQueue
 """
 from operator import lt
 from typing import Iterable
 
-class PriorityQueue:
+class BinaryHeap:
     """ use binary heap, imlement with arraylist
     constraint: the key of parent <= the key of child
     convention: index start from 0
@@ -105,13 +105,13 @@ class PriorityQueue:
         while self.r: yield self.pop()
 
 if __name__ == '__main__':
-    # test `PriorityQueue` without key 
-    pq = PriorityQueue()
+    # test `BinaryHeap` without key 
+    pq = BinaryHeap()
     for i in reversed(range(100)):
         pq.push(i)
     print(list(pq))
     
     # test `PriorityQueue` with key
-    pq = PriorityQueue(key=lambda x:-x[2])
+    pq = BinaryHeap(key=lambda x:-x[2])
     pq.push((233, 2, 3))
     pq.push((0, 9, 3))

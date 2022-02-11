@@ -4,6 +4,7 @@ import random
 
 
 def suffix_array(A):
+    """ O(nlgn) """
     n = len(A)
     cnt = [0]*n 
     # rank -> suffix number
