@@ -22,12 +22,12 @@ def check_correctness():
         for _ in range(randrange(3)):
             C[random_uint32]+=1
             Sl.add(random_uint32)
-            Bt.additem(random_uint32, 1)
+            Bt.addition(random_uint32, 1)
 
     assert len(Bt)==sum(C.values())==len(Sl), ".__len__ is wrong"
     for num,cnt in Bt.items():
         assert C[num]==cnt, ".items is wrong"
-        assert Bt.count(num)==cnt, ".count is wrong"
+        assert Bt.getdefault(num)==cnt, ".getdefault is wrong"
     for u,v in zip(Bt, Sl):
         assert u==v, ".__iter__ is wrong"
     # check bisect_left and bisect_right
@@ -37,7 +37,7 @@ def check_correctness():
         rank = randrange(len(Bt))
         assert Bt.kth(rank) == Sl[rank], "`kth` is wrong"
     
-# check_correctness()  
+check_correctness()  
 def compare_Counter():
     """
     result:
@@ -67,13 +67,13 @@ def compare_Counter():
     def measure_time_Bt():
         Bt = BinaryTrie(nbit)
         start = time()
-        for v in random_pool1: Bt.additem(v, 1)
+        for v in random_pool1: Bt.addition(v, 1)
         print("BinaryTrie add", -start+(start:=time()))
         for v in Bt.items():
             pass
         print("BinaryTrie iterate", -start+(start:=time()))
         for v in random_pool2:
-            Bt.count(v)
+            Bt.getdefault(v)
         print("BinaryTrie get", -start+(start:=time()))
     measure_time_Bt()
     measure_time_Counter()
@@ -123,15 +123,15 @@ def compare_SortedList():
     def measure_time_Bt():
         Bt = BinaryTrie(nbit)
         start = time()
-        for v in random_pool1: Bt.additem(v, 1)
+        for v in random_pool1: Bt.addition(v, 1)
         print("BinaryTrie add", -start+(start:=time()))
         for v in Bt:
             pass
         print("BinaryTrie iterate", -start+(start:=time()))
         for v in random_pool2:
-            c = Bt.count(v)
+            c = Bt.getdefault(v)
             if c>0:
-                Bt.additem(v, -1)
+                Bt.addition(v, -1)
         print("BinaryTrie remove if in", -start+(start:=time()))
         for v in random_pool3:
             Bt.nlt(v)
@@ -144,4 +144,4 @@ def compare_SortedList():
     measure_time_Sl()
 
 # compare_Counter()
-compare_SortedList()
+# compare_SortedList()

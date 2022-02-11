@@ -19,12 +19,6 @@ class Trie:
     def __init__(self):
         self.root = TrieNode()
     
-    def setdefault(self, key, default):
-        cur = self._set(key)
-        if cur.val is None:  
-            cur.val = default
-        return cur.val
-    
     def _set(self, key):
         """ create new TrieNode by key and return the node in where the key locate """
         cur = self.root
@@ -40,41 +34,26 @@ class Trie:
             cur = cur.chi[c]
         return cur
     
+    def setdefault(self, key, default):
+        cur = self._set(key)
+        if cur.val is None:  
+            cur.val = default
+        return cur.val
+    
     def getdefault(self, key, default=None):
         """ get TrieNode that has val by key, if not found return `default`"""
         node = self._get(key)
         if node is None or node.val is None: return default
 
         return node.val
-    def keys(self):
-        """ if prefix is empty, it iterate the whole tree """
-        path = []
-        for node in self._traverse(self.root, path):
-            if node.val!=None: yield "".join(path)
-    
-    def items(self):
-        path = []
-        for node in self._traverse(self.root,  path):
-            if node.val!=None: yield "".join(path), node.val
-
-    def num_nodes(self, valid=False):
-        ret = 0
-        if valid:
-            for node in self._traverse(self.root):
-                if node.val!=None: ret += 1
-        else:
-            for node in self._traverse(self.root): ret += 1
+    def __setitem__(self, key, val):
+        cur = self._set(key)
+        cur.val = val
+    def __getitem__(self, key):
+        ret = self._get(key)
+        if ret is None or ret.val is None: raise KeyError(f"{key}")
         return ret
-
-    def _traverse(self, root, path=[]):
-        """ iterate node of subtree at `root` in preorder """
-        def dfs(x):
-            yield x
-            for k,v in x.chi.items():
-                path.append(k)
-                yield from dfs(v)
-                path.pop()
-        yield from dfs(root)
+    
     def pop(self, key, default=None):
         """ remove key from `self`, remove empty leaves(whose value if None) iteratively 
         return the value stored in key if key in self else return None
@@ -101,13 +80,39 @@ class Trie:
     def __delitem__(self, key):
         ret = self.pop(key)
         if ret is None: raise KeyError(f"{key}")
-    def __setitem__(self, key, val):
-        cur = self._set(key)
-        cur.val = val
-    def __getitem__(self, key):
-        ret = self._get(key)
-        if ret is None or ret.val is None: raise KeyError(f"{key}")
+
+
+
+    def keys(self):
+        """ if prefix is empty, it iterate the whole tree """
+        path = []
+        for node in self._traverse(self.root, path):
+            if node.val!=None: yield "".join(path)
+    
+    def items(self):
+        path = []
+        for node in self._traverse(self.root,  path):
+            if node.val!=None: yield "".join(path), node.val
+
+    def num_nodes(self, valid=False):
+        """ this function is O(len(self)), can also maintain number of node in each TrieNodes """
+        ret = 0
+        if valid:
+            for node in self._traverse(self.root):
+                if node.val!=None: ret += 1
+        else:
+            for node in self._traverse(self.root): ret += 1
         return ret
+
+    def _traverse(self, root, path=[]):
+        """ iterate node of subtree at `root` in preorder """
+        def dfs(x):
+            yield x
+            for k,v in x.chi.items():
+                path.append(k)
+                yield from dfs(v)
+                path.pop()
+        yield from dfs(root)
     def __iter__(self): yield from self.keys()
     def __str__(self):
         """ repr as a dictionary"""
@@ -156,7 +161,7 @@ if __name__ == "__main__" :
         print(T)
         T.pprint()
         assert 18==T.num_nodes()
-        assert 8==T.num_nodes(1)
+        assert 8==T.num_nodes(True)
         del T['abcd']
         print(T)
         for k in list(T):
