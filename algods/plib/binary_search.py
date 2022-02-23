@@ -1,19 +1,16 @@
 """ 
-_
+_:
     TOC:
         binary_search_first
         binary_search_last
         binary_search
         binary_search_continuous
         tarnary_search_continuous
+        tarnary_search
         exponential_search
         exponential_search_last
 
 """
-
-from this import d
-
-
 def binary_search_first(l, r, f):
     """
     des:
@@ -87,10 +84,12 @@ def tarnary_search_continuous(l, r, f, precision=1e-9):
 
 def tarnary_search(l, r, f):
     """ f is an discrete function defined on [l,r] with Δf>0, ... 
-    todo: https://codeforces.com/contest/1633
+    _: todo: https://codeforces.com/contest/1633
+    des: as same as binary_search_last(l,r,lambda x:f[x]-f[x-1]<0)
+    performance: ?
     ret: argmin(f)
     test: @lc#852
-    assert l<=r
+    assert: l<=r
     """
     while r-l>=1:
         lmid = l+(r-l)//3

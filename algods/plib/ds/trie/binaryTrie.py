@@ -30,6 +30,7 @@ class BinaryTrie:
                 values.append(0)
             cur = nodes[cur][b]
             values[cur] += val
+
     def getdefault(self, num, default=0):
         nodes, values = self.nodes, self.values
         cur = 1
@@ -38,23 +39,19 @@ class BinaryTrie:
             if cur == 0: return default
         return values[cur]
 
-    def items(self, pack=True):
+    def items(self):
         nodes, values = self.nodes, self.values
         sta = [(1, self.nbit, 0)]
         while sta:
             root,d,num = sta.pop()
             if d==0:
                 cnt = values[root]
-                if cnt!=0: 
-                    if pack:
-                        yield num, cnt
-                    else:
-                        for _ in range(cnt): yield num
+                yield num, cnt
             else:
                 c0, c1 = nodes[root]
                 if values[c1] > 0: sta.append((c1, d-1, num<<1|1))
                 if values[c0] > 0: sta.append((c0, d-1, num<<1))
-    def __iter__(self): return self.items(pack=False)
+
     def keys(self):
         """ similar to dict.keys """
         nodes = self.nodes
@@ -85,8 +82,6 @@ class BinaryTrie:
             if not cur: return 1<<self.nbit
         return curnum
 
-    def __len__(self): return self.values[1]  
-
 class BinaryTrieCounter(BinaryTrie):
     """
     this class, add some, Counter-only function, works only if the value is count of key
@@ -96,6 +91,11 @@ class BinaryTrieCounter(BinaryTrie):
         for k,v in Counter(...).items():
             B.addition(k, v)
     """
+    def __len__(self): return self.values[1]
+    def __iter__(self): 
+        for num, cnt in self.items():
+            for _ in range(cnt):
+                yield num
     def kth(self, k):
         """ return the kth smallest key, k start from 0, similar to SortedList.__getitem__ """
         nodes, values = self.nodes, self.values
@@ -107,9 +107,10 @@ class BinaryTrieCounter(BinaryTrie):
                 cur = c0
             else:
                 k -= values[c0]
-                ret |= (1<<i)
+                ret += 1<<i
                 cur = c1
         return ret
+
     def nlt(self, num):
         """ return number of keys less than `num`, i.e get rank of `num`
         similar to SortedList.bisect_left """
@@ -127,6 +128,30 @@ class BinaryTrieCounter(BinaryTrie):
                 cur = c0
             if not cur: break
         return ret
+
     def interval_count(self, left, right): 
         """ query [left, right) """
         return self.nlt(right) - self.nlt(left)
+
+    def maxxor_query(self, tar):
+        """ assert: len(self)!=0 
+        find max(x^tar for x in self)
+        """
+        nodes, values = self.nodes, self.values
+        cur = 1
+        ret = 0
+        for i in reversed(range(self.nbit)):
+            c0, c1 = nodes[cur]
+            if (tar>>i)&i:
+                if values[c0]>0:
+                    cur = c0
+                else:
+                    cur = c1
+                    ret += 1<<i
+            else:
+                if values[c1]>0:
+                    cur = c1
+                    ret += 1<<i
+                else:
+                    cur = c0
+        return ret

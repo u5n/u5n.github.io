@@ -15,7 +15,7 @@ class BinaryHeap:
     """
     def __init__(self, key=None, it: Iterable =None, capacity=5):
         self.A = [None]*capacity
-        self.r,self.key = 0, key
+        self.r = 0
         
         if it:
             self.A_ = list(it)
@@ -26,9 +26,11 @@ class BinaryHeap:
                 self.A[:self.r] = self.A_
             self.make_heap()
 
-        if self.key: 
-            self.sift_up = self.sift_key_up
-            self.sift_down = self.sift_key_down
+        if key: 
+            self.key = key
+            self.sift_up = self.__sift_key_up
+            self.sift_down = self.__sift_key_down
+            self.pushpop = self.__pushpop_key
     
     def pop(self):
         if self.r==0:
@@ -43,7 +45,22 @@ class BinaryHeap:
         self.A[self.r] = v
         self.r += 1
         self.sift_up(self.r-1)
-    
+    def pushpop(self, v):
+        if v <= self.A[0]:
+            return v
+        else:
+            ret = self.A[0]
+            self.A[0] = v
+            self.sift_down(0)
+            return ret
+    def __pushpop_key(self, v):
+        if self.key(v) <= self.key(self.A[0]):
+            return v
+        else:
+            ret = self.A[0]
+            self.A[0] = v
+            self.sift_key_down(0)
+            return ret
     def top(self): return self.A[0]
     # below is binary heap related function
 
@@ -53,7 +70,7 @@ class BinaryHeap:
         for i in reversed(range(self.r//2)):
             self.sift_down(i)
 
-    def sift_key_up(self, i):
+    def __sift_key_up(self, i):
         """ assume A[i] increased, then make A[l:r] heap again
         time O(lg(i-l)), O(1) """
         A, key = self.A, self.key
@@ -75,30 +92,30 @@ class BinaryHeap:
             else:
                 break
 
-    def sift_key_down(self, i):
+    def __sift_key_down(self, i):
         """ assume A[i] decreased, then make A[l:r] heap again
         time O(lg(r-l)), O(1) """
         A, key, r = self.A, self.key, self.r
-        ext = i # the index with min key
+        min_idx = i # the index with min key
         while True:
             for chi in i*2+1, i*2+2:
-                if chi < r and key(A[chi])<key(A[ext]):
-                    ext = chi
-            if ext == i: break
-            A[ext], A[i] = A[i], A[ext]
-            i = ext
+                if chi < r and key(A[chi])<key(A[min_idx]):
+                    min_idx = chi
+            if min_idx == i: break
+            A[min_idx], A[i] = A[i], A[min_idx]
+            i = min_idx
 
     def sift_down(self, i):
         A, r = self.A, self.r
-        ext = i # the index with min key
+        min_idx = i # the index with min key
         while True:
             chi = i*2+1
-            if chi < r and A[chi] < A[ext]: ext = chi
+            if chi < r and A[chi] < A[min_idx]: min_idx = chi
             chi += 1
-            if chi < r and A[chi] < A[ext]: ext = chi
-            if ext == i: break
-            A[ext], A[i] = A[i], A[ext]
-            i = ext
+            if chi < r and A[chi] < A[min_idx]: min_idx = chi
+            if min_idx == i: break
+            A[min_idx], A[i] = A[i], A[min_idx]
+            i = min_idx
             
     def __len__(self): return self.r
     def __iter__(self): 

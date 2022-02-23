@@ -8,7 +8,8 @@ from pathlib import Path
 
 def D(func):
     """ decorator that send what function return to stdout
-    name: Debug """
+    _:name: Debug 
+    application: run a function without `print(func(**))` """
     def wrapper(*args, **kwargs):
         ret = func(*args, **kwargs)
         print(f'`{func.__name__}` return {repr(ret)}')
@@ -19,6 +20,7 @@ def L(loop=1, maxtime=3600, offset=0):
     """ name: Loop
     find the average runtime of a none parameter function 
     the runtime returned decreased by offset(ms)
+    application: measure runtime
     """
     def LOOP_decorator(func):
         if 0==loop: return 
@@ -64,6 +66,9 @@ def run_function_usestd(f, detail, selected, custom_input):
             try:
                 # get arg from stdin and change to python type
                 raw_args = [input() for _ in range(narg)]
+                if selected and i_cases not in selected:
+                    i_cases += 1
+                    continue
             
                 args = [None]*narg
                 for i in range(narg):
@@ -75,9 +80,6 @@ def run_function_usestd(f, detail, selected, custom_input):
                     else:
                         args[i] = eval(raw_args[i])
 
-                if selected and i_cases not in selected:
-                    i_cases += 1
-                    continue
                 
                 if detail:
                     str_raw_args  = "; ".join(map(lambda rarg: rarg if len(rarg)<100 else rarg[:100]+'......', raw_args))
@@ -128,7 +130,7 @@ def run_multifunction_usestd(cls, detail):
         print(rets)
     return obj
         
-def Dl(selected=None, detail = False, solution_cls=None, custom_input=None):
+def Dl(selected={}, detail = False, solution_cls=None, custom_input=None):
     """ 
     name: Debug for leetcode
     des:
@@ -142,11 +144,14 @@ def Dl(selected=None, detail = False, solution_cls=None, custom_input=None):
         return: return the object used to run 
     paras:
         selected: 
-            type:list
-            allow run specific testcases
+            type:iterable
+            only run testcases if its id in `selected`
+            if empty, don't filter testcase
+            if None, don't run any testcase
         custom_input:
             when `solution_cls` is None, allow change input in code file, only contain one testcase 
     """
+    if selected is None: return
     if solution_cls is None:
         for name, cls in inspect.getmembers(sys.modules["__main__"]):
             if name == "Solution":

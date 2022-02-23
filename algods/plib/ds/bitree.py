@@ -43,7 +43,7 @@ class BIT_diff(BIT):
         """ A[l:r] += v """
         self.add(l, delta)
         if r != self.n: self.add(r, -delta)
-    def query(self, i):
+    def point_query(self, i):
         """ return A[i] """
         return self.sum(i+1)
     

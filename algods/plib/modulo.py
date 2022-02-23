@@ -116,12 +116,19 @@ def _namespace_single_point(Mod):
                 return False
             i+=6
         return True
+
     def factors(x):
-        for i in range(isqrt(x)+1):
-            if x%i==0:
-                yield i
-                if i*i!=x:
-                    yield x//i
+        ret = []
+        p = 1
+        while p*p<x:
+            if x%p==0:
+                ret.append(p)
+                ret.append(x//p)
+            p+=1
+        if p*p==x:
+            ret.append(p)
+        return ret
+
     def prime_factors(x):
         i = 2
         while i*i <= x:
@@ -134,6 +141,7 @@ def _namespace_single_point(Mod):
     
     # prime factors in order, with exponent 
     def prime_factors_exp(x):
+        ret = []
         i = 2
         while i*i <= x:
             cnt = 0
@@ -141,9 +149,10 @@ def _namespace_single_point(Mod):
                 x//=i
                 cnt += 1
             if cnt!=0: 
-                yield i,cnt
+                ret.append((i,cnt))
             i+=1
-        if x>1: yield x,1
+        if x>1: ret.append((x,1))
+        return ret
 
     # euler totient function
     def euler_totient(x):

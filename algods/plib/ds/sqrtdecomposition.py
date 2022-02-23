@@ -34,21 +34,21 @@ class SqrtDecomposition:
         """ query on A[l:r] 
         time: O(√n)
         """
-        A = self.A 
+        A, opt, block, block_sz = self.A , self.opt, self.block, self.block_sz
 
-        lend = l + (-l % self.block_sz)
-        rend = r - (r % self.block_sz)
+        lend = l + (-l % block_sz)
+        rend = r - (r % block_sz)
         ret = self.id_ele
         if lend >= rend:
-            for Ai in islice(A, l, r):
-                ret=self.opt(ret, Ai)
+            for i in range(l, r):
+                ret=opt(ret, A[i])
         else:
-            for Ai in islice(A, l, lend):
-                ret=self.opt(ret, Ai)
-            for block in islice(self.blocks, lend//self.block_sz, rend//self.block_sz):
-                ret=self.opt(ret, block)
-            for Ai in islice(A, rend, r):
-                ret=self.opt(ret, Ai)
+            for i in range(l, lend):
+                ret=opt(ret, A[i])
+            for i_block in range(lend//block_sz, rend//block_sz):
+                ret=opt(ret, block[i_block])
+            for i in range(rend ,r):
+                ret=opt(ret, A[i])
         return ret
     def assign_monoidopt(self, i, v):
         """ des: assign also recalculate the whole block, apply to monoid opeartor
@@ -79,19 +79,21 @@ class SqrtDecomposition:
         self.A[i] = v
         self.blocks[p_blocks] = self.opt(self.blocks[p_blocks], v)
 
-def mosalgorithm(A, queries, ds, get_answer):
+def mosalgorithm(A, queries):
     """ process offline queries where the queriese contains some inclusive intervals 
     time: O( Q√Q + (N+Q)F√N + QG)
         where G is time of `get_answer`
         F is time of `ds.add`
     """
+    ___ = print("Code Template, need finish"), 1/0
     n = len(A)
     block_sz = isqrt(n)
     def query_opt(q):
         l,r,i = q
-        return l//block_sz, r if i%2==0 else -r
+        i_block = l//block_sz
+        return i_block, r if i_block%2==0 else -r
     sq = sorted([(l,r,i) for i,(l,r) in enumerate(queries)], key=query_opt)
-
+    ds = ___
     ret = [None]*len(queries)
     l , r = 0,-1 # represent an inclusive interval
     for ql,qr,qi in sq:
@@ -99,7 +101,7 @@ def mosalgorithm(A, queries, ds, get_answer):
         while l<ql: ds.remove(A[l]); l+=1
         while r<qr: r+=1; ds.add(A[r])
         while r>qr: ds.remove(A[r]); r-=1
-        ret[qi] = get_answer(ds)
+        ret[qi] = ___
         
     return ret
 if __name__ == "__main__":

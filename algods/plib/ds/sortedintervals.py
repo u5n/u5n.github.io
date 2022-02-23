@@ -137,8 +137,13 @@ class ChthollyTree:
             flattened segment tree(similar to 1d quadtree, dynamically open and delete point), every node stored in a sortedlist 
             base idea: after rather small times of assign function on random interval, the size of `self.A` become lg(n)
         example: ChthollyTree([10,20,30]), then self.nodes is {0:10, 1:20, 2:30}, only store left endpoints, it's enough to represent all the three intervals
-        app: huge of random assign operations
-        time complexity: O(nlg(lg(n))) on random data
+        app: 
+            1. huge of random assign operations
+            2. single point query only 
+                example: @cf#1638E
+        time complexity: 
+            O(nlg(lg(n))) with n random opeartions
+                https://zhuanlan.zhihu.com/p/102786071
         testOJ: @cf#896C(TLE) https://codeforces.com/contest/896/submission/142823477
     """
     def __init__(self, A): 
@@ -179,7 +184,9 @@ class ChthollyTree:
         lpts[l] = v
 
     def traverse(self, l, r):
-        """ yield all values in [l,r] in format: (value, numberofvalue) """
+        """ des: yield all values in [l,r] in format: (value, numberofvalue) 
+        impl: instead of split operaton, discuss each situation manually
+        """
         # assert 0<=l<=r<n
         lpts = self.lpts
         # find all intervals that left endpoint in [l,r]
@@ -197,17 +204,21 @@ class ChthollyTree:
             int_l, int_v = ints[i_ints]
             yield int_v, ints[i_ints+1][0]-int_l
         yield ints[-1][1], r-ints[-1][0]+1
+    def get_point(self, x):
+        """ assert: 0<=x<n """
+        lpts = self.lpts
+        lfind = lpts.bisect_right(x) - 1
+        return lpts.peekitem(lfind)[1]
 
-
-class ChthollyTreeList:
+class ChthollyTreeUnordered:
     """ 
         des: 
-            flattened segment tree(similar to 1d quadtree, dynamically open and delete point), every node stored in an arraylist without order
-            base idea: after rather small times of assign function on random interval, the size of `self.A` become lg(n)
-        example: ChthollyTree([10,20,30]), then self.nodes is {0:10, 1:20, 2:30}, only store left endpoints, it's enough to represent all the three intervals
+            flattened segment tree(similar to 1d quadtree, dynamically open and delete point)
+            base idea: after rather small times of assign function on random interval, the size of `self.A` become $lg(n)$
+            impl: every node stored in an arraylist without order; because of unordered, need to store right endpoint of each interval
         app: huge of random assign operations
         time complexity: 
-            O(nlgn) on random data
+            O(nlgn) with n random opeartions
         compare: slightly faster than ChthollyTree which is far complex than list impl
         testOJ: @cf#896C(TLE) https://codeforces.com/contest/896/submission/145106218
     """
@@ -283,7 +294,12 @@ class ChthollyTreeList:
                     ret.append((intvl.val, r-l+1))
                     break
         return ret
-            
+    def get_point(self, x):
+        A = self.A
+        for intvl in A:
+            if intvl.l <= x <=intvl.r:
+                return intvl.val
+        return None
 
 if __name__ == "__main__":
     def test_SortedIntervals_1():
@@ -328,7 +344,7 @@ if __name__ == "__main__":
 
     
     def test_ChthollyTreeList_2():
-        tree = ChthollyTreeList(A)
+        tree = ChthollyTreeUnordered(A)
         for _ in range(1000):
             op = choice([0,1,2])
             l, r = sorted([randrange(n), randrange(n)])

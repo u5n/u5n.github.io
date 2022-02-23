@@ -1,3 +1,4 @@
+from math import inf
 import heapq
 class CapicityPriorityQueue:
     """ useful priority queue used on sliding window """
@@ -22,3 +23,34 @@ class CapicityPriorityQueue:
         else:
             heapq.heappush(self.pq, -v)
             self.cs += v
+
+def _secondmin(self):
+    """
+    problems: @lc#1289
+    code template snippets, capicity size 2 priority queue
+    """
+    mi = smi = inf
+    def append_rank(v):
+        nonlocal mi, smi
+        """ 
+        used to find min and second min(by index in the sorted array) together
+        another pattern, which is hard to understand:
+            if v < smi:
+                if v < mi:
+                    mi, smi = v, mi
+                else:
+                    smi = v
+        """
+        if v < mi:
+            mi, smi = v, mi
+        elif v < smi:
+            smi = v
+
+    def append_distinct(v):
+        """
+        used to find min and second min(by index in the sorted set) together
+        """
+        if v < mi:
+            mi, smi = v, mi
+        elif mi < v < smi:
+            smi = v

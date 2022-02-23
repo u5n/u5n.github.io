@@ -19,27 +19,28 @@ def _ilog2_cache(maxn):
         ilog2[i] = ilog2[i-1] + (i%2==0)
 
 def merge_sort(A):
-    """ application: count inversions
+    """ convention: use left closed right open interval, cuz it's used to count number of sth.
+    time: O(nlgn),O(lgn)
     """
-    n = len(A)
-    def mergesort(l,r):
-        if r-l<=1: return
-        m = (l+r)//2
-        mergesort(l,m)
-        mergesort(m,r)
-        merge(l,m,r)
     def merge(l,m,r):
-        ret = []
+        """ inplace merge A[l:m] and A[m:r] into A[l:r] """
+        ret = [] # external array to store the sorted A[l:r]
         ri=m
-        # available O(r-l) algorithm
-        
+        # available O(r-l) algorithm here
         for li in range(l, m):
             while ri<r and A[ri]<A[li]:
                 ret.append(A[ri])
                 ri+=1
             ret.append(A[li])
         A[l:ri] = ret
-    mergesort(0,n)
+    
+    def mergesort(l,r):
+        if r-l<=1: return
+        m = (l+r)//2
+        mergesort(l,m)
+        mergesort(m,r)
+        merge(l,m,r)
+    mergesort(0, len(A))
 
 def countsort(A, key=lambda x:x):
     """ assume key >= 0, key is int """
@@ -57,17 +58,31 @@ def countsort(A, key=lambda x:x):
     return As
 
 def cyclesort(A):
+    """ 
+    _: reduce the procedure by dfa 
+    des: theoretical min times of swap
+    time: 
+        O(n^2),O(1)
+        if rank of elment can get at O(1), the time complexity will be O(n)
+    """
     n = len(A)
+    min_swap = 0
     for i in range(n):
+        # A[:i] is sorted 
         while True:
-            numles = 0
+            nlt = 0 # get rank of A[i]
             for j in range(i+1,n):
                 if A[j]<A[i]:
-                    numles+=1
-            if numles==0: break
-            
-            while A[i+numles] == A[i]: numles += 1
-            A[i+numles],A[i]=A[i],A[i+numles]
+                    nlt+=1
+            if nlt==0: break
+            # in case of equal elements
+            while A[i+nlt] == A[i]: 
+                # loop inv: A[i+nlt] is already sorted
+                nlt += 1
+            # next to-sort element place in A[i]
+            A[i+nlt],A[i]=A[i],A[i+nlt]
+            min_swap += 1
+    return min_swap
 
 def quicksort(A, l, r):
     """

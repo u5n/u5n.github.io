@@ -51,8 +51,8 @@ class Skiplist:
         """
         return 
             update[i]: 
-                at level i, update[i] is the last node that 
-                    pred((update[i].val,update[i].rank))
+                at level i, update[i] is the last node that pred((update[i].val,update[i].rank))
+                    the pred function is monotonic increasing by arg0 or arg1
                 if no such node, it's header
                 update[i] is guaranteed not None
             rank[i]: rank of update[i], rank of header is 0

@@ -1,16 +1,11 @@
 from typing import *
 from itertools import count
-import numpy as np
 """
-transform between digit-string to int
-    the `builtins.int` function transfrom a base `base` digital-string to an int (2<=base<=36)
-    the `np.base_repr` function transfrom a int to base `base` string (2<=base<=36)
-        the `str` function transfrom an int to base 10 string
 TOC:
     is_pal
     tra_pal10
-    int_iterable
 """
+    
 def is_pal(A: Iterable):
     """ judge palindromic of arraylist without create a copy """
     l,r = 0,len(A)-1
@@ -34,11 +29,3 @@ def tra_pal10() -> int:
             # d_pal = d_lhf*2
             slhf = str(lhf)
             yield int(slhf + slhf[::-1])
-
-def int_iterable(x:int, base=10)->List[int]:
-    """ change an int to list of digits, lsb on the left """
-    ret = []
-    while x:
-        ret.append(x%base)
-        x//=base
-    return ret

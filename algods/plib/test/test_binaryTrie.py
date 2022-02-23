@@ -1,7 +1,7 @@
 import sys 
 sys.path.append('..')
 
-from ds.trie.binaryTrie import BinaryTrie 
+from ds.trie.binaryTrie import BinaryTrieCounter 
 from sortedcontainers import SortedList
 from collections import Counter
 from random import *
@@ -14,7 +14,7 @@ also check with @luogu#3369
 def check_correctness():
     Sl=SortedList()
     C = Counter()
-    Bt=BinaryTrie(32)
+    Bt=BinaryTrieCounter(32)
     LOOP_TIME = 1000
     for _ in range(LOOP_TIME):
         random_uint32 = randrange(2**32)
@@ -64,7 +64,7 @@ def compare_Counter():
             C[v]
         print("Counter get", -start+(start:=time()))
     def measure_time_Bt():
-        Bt = BinaryTrie(nbit)
+        Bt = BinaryTrieCounter(nbit)
         start = time()
         for v in random_pool1: Bt.addition(v, 1)
         print("BinaryTrie add", -start+(start:=time()))

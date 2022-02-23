@@ -22,6 +22,9 @@ class Skiplist:
         self.opt_lt = opt
 
     def _find(self, val, opt):
+        """ draw a verticial line x=val, then sweep left on each level@l until meet a node which is update[l] 
+        in layer i, update[i] is last node that opt(update[i].val, val)
+        """
         update = [self.header] * self.MAXLEVEL
         x = self.header
         for i in reversed(range(self.MAXLEVEL)):

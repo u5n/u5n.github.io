@@ -123,18 +123,6 @@ def bs_iter(bs):
         bs -= lb
     return ret
 
-def _type_convert():
-    def lowercase_to_BS(s):
-        bs = 0
-        for c in s: bs+=1<<(ord(c)-97)
-        return bs
-    ordc = {c:1<<(ord(c)-97) for c in ascii_lowercase}
-    def BS_to_lowercase(bs):
-        s = ''
-        for c, bc in ordc.items():
-            if bc&bs:
-                s += c
-        return s
 
 def subsetsum(A):
     """ preprocess subset sum of A 
@@ -147,7 +135,6 @@ def subsetsum(A):
         dp[BS] = dp[BS-lb] + A[lb.bit_length()-1]
     return dp
     
-
 def subset(BS):
     """ ret: all subset of bitset BS, reverse order by `bit_count`
     """
@@ -184,6 +171,11 @@ def disjoint_two_subset(U):
         while bs1 and bs1*2>=U:
             ret.append((bs1, U-bs1))
             bs1 = (bs1-1)&U
+        """ # subset of subset
+        while bs1:
+            ret.append((U, bs1))
+            bs1 = (bs1-1)&U
+        """
         U-=1
     return ret
 

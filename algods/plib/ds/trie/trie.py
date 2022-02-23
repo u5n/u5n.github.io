@@ -19,14 +19,14 @@ class Trie:
     def __init__(self):
         self.root = TrieNode()
     
-    def _set(self, key):
+    def __set(self, key):
         """ create new TrieNode by key and return the node in where the key locate """
         cur = self.root
         for c in key:
             if c not in cur.chi: cur.chi[c] = TrieNode()
             cur = cur.chi[c]
         return cur
-    def _get(self, key):
+    def __get(self, key):
         """ get TrieNode by key if not found return None """
         cur = self.root
         for c in key:
@@ -35,22 +35,22 @@ class Trie:
         return cur
     
     def setdefault(self, key, default):
-        cur = self._set(key)
+        cur = self.__set(key)
         if cur.val is None:  
             cur.val = default
         return cur.val
     
     def getdefault(self, key, default=None):
         """ get TrieNode that has val by key, if not found return `default`"""
-        node = self._get(key)
+        node = self.__get(key)
         if node is None or node.val is None: return default
 
         return node.val
     def __setitem__(self, key, val):
-        cur = self._set(key)
+        cur = self.__set(key)
         cur.val = val
     def __getitem__(self, key):
-        ret = self._get(key)
+        ret = self.__get(key)
         if ret is None or ret.val is None: raise KeyError(f"{key}")
         return ret
     

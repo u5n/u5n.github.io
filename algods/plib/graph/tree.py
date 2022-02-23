@@ -5,6 +5,7 @@ convention
 TOC:
     postorder
     to_array_preorder
+    binary_lift
 """
 # backup, inferior to postorder
 # def rev_bfs(G):
@@ -23,9 +24,9 @@ def postorder(G):
     """ visit node in postorder, ensure child is visited before parent 
     dfs code: 
         def postorder_dfs(u):
-        for v in G[u]:
-            postorder_dfs(v)
-        yield u
+            for v in G[u]:
+                yield from postorder_dfs(v)
+            yield u
     """
     sta = [[0, 0]] # bpt, vertex
     while sta:

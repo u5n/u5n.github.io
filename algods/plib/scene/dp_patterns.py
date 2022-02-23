@@ -1,7 +1,5 @@
-from audioop import reverse
 from math import *
-import copy
-from unittest.mock import DEFAULT
+___ = (lambda s: exec(f"raise Exception('{s}')"))("The code has to be finished by the programmer")
 
 def partition_solver(f1,f2, f3=None):
     """
@@ -47,12 +45,15 @@ def partition_solver(f1,f2, f3=None):
 def interval(n):
     """ des: code snippets to for interval dp 
     dp:
-        dp[l][r] is ~problem(A[l:r])
+        def: dp[l][r] is ~problem(A[l:r])
         border: dp[l][l] = 0
+        order: big interval rely small interval
     """
-    DEFAULT_DPV = 0
-    dp = [[DEFAULT_DPV]*(n+1) for _ in range(n+1)]
+    # dp = [[___]*(n+1) for _ in range(n+1)]
+    # the ___ should be dp[l][l]
+    dp = [___]*n
     for r in range(1, 1+n):
         for l in reversed(range(r)):
-            """ calc dp[l][r] """
-
+            """ calc dp[l][r] use dp[l+1][r] and dp[l][r-1] """
+            dp[l] = ___(dp[l+1], dp[l])
+    return dp[0]
