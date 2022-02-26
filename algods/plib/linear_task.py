@@ -1,12 +1,10 @@
 """
-collection of some O(n) patterns, instead of copy from those code, handwriting is faster
+collection of some O(n) patterns, instead of copy from those code, recite and dictate is faster
 TOC
     groupby
 """
-from collections import defaultdict
 from typing import *
 from math import *
-from sortedcontainers import SortedList
 
 def groupby(A:Iterable):
     """ group A by its value
@@ -19,16 +17,18 @@ def groupby(A:Iterable):
             yield i,j
             i = j
 
-def discretization(A):
-    mp = {}; imp = 0
-    for v in sorted(A):
-        if v not in mp:
-            mp[v] = imp; imp += 1
-    return mp
+def template_discretization(A):
+    SA = sorted(A)
+    # map A[i] to its rank in SA
+    v_rk = {}; v_rk_i = 0
+    for v in SA:
+        if v not in v_rk:
+            v_rk[v] = v_rk_i; v_rk_i += 1
+    
 
-def unique(A: list): 
+def template_unique(A: list): 
     # unique use hashtable(require element hashable)
-    return list(Counter(A))
+    list(Counter(A))
 
 class InarrayQueue:
     """ abstract of one usage of monotonic pointers"""

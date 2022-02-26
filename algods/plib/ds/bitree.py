@@ -7,9 +7,15 @@ from collections import defaultdict
 
 
 class BIT:
-    """ des:
+    """ 
+    des:
+        for a static array `A`, it support a group operator on `A`:
+            1. single element change
+            2. range accumulative operation on `A`
+        the operator shoule be group
+    default: 
+        use `operator.add` and `math.sum`
         bit[i] = sum(A[i+1-lowbit(i+1):i+1])
-        for an static array `A`, it support single point addition and range query on `A`
     """
     __slots__='n','bit'	
     def __init__(self, n):
@@ -17,7 +23,6 @@ class BIT:
         self.bit = [0] * n
 
     def add(self, idx, delta):
-        
         while idx < self.n:
             self.bit[idx] += delta
             idx |= idx+1 # idx += lowbit(idx+1)

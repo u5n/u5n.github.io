@@ -1,7 +1,6 @@
 from math import *
-from collections import defaultdict
-import operator
 from functools import reduce
+
 class Data:
     __slots__="sum","ma","mi","add","prop"
     def __init__(self,sum=None,ma=None,mi=None,add=0,prop=None):

@@ -9,7 +9,7 @@ test: without test
 from collections import namedtuple
 Node = namedtuple("Node", "lchi rchi val", defaults=[None,None,0])
 class PersistentArray:
-    """ The internal node don't have `val` attribute
+    """ The internal(not leaf) node don't have `val` attribute
     use closed interval everywhere
     """
     INITIAL_VERSION_NUMBER = 0
