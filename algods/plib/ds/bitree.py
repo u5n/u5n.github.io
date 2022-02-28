@@ -20,19 +20,21 @@ class BIT:
     __slots__='n','bit'	
     def __init__(self, n):
         self.n = n
-        self.bit = [0] * n
+        self.tarr = [0] * n
 
     def add(self, idx, delta):
-        while idx < self.n:
-            self.bit[idx] += delta
+        n, tarr = self.n, self.tarr
+        while idx < n:
+            tarr[idx] += delta
             idx |= idx+1 # idx += lowbit(idx+1)
 
     def sum(self, idx, idx2=None):
         """ sum(A[slice(idx[,idx2])]) """
+        tarr = self.tarr
         if idx2!=None: return self.sum(idx2)-self.sum(idx)
         ret = 0
         while idx >= 1:
-            ret += self.bit[idx-1]
+            ret += tarr[idx-1]
             idx &= idx-1 # idx -= lowbit(idx)
         return ret
         
@@ -66,12 +68,13 @@ class BIT_range:
         self.bit1 = BIT(n)
         self.n = n
     def range_add(self, l, r, v):
+        bit0, bit1 = self.bit0, self.bit1
         """ assert 0<=l<=r; l<n; r can exceed n """
-        self.bit0.add(l, v)
-        self.bit1.add(l, (l-1)*v)
+        bit0.add(l, v)
+        bit1.add(l, (l-1)*v)
         if r<self.n:
-            self.bit0.add(r , -v)
-            self.bit1.add(r, -(r-1)*v)
+            bit0.add(r , -v)
+            bit1.add(r, -(r-1)*v)
     def sum(self, idx, idx2=None):
         if idx2 != None: return self.sum(idx2) - self.sum(idx)
         return (idx-1)*self.bit0.sum(idx) - self.bit1.sum(idx)
@@ -82,15 +85,16 @@ class BIT2d:
     __slots__='m', 'n', 'bit'
     def __init__(self, m, n):
         self.m, self.n = m, n
-        self.bit = [[0]*n for _ in range(m)]
+        self.tarr = [[0]*n for _ in range(m)]
 
     def add(self, idx, delta):
         """ A[idx] += delta """
+        tarr,m,n = self.tarr, self.m, self.n
         x = idx[0]
-        while x < self.m:
+        while x < m:
             y = idx[1]
-            while y < self.n:
-                self.bit[x,y] += delta
+            while y < n:
+                tarr[x,y] += delta
                 y |= y+1
             x|=x+1
 
@@ -98,12 +102,12 @@ class BIT2d:
         """ sum(A[:idx[0],:idx[1]]) or sum(A[idx[0]:idx2[0], idx[1]:idx2[1]]) """
         if idx2!=None:
             return self.sum(idx2) + self.sum(idx) - self.sum((idx[0],idx2[1])) - self.sum((idx2[0],idx[1]))
-        ret=0
-        x = idx[0]
+        tarr = self.tarr
+        ret, x = 0, idx[0]
         while x>=1:
             y = idx[1]
             while y>=1:
-                ret += self.bit[x-1, y-1]
+                ret += tarr[x-1, y-1]
                 y &= y-1
             x &= x-1
         return ret

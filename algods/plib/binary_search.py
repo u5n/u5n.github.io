@@ -21,7 +21,6 @@ def binary_search_first(l, r, f):
         output:
             first `i` in interval [`l`,`r`) such that `f(i)` is True
             if not found, return `r`
-    side effect: None
     performance: maybe TLE if `bisect` is available
     """
     assert l<=r
