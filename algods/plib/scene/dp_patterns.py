@@ -31,16 +31,46 @@ def partition_solver(f1,f2, f3=None):
         n = len(A)
         dp = [None]*(n+1)
         # when vk == 1
-        for i in range(1, 1+n): dp[i] = f3_cac(0,i)
+        for sz in range(1, 1+n): dp[sz] = f3_cac(0,sz)
         for vk in range(2, 1+k):
             dpp = dp
             dp = [f1_ie]*(n+1)
-            for i in range(vk, 1+n):
-                for i2 in reversed(range(vk-1, i)): # filter those vk > i
+            for sz in range(vk, 1+n):
+                for i2 in reversed(range(vk-1, sz)): # filter those vk > i
                     # dp[vk][i] = min(dp[vk][i], f2(f3_cac(i2, i), dp[vk-1][i2]))
-                    dp[i] = f1(dp[i], f2(f3_cac(i2,i), dpp[i2]))
+                    dp[sz] = f1(dp[sz], f2(f3_cac(i2,sz), dpp[i2]))
     
     return dp
+
+def partition_optimizer(A, k):
+    """ des: 
+        if dp[sz] transition from dp[sz-1][p] + f3(p, sz), and p is monotonic by sz, then apply this method
+    assert: f1 = min; f2 = sum
+    convention: empty part is not allowed
+    """
+    f3 = ___
+    n = len(A)
+    dp = [None]*(n+1)
+    ndp = [None]*(n+1)
+    # divide into one group
+    for sz in range(1, 1+n): dp[sz] = f3(0, sz)
+
+    def push(sz_l, sz_r, p_l, p_r):
+        """ both closed interval"""
+        if sz_l > sz_r: return
+        sz_m = (sz_l + sz_r+1)//2
+        p, p_cost = p_l, dp[p_l] + f3(p_l, sz_m)
+        for can_p in range(p_l+1, p_r+1):
+            if (can_p_cost:= dp[can_p] + f3(can_p, sz_m)) < p_cost:
+                p, p_cost = can_p, can_p_cost
+        ndp[sz_m] = p_cost
+        push(sz_l, sz_m-1, p_l, p)
+        push(sz_m+1, sz_r, p, p_r)
+
+    for vk in range(2, 1+k):
+        push(vk, n, vk-1, n-1)
+        for sz in range(vk-1, n+1): dp[sz] = ndp[sz]
+    return dp[n]
 
 def interval(n):
     """ des: code snippets to for interval dp 

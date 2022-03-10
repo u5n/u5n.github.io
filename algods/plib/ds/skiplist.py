@@ -35,9 +35,9 @@ class Skiplist:
 
     def add(self, val):
         update = self._find(val, self.opt_lt)
-        level = min(1-int(math.log(1/random.random(), self.P)), self.MAXLEVEL)
-        x = SkiplistNode(level, val)
-        for i in range(level):
+        newnode_level = min(1-int(math.log(1/random.random(), self.P)), self.MAXLEVEL)
+        x = SkiplistNode(newnode_level, val)
+        for i in range(newnode_level):
             x.levels[i] = update[i].levels[i]
             update[i].levels[i] = x
         self.length += 1
@@ -91,7 +91,7 @@ class Skiplist:
             '\n'+"\n".join(sbuilder)+'\n'+'-'*30
 
 if __name__ == "__main__":
-    d = [1,0,0]
+    d = [0,1,0]
     if d[0]:
         print("test case 1\n")
         z = Skiplist()
@@ -126,7 +126,7 @@ if __name__ == "__main__":
         print(z2.bisect_right(-100))
         print(z2.bisect_left(2))
         print(z2.bisect_right(2))
-        print(list(z2))
+        print([str(v) for v in z2])
     # as min priority_queue
     if d[2]:
         print("test case 2\n")

@@ -141,18 +141,6 @@ def pprint(root, rep, compact=False):
     
     print("BinaryTree[\n"+"\n".join(eltrans)+"\n]")    
 
-def postorder(root):
-    """ visit node in postorder, ensure child is visited before parent """
-    sta = [[0, root]]
-    while sta:
-        bpt, cur = sta[-1]
-        if bpt==0:
-            sta[-1][0] = 2
-            if cur.right: sta.append([0,cur.right])
-            if cur.left: sta.append([0,cur.left])
-        else:
-            sta.pop()
-            yield cur
 
 import sys
 

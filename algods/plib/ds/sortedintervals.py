@@ -144,7 +144,7 @@ class ChthollyTree:
         time complexity: 
             O(nlg(lg(n))) with n random opeartions
                 https://zhuanlan.zhihu.com/p/102786071
-        testOJ: @cf#896C(TLE) https://codeforces.com/contest/896/submission/142823477
+        testOJ: @cf#896C(TLE) https://codeforces.com/contest/896/submission/148760838
     """
     def __init__(self, A): 
         self.lpts = SortedDict(enumerate(A))

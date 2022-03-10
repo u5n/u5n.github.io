@@ -6,18 +6,18 @@ class CapicityPriorityQueue:
         self.pq = []
         self.cap = cap
         self.cs = 0 # cumulative sum
-        if type == "max":
-            self.add = self.addmax
+        self.add = self.__addmax if type == "max" else self.__add
         if A:
             for v in A:
                 self.add(v)
-    def add(self, v):
+                
+    def __add(self, v):
         if len(self.pq)==self.cap:
             self.cs += v - heapq.heappushpop(self.pq, v)
         else:
             heapq.heappush(self.pq, v)
             self.cs += v
-    def addmax(self, v):
+    def __addmax(self, v):
         if len(self.pq)==self.cap:
             self.cs += v  +  heapq.heappushpop(self.pq, -v)
         else:

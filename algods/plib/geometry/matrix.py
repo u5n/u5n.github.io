@@ -91,11 +91,10 @@ class DiffArray:
     def get_M(self): return prefix_sum_np(self.diff)
 
 
-Mod = int(1e9+7)
 # if numpy is not available, use c++
 import numpy as np
-def matpow_mod(mat, b):
-    """ np.power(mat, b)%Mod """
+def matpow_mod(mat, b, Mod):
+    """ equiv to np.power(mat, b)%Mod (assume infinite precision) """
     n = len(mat)
     ret = np.eye(n, n, dtype=np.uint64) 
     while b:
@@ -103,6 +102,15 @@ def matpow_mod(mat, b):
             ret = (ret@mat)%Mod
         b >>= 1
         mat = (mat@mat)%Mod
+    return ret
+
+def matpow_mod_cache(mat, nbit, Mod):
+    """ cache of [mat**(1<<i) for i in range(nbit)] """
+    ret = [None]*nbit
+    ret[0] = mat
+    for i in range(1, nbit):
+        mat = (mat@mat)%Mod
+        ret[i] = mat
     return ret
 
 def spiral_traverse(mat):

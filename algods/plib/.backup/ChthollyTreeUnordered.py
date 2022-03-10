@@ -17,7 +17,7 @@ class ChthollyTreeUnordered:
         time complexity: 
             O(nlgn) with n random opeartions
         compare: slightly faster than ChthollyTree which is far complex than list impl
-        testOJ: @cf#896C(TLE) https://codeforces.com/contest/896/submission/145106218
+        testOJ: @cf#896C https://codeforces.com/contest/896/submission/148760320
     """
     def __init__(self, A): 
         self.A = [Interval(i,i,v) for i,v in enumerate(A)]

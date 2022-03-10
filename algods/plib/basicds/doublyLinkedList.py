@@ -1,7 +1,12 @@
 """
 test at @luogu#P7912 
-    https://www.luogu.com.cn/record/66812285
     https://www.luogu.com.cn/record/66813662
+        ctor
+        popleft
+        append
+        extend
+        
+
 """
 from typing import Iterable
 
@@ -106,6 +111,19 @@ class LinkedList:
         for _ in range(self.sz):
             yield cur
             cur = cur.next
+
+def cyclic_dlinkedlist_tolist(head, gonext=True):
+    """ assume it's cyclic
+        direction: "clockwise
+    """
+    cur = head
+    ret = []
+    while cur:
+        ret.append(cur.val)
+        cur = cur.next if gonext else cur.prev
+        if cur is head: break
+    return ret
+
 
 if __name__ == "__main__":
     L = LinkedList([[1,2], 3,4])

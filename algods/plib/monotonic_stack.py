@@ -23,6 +23,7 @@ def nearest_leftandright(A, opt):
         while len(sta)>1 and not opt(A[sta[-1]], e):
             t = sta.pop()
             right[t] = i
+            
         left[i] = sta[-1]
         sta.append(i)
     return left, right

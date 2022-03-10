@@ -12,12 +12,12 @@ class BIT:
         for a static array `A`, it support a group operator on `A`:
             1. single element change
             2. range accumulative operation on `A`
-        the operator shoule be group
+        the operator shoule be a group
     default: 
         use `operator.add` and `math.sum`
-        bit[i] = sum(A[i+1-lowbit(i+1):i+1])
+        tarr[i] = sum(A[i+1-lowbit(i+1):i+1])
     """
-    __slots__='n','bit'	
+    __slots__='n','tarr'	
     def __init__(self, n):
         self.n = n
         self.tarr = [0] * n
@@ -82,7 +82,7 @@ class BIT_range:
 # index start from 0, and 2 dimension
 class BIT2d:
     """ des: for an static 2darray `A`, it support point addition and rectangle query on `A` """
-    __slots__='m', 'n', 'bit'
+    __slots__='m', 'n', 'tarr'
     def __init__(self, m, n):
         self.m, self.n = m, n
         self.tarr = [[0]*n for _ in range(m)]

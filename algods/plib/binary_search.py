@@ -22,6 +22,7 @@ def binary_search_first(l, r, f):
             first `i` in interval [`l`,`r`) such that `f(i)` is True
             if not found, return `r`
     performance: maybe TLE if `bisect` is available
+    plang: equiv to `bisect.bisect_left(True,range(l,r),key=f)+l`
     """
     assert l<=r
     while l<r:
@@ -54,12 +55,15 @@ def binary_search(l, r, f):
         else: l = m+1
     return None
 
-def binary_search_continuous(l, r, f, precision=1e-9):
+def binary_search_continuous(l, r, f, atol=1e-9):
     """ f is an increasing function defined in real number [l,r], return the approximate zero point of f 
+    plang: python: scipy: 
+        from scipy import optimize
+        optimize.bisect(f, l, r, xtol=1e-9)
     """
     # assume zero point in [l,r]
     # if f(l)>0 or f(r)<0: return None
-    while r-l > precision:
+    while r-l > atol:
         m = (l+r)/2
         ret = f(m)
         if ret>0:
@@ -70,9 +74,9 @@ def binary_search_continuous(l, r, f, precision=1e-9):
             l=m
     return l
     
-def tarnary_search_continuous(l, r, f, precision=1e-9):
+def tarnary_search_continuous(l, r, f, atol=1e-9):
     """ f is an continuous function with Δf>0, return the approx minimum point"""
-    while r-l>precision:
+    while r-l>atol:
         lmid = l + (r-l)/3
         rmid = r - (r-l)/3
         if f(lmid) > f(rmid):

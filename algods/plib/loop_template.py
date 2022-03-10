@@ -27,8 +27,15 @@ def template_discretization(A):
     
 
 def template_unique(A: list): 
-    # unique use hashtable(require element hashable)
+    # stable unique use hashtable(require element hashable)
     list(Counter(A))
+
+def cyclic_iterate(head, get_next):
+    cur = head
+    while cur:
+        yield cur
+        cur = get_next(cur)
+        if cur is head: break
 
 class InarrayQueue:
     """ abstract of one usage of monotonic pointers"""

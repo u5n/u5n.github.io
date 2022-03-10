@@ -69,6 +69,7 @@ class SegmentTree:
             seg[i*2+2].mi+=add
             seg[i*2+2].sum+=add*(r-m)
             seg[i].add=0
+            
     def subsegment(self,Al,Ar,i=0,l=None,r=None,update=False):
         if r==None: l=self.lbor; r=self.rbor
         if Al>r or l>Ar: return

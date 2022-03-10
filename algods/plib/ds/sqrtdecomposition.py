@@ -34,14 +34,19 @@ class SqrtDecomposition:
         """ query on A[l:r] 
         time: O(√n)
         """
-        A, opt, block, block_sz = self.A , self.opt, self.block, self.block_sz
+        A, opt, block, block_sz = self.A , self.opt, self.blocks, self.block_sz
 
+        # ceil to nearest leftendpoint of block 
         lend = l + (-l % block_sz)
+        # floor to nearest rightendpoint of block
         rend = r - (r % block_sz)
         ret = self.id_ele
+
+        # inside one block
         if lend >= rend:
             for i in range(l, r):
                 ret=opt(ret, A[i])
+        # accross multiple block
         else:
             for i in range(l, lend):
                 ret=opt(ret, A[i])
@@ -50,15 +55,15 @@ class SqrtDecomposition:
             for i in range(rend ,r):
                 ret=opt(ret, A[i])
         return ret
+        
     def assign_monoidopt(self, i, v):
         """ des: assign also recalculate the whole block, apply to monoid opeartor
         time: O(n) """
         A, blocks, opt = self.A, self.blocks, self.opt
         p_blocks = i//self.block_sz
         
-        # when self.opt is max
         if v==opt(A[i], v): # if A[i] < v:
-            blocks[p_blocks] = max(blocks[p_blocks], v)
+            blocks[p_blocks] = ___(blocks[p_blocks], v)
             return
         elif A[i] == v: 
             return
@@ -73,9 +78,9 @@ class SqrtDecomposition:
         """ des: assign A[i] to v, assume the operator is a group 
         time: O(1) """
         p_blocks = i//self.block_sz
-        reverse_opt = operator.__sub__ # inverse self.opt
-        assert reverse_opt != None
-        self.blocks[p_blocks] = operator.__sub__(self.blocks[p_blocks], self.A[i])
+        
+        # inverse opt of self.opt
+        self.blocks[p_blocks] = ___(self.blocks[p_blocks], self.A[i])
         self.A[i] = v
         self.blocks[p_blocks] = self.opt(self.blocks[p_blocks], v)
 

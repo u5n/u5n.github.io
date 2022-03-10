@@ -4,14 +4,17 @@ from operator import lt
 from typing import Iterable
 
 class BinaryHeap:
-    """ use binary heap, imlement with arraylist
+    """ des: 
+        use binary heap, implement with arraylist
+        this class is useless 
+        refer to https://stackoverflow.com/a/71295291/7721525
     constraint: the key of parent <= the key of child
     convention: index start from 0
-    dynamic memory: the capacity won't decrease, mul three if not enough 
+    memory management: the capacity won't decrease, mul three if not enough 
     performance: 
-        4x slower that builtin heapq
-        test: lc#1353
-        so use `SortedList` if avaiable
+        test lc#1353:
+            withoutkey: 4x slower than builtin heapq
+            withkey: 3x slower than builtin heapq
     """
     def __init__(self, key=None, it: Iterable =None, capacity=5):
         self.A = [None]*capacity

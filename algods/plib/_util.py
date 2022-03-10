@@ -25,12 +25,19 @@ def L(loop=1, maxtime=3600, offset=0):
     def LOOP_decorator(func):
         if 0==loop: return 
         acc = 0
-        for i_l in range(loop):
+        def break_LOOP(*args):
+            """ able to break loop from wrapped function """
+            errormsg = f'debug info: {args}\n' if len(args)>0 else ''
+            raise Exception(errormsg + f'{func.__name__} runs {i_l} loops in {acc/i_l - offset/1000} (ms), intermediate break with breaker')
+        for i_l in range(1, 1+loop):
             start = time()
-            func()
-            acc+= (-start+(start:=time()))
+            if len(inspect.signature(func).parameters)==0:
+                func()
+            elif len(inspect.signature(func).parameters)==1:
+                func(break_LOOP)
+            acc += (-start+(start:=time()))
             if acc >= maxtime:
-                raise Exception(f"run {i_l+1} loops with TLE")
+                raise Exception(f"run {i_l} loops with TLE")
         acc /= loop
         acc -= offset/1000
         if acc >= 1: print(f'{func.__name__} runs in {acc*1e3:.0f} (ms)')
@@ -50,15 +57,15 @@ def str_return(ret, argtype):
         ret = list(ret)
     
     return str(ret)
-def run_function_usestd(f, detail, selected, custom_input):
+def run_function_usestd(f, detail, selected, custom_args):
     paras = inspect.getfullargspec(f)
     narg = len(paras.args)-1 # exclude `self` parameter
     
     i_cases = 0
     while True:
-        if None!=custom_input:
-            args = custom_input
-            custom_input = None
+        if None!=custom_args:
+            args = custom_args
+            custom_args = None
             i_cases = -1
             selected = {-1} # don't run anyother testcase from input
             print("Custom Test\t")
@@ -130,7 +137,7 @@ def run_multifunction_usestd(cls, detail):
         print(rets)
     return obj
         
-def Dl(selected={}, detail = False, solution_cls=None, custom_input=None):
+def Dl(selected={}, detail = False, solution_cls=None, custom_testcase:list =None):
     """ 
     name: Debug for leetcode
     des:
@@ -148,8 +155,9 @@ def Dl(selected={}, detail = False, solution_cls=None, custom_input=None):
             only run testcases if its id in `selected`
             if empty, don't filter testcase
             if None, don't run any testcase
-        custom_input:
+        custom_testcase:
             when `solution_cls` is None, allow change input in code file, only contain one testcase 
+
     """
     if selected is None: return
     if solution_cls is None:
@@ -181,7 +189,7 @@ def Dl(selected={}, detail = False, solution_cls=None, custom_input=None):
                     else:
                         raise Exception("no function has annotations ")
                 
-                run_function_usestd(f, detail, selected, custom_input)
+                run_function_usestd(f, detail, selected, custom_testcase)
                 return obj
         else:
             raise Exception(f"don't have a `Solution` class")
@@ -235,6 +243,7 @@ def C(filename, nskip=2, template=None):
             tokens = tokenize.generate_tokens(f.readline)
             prvtoken = None
             for token in tokens:
+                # print(token)
                 update_d(token, prvtoken=prvtoken)
                 prvtoken = token
         if template:
@@ -246,3 +255,30 @@ def C(filename, nskip=2, template=None):
     # print(f"code complexity: {{words:{d['NAME']+d['LITERAL']}, opt:{d['OP']} }}")
     print(d)
     print(f"code complexity: {d['NAME']+d['LITERAL']+d['OP']}")
+
+
+def ___preprocess():
+    """ open the file that import and run this function
+    replace all `builtins.max` and `builtins.min` with `if` and `else` statement
+    """
+    import __main__, re
+    with open(__main__.__file__, "r") as f:
+        lines = f.readlines()
+        # todo: 
+        #   enable nearest match
+        #   rewrite use parser
+
+        # testcase: "f(1, max(2, 3)); max(1, f(2,3))"
+        # minfunc_reg = r"\bmin\b\(([^,]+),([^,]+)\)"
+        # maxfunc_reg = r"\bmax\b\(([^,]+),([^,]+)\)"
+        # minfunc_replace = r"\1 if \1<(__mt:=\2) else __mt"
+        # maxfunc_replace = r"\1 if \1>(__mt:=(\2)) else __mt"
+        for i,line in enumerate(lines):
+            # example: max(1,max(2,3))
+            if line.count("max")>=2: continue
+            if line.lstrip().startswith('#'): continue
+            lines[i] = re.sub(minfunc_reg, minfunc_replace, line)
+            lines[i] = re.sub(maxfunc_reg, maxfunc_replace, line)
+
+    with open(__main__.__file__, "w") as f:
+        f.write("".join(lines))
