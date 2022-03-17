@@ -47,6 +47,7 @@ def partition_optimizer(A, k):
         if dp[sz] transition from dp[sz-1][p] + f3(p, sz), and p is monotonic by sz, then apply this method
     assert: f1 = min; f2 = sum
     convention: empty part is not allowed
+    test: @lc#1478
     """
     f3 = ___
     n = len(A)

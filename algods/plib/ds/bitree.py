@@ -3,9 +3,6 @@
 each method use Left-closed, right-open interval
 """
 
-from collections import defaultdict
-
-
 class BIT:
     """ 
     des:
@@ -39,8 +36,39 @@ class BIT:
         return ret
         
     def findA(self):
-        # todo: this can be optimized
+        # todo: this can be optimized to log(n)
         return [ self.sum(i,i+1) for i in range(self.n)]
+
+    def kth(self, k):
+        """ des: 
+            if BIT is a Counter, then transform it into a sorted list, return the kth(start from 0) smallest element
+            if not found, return self.n
+        time: O(lg(n))
+        comment in the code: treat BIT as a n-ary tree, where node a is parent of node b if interval of a contains interval of b
+        code example:
+            ```
+            maxn = 100
+            B = BIT(maxn)
+            A=[1,1,1,2,3,3,3,3,4]
+            for v in A:
+                B.add(v, 1)
+            for k in range(len(A)):
+                assert B.kth(k) == A[k]
+            assert B.kth(len(A)+1) == maxn
+            ```
+        """
+        bit = 1<<(self.n.bit_length()-1)
+        pre = 0 # prefix 
+        while bit:
+            cur = pre + bit
+            if cur <= self.n and k >= self.tarr[cur-1]:
+                # go to next right sibling (shrink the interval by half)
+                k -= self.tarr[cur-1]
+                pre = cur
+            # if cur > self.n or k < self.tarr[cur-1]
+            # go to leftmost child ( shrink the interval by half )
+            bit >>= 1
+        return pre
 
 class BIT_diff(BIT):
     """ des: for an static array `A`, it support range addition & point query on `A`

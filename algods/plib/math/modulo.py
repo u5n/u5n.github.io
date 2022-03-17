@@ -130,14 +130,17 @@ def _namespace_single_point(Mod):
         return ret
 
     def prime_factors(x):
+        """ test: @lccn#LCP14 """
         i = 2
+        ret = []
         while i*i <= x:
             if x%i==0:
                 while x%i==0:
                     x//=i
-                yield i
+                ret.append(i)
             i+=1
-        if x>1: yield x
+        if x>1: ret.append(x)
+        return ret
     
     # prime factors in order, with exponent 
     def prime_factors_exp(x):

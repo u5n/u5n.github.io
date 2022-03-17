@@ -2,9 +2,10 @@ import bisect
 from collections import defaultdict
 from functools import partial
 import operator
-from tree import binary_pprint
+from basicds.binaryTree import binary_pprint
 pprint = partial(binary_pprint, repr=lambda x:f"{x.key}({x.size})" if x else 'Nil')
 lessthan = lambda l,r: l-r
+
 # left lean red black tree
 # top down implement
 # for convenience, only an Immutable version, 

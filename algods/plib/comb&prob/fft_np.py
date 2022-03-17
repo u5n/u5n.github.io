@@ -20,8 +20,7 @@ def conv_np(a,b):
 def conv_mod_np(a, b, Mod):
     """ refer: https://github.com/kth-competitive-programming/kactl/blob/master/content/numerical/FastFourierTransformMod.h
     precision: n*log2(n)*Mod < 8.6e16 (in practice) 
-    des: there is no need for conv_mod_notnumpy because the some trick is language specifically
-    test: 1155
+    test: @lc#1155(all possible input)
     """
     a_small = []
     a_large = []

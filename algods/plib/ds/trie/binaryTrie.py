@@ -2,7 +2,7 @@ class BinaryTrie:
     """ 
     practice:
         sorted counter
-        xor operation and nbit <= 16 ( trie relate)
+        xor operation and nbit <= 16 ( trie related )
         range query ( segmentree related )
     test: @luogu P3369 
     impl: 
@@ -65,14 +65,14 @@ class BinaryTrie:
                 if c0!=0: sta.append((c0, d-1, num<<1))
                 
     def first_key_ge(self, num):
-        """ binary_search first key greater than `num` on `self.keys()`, if no such key, return 1<<self.nbit
+        """ binary_search first key >= `num` on `self.keys()`, if no such key, return 1<<self.nbit
         """
         nodes = self.nodes
         cur = 1
         for i in reversed(range(self.nbit)):
             c0, c1 = nodes[cur]
             # compare with left child num
-            # <= -> < to use bisect_right
+            # >= -> > to use bisect_right
             if curnum*2>=(num>>i) and c0!=0:
                 cur = c0
                 curnum *= 2
@@ -97,7 +97,9 @@ class BinaryTrieCounter(BinaryTrie):
             for _ in range(cnt):
                 yield num
     def kth(self, k):
-        """ return the kth smallest key, k start from 0, similar to SortedList.__getitem__ """
+        """ return the kth(start from 0) smallest key, similar to SortedList.__getitem__ 
+        if not found, raise out of bound Exception 
+        """
         nodes, values = self.nodes, self.values
         cur = 1
         ret = 0

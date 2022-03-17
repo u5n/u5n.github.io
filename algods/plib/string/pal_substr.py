@@ -3,11 +3,11 @@ to find longest palindrome, manacher is not recommend
 TOC
     longestPalindrome
     manacher(parity)
-    is_pal_query
+    substr_pal_query
 """
 from collections import namedtuple
 
-from ..loop_template import groupby
+from ..array.loop_template import groupby
 def longestPalindrome(s):
     """ des: groupby then expand around
     time:
@@ -50,11 +50,16 @@ def manacher_parity(s, parity):
         # if ...: ans = (i-P[i]-parity+1, i+P[i]+1)
     return P
     
-def is_pal_query(s):
+def substr_pal_query(s):
+    """
+    des: given any substring, find whether it's palindromic 
+    time:
+        preprocess: O(n)
+        query: O(1)
+    """
     P0 = manacher_parity(s, 0)
     P1 = manacher_parity(s, 1)
     def is_pal(l, r):
-        """ query whether s[l:r] palindromic """
         if r-l<=1: return True
         if (r-l)%2==0: return P0[(l+r-1)//2]==(r-l)//2
         else: return P1[(l+r)//2]==(r-l-1)//2

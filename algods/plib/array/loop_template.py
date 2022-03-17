@@ -17,7 +17,7 @@ def groupby(A:Iterable):
             yield i,j
             i = j
 
-def template_discretization(A):
+def discretization(A):
     SA = sorted(A)
     # map A[i] to its rank in SA
     v_rk = {}; v_rk_i = 0
@@ -26,7 +26,7 @@ def template_discretization(A):
             v_rk[v] = v_rk_i; v_rk_i += 1
     
 
-def template_unique(A: list): 
+def unique(A: list): 
     # stable unique use hashtable(require element hashable)
     list(Counter(A))
 

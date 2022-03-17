@@ -13,10 +13,6 @@ from collections import deque
 from typing import List
 import random
 
-def _ilog2_cache(maxn):
-    ilog2 = [0]*(maxn+1)
-    for i in range(1, maxn+1):
-        ilog2[i] = ilog2[i-1] + (i%2==0)
 
 def merge_sort(A):
     """ convention: use left closed right open interval, cuz it's used to count number of sth.

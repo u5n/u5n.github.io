@@ -1,7 +1,7 @@
 import sys 
 sys.path.append('..')
 
-from ds.trie.binaryTrie import BinaryTrieCounter 
+from ds.trie.binaryTrie import BinaryTrie, BinaryTrieCounter 
 from sortedcontainers import SortedList
 from collections import Counter
 from random import *

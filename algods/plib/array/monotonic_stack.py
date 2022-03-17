@@ -12,8 +12,8 @@ from collections import deque
 from math import *
 
 def nearest_leftandright(A, opt):
-    """ for A[r], left[r] is largest index(<r) that opt(A[left[r]], A[r])
-    for A[l], right[l] is smallest index(>l) that not opt(A[l], A[right[l]])
+    """ for A[r], left[r] is the largest index(<r) that opt(A[left[r]], A[r])
+    for A[l], right[l] is the smallest index(>l) that not opt(A[l], A[right[l]])
     """
     n = len(A)
     left = [None]*n
@@ -41,6 +41,10 @@ def nearest_larger(A, opt=operator.gt):
                 
             i0 is largest index(i0<i1) that cmp(i0, i1)==1
             i2 is smallest index(i2>i1) that cmp(i2, i1)==1
+    example:
+        A = [1,1,1,1]
+            when opt is opeartor.gt, yield (-1,0,1),(-1,1,2),(-1,2,3),(-1,3,4)
+            when opt is opeartor.ge, yield (2,3,4),(1,2,4),(0,1,4),(-1,0,4)
     """
     n = len(A)
     sta = [-1]

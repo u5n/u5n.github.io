@@ -4,7 +4,7 @@ TOC
     bfs
     dijkstra
     dijkstra_matrix
-    bellmanford
+    spfa
     topo_sort
     
 convention
@@ -31,20 +31,22 @@ def bfs(G, start: Iterable):
                 q.append(v)
     
 def dijkstra(adj, start: Iterable):
-    """ single/multi source shortest path in graph adjacent list `G` """
+    """ single/multi source shortest path in graph adjacent list `G` 
+    test: @lc#743
+    """
     dis = [inf]*len(adj)
     pq = []
     for u in start:
         heappush(pq, (0, u))
         dis[u] = 0
     while pq:
-        cost, u = heappop(pq)
-        if cost > dis[u]: continue
-        for v,w in adj[u]:
-            newcost = dis[u] + w
-            if dis[v] > newcost:
-                heappush(pq, (newcost, v))
-                dis[v] = newcost
+        disu, u = heappop(pq)
+        if disu > dis[u]: continue
+        for w,v in adj[u]:
+            disv = dis[u] + w
+            if dis[v] > disv:
+                heappush(pq, (disv, v))
+                dis[v] = disv
     return dis
 
 def dijkstra_adjmat(M, start: Iterable):
@@ -68,6 +70,27 @@ def dijkstra_adjmat(M, start: Iterable):
             dis[v] = min(dis[v], dis[u] + M[u][v])
     return dis
 
+
+def spfa(adj, start):
+    """ 
+    queue optimized bellman ford
+    time: O(VE) """
+    n = len(adj)
+    dis = [inf]*n
+    q = deque(start)
+    inq = [False]*n
+    for u in start:
+        dis[u] = 0
+        inq[u] = 1
+    while q:
+        u = q.popleft(); inq[u] = False
+        for w,v in adj[u]:
+            disv = dis[u] + w
+            if dis[v] > disv:
+                dis[v] = disv
+                if not inq[v]:
+                    q.append(v); inq[v] = True
+    return dis
 
 def topo_sort(adj):
     """ topological sort for adjacent list `adj` 
@@ -100,4 +123,3 @@ def floydWarshall(adjmat):
                 if dpv < dp[i][j]:
                     dp[i][j] = dpv
     return dp
-    

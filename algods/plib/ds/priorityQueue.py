@@ -1,5 +1,6 @@
 from math import inf
 import heapq
+
 class CapicityPriorityQueue:
     """ useful priority queue used on sliding window """
     def __init__(self, cap, type:str = "min", A=None):
@@ -47,6 +48,7 @@ def _secondmin(self):
             smi = v
 
     def append_distinct(v):
+        nonlocal mi, smi
         """
         used to find min and second min(by index in the sorted set) together
         """
@@ -54,3 +56,4 @@ def _secondmin(self):
             mi, smi = v, mi
         elif mi < v < smi:
             smi = v
+        

@@ -31,9 +31,12 @@ class SegmentTree:
         p = self.ancestor(Ai)
         seg[next(p)]=new # seg[next(p)]+=new # for addition opearation
         for i in p: self.pull(i)
-
+    
     def subsegment(self,Al,Ar,i=0,l=None,r=None):
-        if r==None: l=self.lbor; r=self.rbor
+        """ des: interval operation template, without update(pull function)
+        ret: yield all node that contained in interval [Al,Ar], in order of traverse_postorder desc
+        """
+        if r is None: l, r = self.lbor, self.rbor
         if Ar>r or l>Ar: return
         elif Al<=l and r<=Ar: 
             yield i
@@ -43,10 +46,13 @@ class SegmentTree:
             yield from self.subsegment(Al,Ar,i*2+2,m+1,r)
     
     def ancestor(self,Ai,i=0,l=None,r=None):
-        if r==None: l=self.lbor; r=self.rbor
+        """ des: point opeartion template, without update; 
+        ret: yield all node that contain point Ai, in order of depth desc
+        """
+        if r is None: l, r =self.lbor, self.rbor
         if r==l: yield i
         else:
             m = (r+l)//2 # floor division
-            if Ai<=m: yield from self.ancestor(i,i*2+1,l,m)
-            else: yield from self.ancestor(i,i*2+2,m+1,r)
+            if Ai<=m: yield from self.ancestor(Ai,i*2+1,l,m)
+            else: yield from self.ancestor(Ai,i*2+2,m+1,r)
             yield i
