@@ -1,3 +1,0 @@
-""" of a doubly linkedlist """
-
-

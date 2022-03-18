@@ -1,7 +1,4 @@
-import bisect
-from collections import defaultdict
 from functools import partial
-import operator
 from basicds.binaryTree import binary_pprint
 pprint = partial(binary_pprint, repr=lambda x:f"{x.key}({x.size})" if x else 'Nil')
 lessthan = lambda l,r: l-r
@@ -11,12 +8,12 @@ lessthan = lambda l,r: l-r
 # for convenience, only an Immutable version, 
 # refer to <Algorithm 4th ed.> https://algs4.cs.princeton.edu/33balanced/RedBlackBST.java
 # similar to std::map
+RED, BLACK = 1, 0
 class Node:
     __slots__ = 'key','val','color','left','right','size'
-    def __init__(self, key, val, color=0, size=1, left=None, right=None):
+    def __init__(self, key, val, color=BLACK, size=1, left=None, right=None):
         self.color,self.key,self.val,self.size = color, key, val, size
         self.left,self.right = left, right
-        # color, 1 means red
 
 def setitem(root, key, val):
     """ usage root = setitem(root, key, val)"""
@@ -27,7 +24,7 @@ def setitem(root, key, val):
         else: h.val = val
         return balance(h)
     root = dfs(root)
-    root.color = 0
+    root.color = BLACK
     return root
 
 def rotateLeft(h):
@@ -35,7 +32,7 @@ def rotateLeft(h):
     h.right = x.left
     x.left = h
     x.color = h.color
-    h.color = 1
+    h.color = RED
     x.size = h.size
     h.size = size(h.left) + size(h.right) + 1
     return x
@@ -45,18 +42,18 @@ def rotateRight(h):
     h.left = x.right
     x.right = h
     x.color = h.color
-    h.color = 1
+    h.color = RED
     x.size = h.size
     h.size = size(h.left) + size(h.right) + 1
     return x
 
 def flipColor(h):
     """ h Black, two chilren Red """
-    h.color = 1
-    h.left.color = 0
-    h.right.color = 0
+    h.color = RED
+    h.left.color = BLACK
+    h.right.color = BLACK
 
-def isRed(h): return h and h.color == 1
+def isRed(h): return h and h.color == RED
 def size(h): return h.size if h else 0
 def balance(h):
     if isRed(h.right) and not isRed(h.left): h = rotateLeft(h)

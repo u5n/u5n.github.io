@@ -24,3 +24,10 @@ def slope(self):
     else:
         if self.y == 0 : return nan
         return inf if self.y > 0 else -inf
+
+def discretization(A):
+    SA = sorted(set(A))
+    # map A[i] to its rank in SA
+    v_rk = {}; v_rk_i = 0
+    for i,v in enumerate(SA):
+        v_rk[v] = i

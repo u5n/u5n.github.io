@@ -16,14 +16,6 @@ def groupby(A:Iterable):
         if j==n or A[i]!=A[j]:
             yield i,j
             i = j
-
-def discretization(A):
-    SA = sorted(A)
-    # map A[i] to its rank in SA
-    v_rk = {}; v_rk_i = 0
-    for v in SA:
-        if v not in v_rk:
-            v_rk[v] = v_rk_i; v_rk_i += 1
     
 
 def unique(A: list): 

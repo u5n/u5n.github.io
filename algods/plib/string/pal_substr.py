@@ -27,8 +27,8 @@ def longestPalindrome(s):
 Center = namedtuple('Center', ('i', 'r'))
 def manacher_parity(s, parity):
     """ return P, 
-    if parity==1: P[i]*2+parity is length of odd length longest palindrome center at s[i] 
-    else: ... even length longest palindrome center at  gap after s[i]
+    if parity==1: P[i]*2+1 is length of longest odd palindrome center at s[i] 
+    else: P[i]*2 is length of longest even palindrome center at gap after s[i]
     """
     n = len(s)
     P = [0]*n
@@ -46,8 +46,8 @@ def manacher_parity(s, parity):
             P[i]+=1
         if i+P[i]>cen.r:
             cen = Center(i, i+P[i])
-        # ans = max(ans, P[i]*2 + parity)
-        # if ...: ans = (i-P[i]-parity+1, i+P[i]+1)
+        # ans = max(ans, P[i]*2 + parity) # find length
+        # if ...: ans = (i-P[i]-parity+1, i+P[i]+1) # find substring 
     return P
     
 def substr_pal_query(s):
