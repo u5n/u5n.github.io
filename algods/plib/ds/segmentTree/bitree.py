@@ -1,6 +1,13 @@
 """
- index start from 0
+index start from 0
 each method use Left-closed, right-open interval
+note: 
+    seems that it's useless compare to bottom-up SegmentTree
+        hard to learn 
+        hard to remember
+        can't use on monoid
+        hard to change to range operation
+        no space was saved (just give up the original array)
 """
 
 class BIT:
@@ -36,12 +43,12 @@ class BIT:
         return ret
         
     def findA(self):
-        # todo: this can be optimized to log(n)
+        # todo: this can be optimized to only one log(n)
         return [ self.sum(i,i+1) for i in range(self.n)]
 
     def kth(self, k):
         """ des: 
-            if BIT is a Counter, then transform it into a sorted list, return the kth(start from 0) smallest element
+            if BIT is a Counter, then virtually transform it into a sorted list, return the kth(start from 0) smallest element
             if not found, return self.n
         time: O(lg(n))
         comment in the code: treat BIT as a n-ary tree, where node a is parent of node b if interval of a contains interval of b
@@ -114,7 +121,7 @@ class BIT2d:
     def __init__(self, m, n):
         self.m, self.n = m, n
         self.tarr = [[0]*n for _ in range(m)]
-
+    
     def add(self, idx, delta):
         """ A[idx] += delta """
         tarr,m,n = self.tarr, self.m, self.n
@@ -125,7 +132,7 @@ class BIT2d:
                 tarr[x,y] += delta
                 y |= y+1
             x|=x+1
-
+    
     def sum(self, idx, idx2=None):
         """ sum(A[:idx[0],:idx[1]]) or sum(A[idx[0]:idx2[0], idx[1]:idx2[1]]) """
         if idx2!=None:
@@ -160,11 +167,13 @@ class BIT2d_diff(BIT2d):
         """ return A[idx] """
         return self.sum((idx[0]+1, idx[1]+1))
 
+
+
 if __name__ == '__main__':
     """ test BIT class """
     from random import *
     def test_BIT():
-        n = 100
+        n = 212
         A = [random() for i in range(n)]
         B = BIT(n)
         for i,e in enumerate(A):
@@ -175,7 +184,7 @@ if __name__ == '__main__':
         
         atol=1e-08
         for i in range(n):
-            assert abs(B.sum(i+1) - sum(A[:i+1])) <= atol
+            assert abs(B.sum(0, i+1) - sum(A[:i+1])) <= atol
 
     """ test BIT_diff class """
     def test_BIT_diff():
@@ -189,3 +198,5 @@ if __name__ == '__main__':
             B.range_add(l, r, v)
             for i in range(l,r): A[i]+=v
         assert A == [B.query(i) for i in range(n)]
+    
+    test_BIT()

@@ -1,9 +1,9 @@
 """ 
 todo: 
     need textbook reference 
-    consider what if one node edge length is 1 (can't divide)
     compare to different implement of segment tree
-    consider 1d quadtree
+    consider what is 1d quadtree
+    consider 2d segment tree
 """
 class RegionQuadtreeNode:
     # __slots__ = 

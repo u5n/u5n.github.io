@@ -7,6 +7,7 @@ class Data:
         self.sum,self.ma,self.mi,self.add,self.prop = sum,ma,mi,add,prop
     def __str__(self):
         return f"[s:{self.sum} ma:{self.ma} mi:{self.mi} a:{self.add} p:{self.prop}]"
+        
 class SegmentTree:
     """ segment tree build on closed interval [lbor, rbor]
     all use closed interval

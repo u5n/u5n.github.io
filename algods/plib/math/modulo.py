@@ -30,6 +30,7 @@ def _combinatorial_cache(Mod, maxn):
         
         # inv[i]=Mod-((Mod//i)*inv[Mod%i])%Mod
     def perm(n, r):
+        if n<r: return 0
         return fac[n]*invfac[n-r]%Mod
     def comb(n, r):
         return perm(n,r)*invfac[r]%Mod

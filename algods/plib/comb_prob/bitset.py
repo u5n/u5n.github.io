@@ -35,7 +35,7 @@ class Bitset:
     
     def __setitem__(self, i, v:bool):
         self.A |= (1<<i)
-        if not v: self.A -= (1<<i)
+        if not v: self.A ^= (1<<i)
     def __getitem__(self, i):
         if self.A & (1<<i): return True
         else: return False
@@ -63,7 +63,7 @@ class Bitset:
     def __or__(self, oth): return Bitset(self.n, self.A | oth.A)
     def set(self, i):  self.A |= (1<<i)
     def flip(self, i): self.A ^= (1<<i)
-    def unset(self, i): self.A = (self.A|(1<<i))-(1<<i)
+    def unset(self, i): self.A = (self.A|(1<<i))^(1<<i)
     def all(self): return self.A == self.mask
     def any(self): return self.A != 0
     def none(self): return self.A == 0
@@ -81,13 +81,13 @@ class Bitset:
         while A:
             lowbit = A&-A
             yield lowbit.bit_length()-1
-            A -= lowbit
+            A ^= lowbit
     def __reversed__(self):
         A = self.A
         while A:
             higbit = A.bit_length()-1
             yield higbit
-            A -= (1<<higbit)
+            A ^= (1<<higbit)
     def max(self): 
         """ return -1 if self is empty """
         return -1 if self.A == 0 else self.A.bit_length()-1 
@@ -120,7 +120,7 @@ def bs_iter(bs):
     while bs:
         lb = bs&-bs
         ret.append(lb.bit_length()-1)
-        bs -= lb
+        bs ^= lb
     return ret
 
 

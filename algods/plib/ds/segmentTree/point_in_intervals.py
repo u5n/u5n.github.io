@@ -6,8 +6,12 @@ S is a set of intervals
 
 given a point, find all intervals in S that contain it
 todo: 
-    given an interval, find all intervals in S that contain it
     seems impossible in O(output + log*(n))?
+    
+    given an interval, find all intervals in S that contain it
+    given an interval, find all intervals in S that are contained in it
+    
+    
 """
 import bisect
 

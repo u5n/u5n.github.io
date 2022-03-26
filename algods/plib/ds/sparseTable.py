@@ -2,6 +2,11 @@ import operator
 
 ilog2 = lambda i: i.bit_length() - 1
 class SparseTable:
+    """
+    range extreme query, without modify
+
+    find the index with min values, if multiple indices, select leftmost
+    """
     def __init__(self, A, opt=operator.lt):
         """ immutable 
         preprocess O(nlgn)

@@ -4,11 +4,13 @@ TOC
     groupby
 """
 from typing import *
+import itertools
 from math import *
 
 def groupby(A:Iterable):
     """ group A by its value
     can also be used to split string
+    performance: slower than `itertools.groupby`
     """
     n = len(A)
     i = 0
@@ -16,11 +18,12 @@ def groupby(A:Iterable):
         if j==n or A[i]!=A[j]:
             yield i,j
             i = j
-    
 
-def unique(A: list): 
-    # stable unique use hashtable(require element hashable)
-    list(Counter(A))
+def unique_sorted(A:list):
+    """ A is sorted """
+    return [v for v,w in itertools.groupby(A)]
+
+
 
 def cyclic_iterate(head, get_next):
     cur = head
@@ -28,6 +31,7 @@ def cyclic_iterate(head, get_next):
         yield cur
         cur = get_next(cur)
         if cur is head: break
+
 
 class InarrayQueue:
     """ abstract of one usage of monotonic pointers"""
