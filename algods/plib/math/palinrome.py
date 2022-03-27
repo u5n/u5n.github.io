@@ -18,7 +18,7 @@ min_d10 = [0, 1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 100
 def tra_pal10() -> int:
     """ traverse base 10 palindromes in accending order """
     for d_lhf in count(1):
-        # d_lhr is the left half of palindromic number
+        # d_lhr is the left half(if odd, include median) of palindromic number
         # odd length
         for lhf in range(min_d10[d_lhf], min_d10[1+d_lhf]):
             # d_pal = d_lhf*2-1
