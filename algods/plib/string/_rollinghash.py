@@ -82,6 +82,7 @@ def rhs_slidingwindow(A, sz):
         hs = (hs-val(A[li-1])*pbsz)%Mod
         yield li,hs
 
+
 def rhs_multiset():
     """ assume A[i] is integer
     refer:

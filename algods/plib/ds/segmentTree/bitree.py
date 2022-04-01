@@ -72,8 +72,8 @@ class BIT:
                 # go to next right sibling (shrink the interval by half)
                 k -= self.tarr[cur-1]
                 pre = cur
-            # if cur > self.n or k < self.tarr[cur-1]
-            # go to leftmost child ( shrink the interval by half )
+            # if cur > self.n or k < self.tarr[cur-1]:
+            #     go to leftmost child ( shrink the interval by half )
             bit >>= 1
         return pre
 
