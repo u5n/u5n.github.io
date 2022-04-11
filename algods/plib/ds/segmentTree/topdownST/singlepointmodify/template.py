@@ -1,24 +1,25 @@
-from collections import defaultdict
+"""
+todo: determine whether treenode id start from 1
+"""
 from functools import reduce
-from math import log2,ceil
-class SegmentTree:
+
+class ST_template:
     """ segment tree build on closed interval [lbor, rbor]
     all use closed interval 
-    usg: range max/min query with single point assign
     """
     __slots__='n','seg'
     def __init__(self, lbor, rbor, opt):
         self.lbor = lbor
         self.rbor = rbor
         
-        totalnodes = 1<<(1+(rbor-lbor).bit_length())
+        totalnodes = 1<<(1+(rbor-lbor).bit_length()) # upperbound as if it's perfect binary tree
         self.nodes=[0 for _ in range(totalnodes)]
         
         self.opt = opt
 
-    def build(self,A,i=0,l=None,r=None):
-        # assert len(A)>=self.rbor+1, self.lbor==0
-        if r==None: r=self.rbor
+    def build(self, A:dict, i=0, l=None, r=None):
+        # A is defined on [l,r]
+        if r is None: l, r = self.lbor, self.rbor
         if r==l: 
             # initialization leaf
             self.nodes[i] = A[l]
@@ -31,10 +32,10 @@ class SegmentTree:
     def pull(self,i):
         self.nodes[i] = self.opt(self.nodes[i*2+1]+self.nodes[i*2+2])
 
-    def query(self,l,r):
+    def range_query(self,l,r):
         return reduce(self.opt, map(lambda e:self.nodes[e], self.subsegment(l,r)), 0)
 
-    def assign(self, Ai, new):
+    def point_assign(self, Ai, new):
         seg=self.nodes
         p = self.ancestor(Ai)
 

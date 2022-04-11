@@ -20,7 +20,7 @@ def is_bigraph(adj):
     return True
 
 
-def hungarian_dense(adjmat):
+def hungarian_adjmat(adjmat):
     """ des: hungarian algorithm implement use bfs 
     app: dense graph, bigraph maximum cardinality matching 
     time: O(nl^2 * nr), O(nl+nr)
@@ -38,12 +38,47 @@ def hungarian_dense(adjmat):
                     paired_l[x] = y
                     return True
         return False
-
+    
     for x in range(nl):
         if paired_l[x] is None:
             # right vertex → whether in augmentpath
             inpath_y = [False]*nr
             ans += dfs(x)
+    return ans
+
+def hungarian_adjlist(adj, left_vertices):
+    """ des: hungarian algorithm implement use bfs 
+    app: sprase graph, bigraph maximum cardinality matching 
+    time: O(VE), O(V)
+    """
+    def bfs(start):
+        # left vertex i -> its previous left-vertex in augument path
+        prev = [0]*n ; prev[start] = None
+        inpath = [False]*n
+        q = [start]
+        for leftv in q:
+            for rightv in adj[leftv]:
+                if not inpath[rightv]:
+                    inpath[rightv] = True
+                    if paired[rightv] is None:
+                        # iterate the path stored in `prev`, maintain `paired` map
+                        while leftv is not None:
+                            prev_rightv = paired[leftv]
+                            paired[leftv] = rightv
+                            paired[rightv] = leftv
+                            leftv, rightv = prev[leftv], prev_rightv
+                        return True
+                    else:
+                        q.append(paired[rightv])
+                        prev[paired[rightv]] = leftv
+        return False
+
+    ans = 0
+    n = len(adj)
+    paired = [None]*n
+    for start in left_vertices:
+        if paired[start] is None:
+            ans += bfs(start)
     return ans
 
 

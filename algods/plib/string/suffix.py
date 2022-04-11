@@ -2,9 +2,31 @@ from math import *
 import string
 import random
 
+def Z_function(A):
+    """ ret: z[i] is length of longest prefix of A and A[i:]
+    test: https://leetcode-cn.com/problems/sum-of-scores-of-built-strings/
+    """
+    n = len(A)
+    z = [0]*n; z[0] = n
+    l = r = 0
+    for i in range(1, n):
+        if i <= r:
+            z[i] = min (r - i + 1, z[i - l])
+        while i + z[i] < n and A[z[i]] == A[i + z[i]]:
+            z[i] += 1
+        if i + z[i] - 1 > r:
+            l = i
+            r = i + z[i] - 1
+    
+    return z
+
+
 
 def suffix_array(A):
-    """ O(nlgn) """
+    """ 
+    des: the suffix array implement with some constant optimize
+        1. 
+    time: O(nlgn) """
     n = len(A)
     cnt = [0]*n 
     # rank -> suffix number
@@ -23,11 +45,13 @@ def suffix_array(A):
 
     k = 1
     while k<n:
+        # first countsort
         i_ids = 0
         for iA in range(n-k, n): ids[i_ids] = iA; i_ids += 1
         for e_sa in sa:
             if e_sa >= k: ids[i_ids] = e_sa - k; i_ids += 1        
-
+        
+        # second countsort 
         for e_rk in rk: cnt[e_rk] += 1
         for i_cnt in range(1, i_class+1): cnt[i_cnt] += cnt[i_cnt-1]
         for iA in reversed(ids): cnt[rk[iA]] -= 1; sa[cnt[rk[iA]]] = iA
@@ -40,18 +64,13 @@ def suffix_array(A):
                 i_class += 1
             rk[sa[i_sa]] = i_class
         if i_class == n-1: break
-        k = k*2
+        k *= 2
 
     return sa, rk
     
 
-def test():
+if __name__ == '__main__':
     A = [random.random() for _ in range(100)]
     sa, rk = suffix_array(A)
     n = len(A)
-    suffixs = []
-    for i in range(n):
-        suffixs.append((i, A[i:]))
-    suffixs.sort(key=lambda e:e[1])
-    for pair, i in zip(suffixs, sa):
-        assert pair[0] == i
+    assert sorted(range(n), key=lambda i:A[i:]) == sa

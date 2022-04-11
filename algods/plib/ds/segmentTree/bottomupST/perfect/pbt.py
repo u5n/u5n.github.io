@@ -1,7 +1,7 @@
 """
 use special sentry to fill leaves into 2**i numbers 
 application: 
-    when segment size is important
+    when segment forest is not allowd, such as the max repeated subarray
 """
 
 class ST_template_perfectbinarytree:
@@ -15,7 +15,7 @@ class ST_template_perfectbinarytree:
         pass
     def __init__(self, A):
         n_lvl = (len(A)-1).bit_length() + 1
-        self.n = 2**(self.n_lvl - 1)
+        self.n = 2**(n_lvl - 1)
         self.leaves = A + ["dummy"]*(self.n - len(A))
 
         sentryNode = self.Node("Sentry")
@@ -29,14 +29,15 @@ class ST_template_perfectbinarytree:
 
     def __get_segment_sz(self, inode):
         return 1<<(self.n.bit_length() - inode.bit_length())
+    def __get_left_endpoint(self, inode):
+        """
+        formula:
+            lend = (inode - level_begin)*segment_sz
+                 = inode*segment_sz - n
+        """
+        return inode*self.__get_segment_sz(inode) - self.n
     def __get_right_medium(self, inode):
-        """
-        how to get segment right medium : 
-            child_level_begin = 1<<(child_level-1)
-            rmid = (inode*2+1 - child_level_begin)*child_segment_sz
-                 = (inode*2+1)*child_segment_sz - n
-        """
-        return (inode*2+1)*self.__get_segment_sz(inode*2) - self.n
+        return self.__get_left_endpoint(inode) + self.__get_segment_sz(inode)//2
 
     def pull(self, paridx):
         nodes = self.nodes

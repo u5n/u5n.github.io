@@ -1,12 +1,20 @@
 import typing 
 import sys, inspect
+from inspect import stack, getframeinfo
 from timeit import default_timer as time
 
 from plib.basicds.binaryTree import TreeNode, decode as binaryTree_decode
 from plib.basicds.singlyLinkedlist import ListNode, toLinkedlist
-from pathlib import Path
 
-def D(func):
+
+def D(*args, **kwargs):
+    """des: func that used to debug, wrapper of print function
+    """
+    kwargs["file"] = sys.stderr
+    caller = getframeinfo(stack()[1][0])
+    print(f"l{caller.lineno}: ", *args, **kwargs)
+
+def ToStdout(func):
     """ decorator that send what function return to stdout
     _:name: Debug 
     application: run a function without `print(func(**))` """

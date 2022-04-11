@@ -6,10 +6,10 @@ S is a set of intervals
 
 given a point, find all intervals in S that contain it
 todo: 
-    seems impossible in O(output + log*(n))?
-    
-    given an interval, find all intervals in S that contain it
-    given an interval, find all intervals in S that are contained in it
+    1. use lazy propagation
+    2. rewrite subsegment function; remove ancester function
+    3. given an interval, find all intervals in S that contain it
+    4. given an interval, find all intervals in S that are contained in it
     
     
 """

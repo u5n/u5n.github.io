@@ -33,15 +33,7 @@ def _secondmin(self):
     mi = smi = inf
     def append_rank(v):
         nonlocal mi, smi
-        """ 
-        used to find min and second min(by index in the sorted array) together
-        another pattern, which is hard to understand:
-            if v < smi:
-                if v < mi:
-                    mi, smi = v, mi
-                else:
-                    smi = v
-        """
+        """ used to find min and second min(by index in the sorted array) together """
         if v < mi:
             mi, smi = v, mi
         elif v < smi:
@@ -49,11 +41,8 @@ def _secondmin(self):
 
     def append_distinct(v):
         nonlocal mi, smi
-        """
-        used to find min and second min(by index in the sorted set) together
-        """
+        """ used to find min and second min(by index in the sorted set) together """
         if v < mi:
             mi, smi = v, mi
         elif mi < v < smi:
             smi = v
-        

@@ -9,34 +9,33 @@ TOC:
     pivot partition into two interval
 
 """
-from collections import deque
-from typing import List
 import random
 
 
-def merge_sort(A):
+def mergesort(A):
     """ convention: use left closed right open interval, cuz it's used to count number of sth.
     time: O(nlgn),O(lgn)
     """
     def merge(l,m,r):
         """ inplace merge A[l:m] and A[m:r] into A[l:r] """
-        ret = [] # external array to store the sorted A[l:r]
+        tmp = [] # external array to store the sorted A[l:r]
         ri=m
-        # available O(r-l) algorithm here
+        # available O(r-l) algorithm 
         for li in range(l, m):
             while ri<r and A[ri]<A[li]:
-                ret.append(A[ri])
+                tmp.append(A[ri])
                 ri+=1
-            ret.append(A[li])
-        A[l:ri] = ret
+            tmp.append(A[li])
+        A[l:ri] = tmp
     
-    def mergesort(l,r):
+    def mergesort_dfs(l,r):
         if r-l<=1: return
         m = (l+r)//2
-        mergesort(l,m)
-        mergesort(m,r)
+        mergesort_dfs(l,m)
+        mergesort_dfs(m,r)
         merge(l,m,r)
-    mergesort(0, len(A))
+
+    mergesort_dfs(0, len(A))
 
 def countsort(A, key=lambda x:x):
     """ assume key >= 0, key is int """
@@ -93,32 +92,36 @@ def quicksort(A, l, r):
 def three_partition(A, l, r, pivot=None):
     """
     pivot partition A[l:r] into three interval A[l:i], A[i:j], A[j:r]
-    interval: [,)
     """
     # assert l!=r
     i = j = l
-    k = r-1
+    k = r
     if pivot is None:
         pivot = A[random.randrange(l,r)]
-    while j<=k:
+    while j<k:
         # [l:i] < ; [i:j] == ; [k:] >
         if A[j]<pivot:
             A[j],A[i]=A[i],A[j]
-            i+=1
-            j+=1
+            i+=1; j+=1
         elif A[j]==pivot:
             j+=1
         else:
-            A[j],A[k]=A[k],A[j]
             k-=1
+            A[j],A[k]=A[k],A[j]
     return i,j
 
 def partition(A, l, r, pivot=None):
-    """ inplace, not stable 
-    return new position of pivot
+    """ 
+    des:
+        rearrange `A` such that all elements less_than pivot are put before pivot
+        return position of pivot
+    feature: inplace, not stable 
     """
     if pivot is None:
-        pivot = A[random.randrange(l,r)]
+        pivot_index = random.randrange(l,r)
+        A[pivot_index], A[r-1] = A[r-1], A[pivot_index]
+        pivot = A[r-1]
+
     i = l
     for j in range(l, r):
         # loop inv: A[l:i] <= pivot < A[i:j]
