@@ -17,20 +17,23 @@ class ST_template:
         
         self.opt = opt
 
-    def build(self, A:dict, i=0, l=None, r=None):
+    def buildfrom(self, A):
         # A is defined on [l,r]
-        if r is None: l, r = self.lbor, self.rbor
-        if r==l: 
-            # initialization leaf
-            self.nodes[i] = A[l]
-            return
-        m=(r+l)//2 # floor division
-        self.build(A,i*2+1,l,m)
-        self.build(A,i*2+2,m+1,r)
-        self.pull(i)
+        def build(nid, l, r):
+            if r==l: 
+                # initialization leaf
+                self.nodes[nid] = A[l]
+                return
+            m=(r+l)//2 # floor division
+            build(nid*2,l,m)
+            build(nid*2+1,m+1,r)
+            self.pull(nid)
+
+        build(1, self.lbor, self.rbor)
+        
 
     def pull(self,i):
-        self.nodes[i] = self.opt(self.nodes[i*2+1]+self.nodes[i*2+2])
+        self.nodes[i] = self.opt(self.nodes[i*2]+self.nodes[i*2+1])
 
     def range_query(self,l,r):
         return reduce(self.opt, map(lambda e:self.nodes[e], self.subsegment(l,r)), 0)
@@ -43,27 +46,31 @@ class ST_template:
 
         for i in p: self.pull(i)
     
-    def subsegment(self,Al,Ar,i=0,l=None,r=None):
+    def subsegment(self,Al,Ar):
         """ des: interval operation template, without update(pull function)
         ret: yield all node that contained in interval [Al,Ar], in order of traverse_postorder desc
         """
-        if r is None: l, r = self.lbor, self.rbor
-        if Al>r or l>Ar: return
-        elif Al<=l and r<=Ar: 
-            yield i
-        else:
-            m = (r+l)//2 # floor division
-            yield from self.subsegment(Al,Ar,i*2+1,l,m)
-            yield from self.subsegment(Al,Ar,i*2+2,m+1,r)
+        def subsegment(nid ,l, r):
+            if Al>r or l>Ar: return
+            elif Al<=l and r<=Ar: 
+                yield nid
+            else:
+                m = (r+l)//2 # floor division
+                yield from self.subsegment(nid*2,l,m)
+                yield from self.subsegment(nid*2+1,m+1,r)
     
-    def ancestor(self,Ai,i=0,l=None,r=None):
+        subsegment(1, self.lbor, self.rbor)
+
+    def __ancestor(self,Ai):
         """ des: point opeartion template, without update; 
         ret: yield all node that contain point Ai, in order of depth desc
         """
-        if r is None: l, r =self.lbor, self.rbor
-        if r==l: yield i
-        else:
-            m = (r+l)//2 # floor division
-            if Ai<=m: yield from self.ancestor(Ai,i*2+1,l,m)
-            else: yield from self.ancestor(Ai,i*2+2,m+1,r)
-            yield i
+        def ancestor(nid, l, r):
+            if r==l: yield nid
+            else:
+                m = (r+l)//2 # floor division
+                if Ai<=m: yield from ancestor(nid*2,l,m)
+                else: yield from ancestor(nid*2+1,m+1,r)
+                yield nid
+
+        ancestor(1, self.lbor, self.rbor)

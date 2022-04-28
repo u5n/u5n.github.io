@@ -43,7 +43,9 @@ def L(loop=1, maxtime=3600, offset=0):
                 func()
             elif len(inspect.signature(func).parameters)==1:
                 func(break_LOOP)
-            acc += (-start+(start:=time()))
+            
+            _t = time(); acc += _t-start; start = _t
+
             if acc >= maxtime:
                 raise Exception(f"run {i_l} loops with TLE")
         acc /= loop

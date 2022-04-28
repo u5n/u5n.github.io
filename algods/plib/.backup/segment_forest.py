@@ -1,4 +1,11 @@
 """
+create a segment forest size 6 , get the node corresponding interval
+            2
+          /   \
+     3   4     5
+    / \ / \   / \
+    6 7 8  9 10 11
+    0 1 2  3 4  5 
 application: ?
 """
 class ST_template_running:
@@ -58,6 +65,7 @@ class ST_template_running:
 class ST_template_cache:
     """ point modify, range query 
     preprocess the node correspond interval 
+    the node.Al, node.Ar information is wrong on some unused(subsegment function won't yield) nodes
     """
     __slots__ = 'n', 'nodes'
     class Node:

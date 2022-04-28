@@ -16,7 +16,7 @@ TOC:
 """
 from string import *
 class Bitset:
-    """ simulate cpp std::bitset, impl with a big integer
+    """ use a big integer to represent a bool arraylist
     if the `n` is rather small or there is no limit like `n`, don't use this class
     intend: intend to speed up dp transfer calculation especially for knapsack problems
     test: 
@@ -104,9 +104,10 @@ class Bitset:
         return ( (self.A>>l) & ((1<<(r-l)) - 1) ).bit_count()
     def issubset(self, oth):
         return self.A&oth.A == self.A
-    def __str__(self):
+    def __repr__(self):
         binA = format(self.A, f"0{self.n}b")
         return f"Bitset<{self.n}>({binA})"
+
 
 def bs_max(bs): 
     """ return -1 if self is empty """
@@ -116,6 +117,7 @@ def bs_min(bs):
     return (bs & -bs).bit_length()-1
 
 def bs_iter(bs):
+    """ return arraylist of indices of 1s of bitset `bs` """
     ret = []
     while bs:
         lb = bs&-bs

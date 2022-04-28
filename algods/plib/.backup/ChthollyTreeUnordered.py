@@ -23,7 +23,7 @@ class ChthollyTreeUnordered:
         self.A = [Interval(i,i,v) for i,v in enumerate(A)]
     
     def split(self, l, r):
-        """ ensure there is an interval start at l and an interval end at r
+        """ this function ensure there is an interval start at l and an interval end at r
         i.e. there won't be partially overlap relationship between intervals in A and [l,r]
         """
         # assert 0<=x<=n
@@ -91,6 +91,7 @@ class ChthollyTreeUnordered:
                     ret.append((intvl.val, r-l+1))
                     break
         return ret
+        
     def get_point(self, x):
         A = self.A
         for intvl in A:

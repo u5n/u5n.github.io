@@ -20,17 +20,10 @@ des:
             else:
                 it's left child(if has parent)
         
-        the normal bottom up segment tree of size 6 create a forest
-                    2
-                  /   \
-             3   4     5
-            / \ / \   / \
-            6 7 8  9 10 11
-            0 1 2  3 4  5 
         
 convention: 
     node number start from 1
-    the `subsegment` or `query` function use closed interval
+    use closed interval
 
 TOC:
     ST_template
@@ -76,6 +69,31 @@ class ST_template:
             if r&1==0: yield nodes[r]
             l=(l+1)//2
             r=(r-1)//2
+
+    def binary_search_first(self, Al, Ar, f):
+        """ find min i(Al<=i<=Ar) that f(i), if f is monotonic increased bool function"""
+        n = nodes = self.n, self.nodes
+        g = ___ # inode -> EXIST{;f(j); j in inode correspond interval}
+        def binary_search_node(inode):
+            while inode<n: 
+                if g[inode*2]:
+                    inode = inode*2
+                else:
+                    inode = inode*2+1
+            return inode-n
+        
+        l, r = Al+n, Ar+n
+        subitv = []
+        while l<=r:
+            if l&1: subitv.append(l)
+            if 0==r&1: subitv.append(r)
+            l=(l+1)//2
+            r=(r-1)//2
+        for inode in subitv:
+            if g[inode]:
+                return binary_search_node(inode)
+        raise Exception("not found")
+
 
 class ST_add:
     """ the opeartor is operator.add """
@@ -127,7 +145,8 @@ class ST_minval:
 
     def pull(self, paridx):
         nodes = self.nodes
-        nodes[paridx] = min(nodes[paridx*2], nodes[paridx*2+1])
+        lchi, rchi = nodes[paridx*2], nodes[paridx*2+1]
+        nodes[paridx] = lchi if lchi < rchi else rchi
 
     def assign(self, Ai, v):
         cur = self.n + Ai
@@ -167,10 +186,9 @@ class ST_minidx:
             self.pull(inode_id)
 
     def pull(self, paridx):
-        nodes = self.nodes
-        lchi = nodes[paridx*2]
-        rchi = nodes[paridx*2+1]
-        if nodes[self.n+lchi] <= nodes[self.n+nodes[rchi]]:
+        n, nodes = self.n, self.nodes
+        lchi, rchi = nodes[paridx*2], nodes[paridx*2+1]
+        if nodes[n+lchi] <= nodes[n+rchi]:
             nodes[paridx] = lchi
         else:
             nodes[paridx] = rchi
@@ -184,11 +202,7 @@ class ST_minidx:
     
     def range_min(self, l, r):
         nodes, n = self.nodes, self.n
-
-        # ordered
-        seg_l, seg_r = [], []
-        l += n
-        r += n
+        seg_l, seg_r, l, r = [], [], l+n, r+n
         while l<=r:
             if l&1: seg_l.append(l)
             if r&1==0: seg_r.append(r)

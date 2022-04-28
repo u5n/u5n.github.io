@@ -57,9 +57,9 @@ class ST_add:
 
         return subsugment(1, 0, self.n - 1)
 
-
-A = ST_add(5)
-A.buildfrom([0,9,5,7,3])
-print(A.range_sum(4,4))
-print(A.range_sum(2,4))
-print(A.range_sum(3,3))
+if __name__ == '__main__':
+    A = ST_add(5)
+    A.buildfrom([0,9,5,7,3])
+    print(A.range_sum(4,4))
+    print(A.range_sum(2,4))
+    print(A.range_sum(3,3))

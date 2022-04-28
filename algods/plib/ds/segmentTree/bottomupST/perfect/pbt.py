@@ -1,7 +1,7 @@
 """
 use special sentry to fill leaves into 2**i numbers 
 application: 
-    when segment forest is not allowd, such as the max repeated subarray
+    when node needs to store continous interval
 """
 
 class ST_template_perfectbinarytree:
