@@ -22,7 +22,7 @@ def binary_search_first(l, r, f):
             first `i` in interval [`l`,`r`) such that `f(i)` is True
             if not found, return `r`
     performance: maybe TLE if `bisect` is available
-    plang: equiv to `bisect.bisect_left(True,range(l,r),key=f)+l`
+    plang: equiv to `bisect.bisect_left(range(r),True,key=f,lo=l)`
     """
     assert l<=r
     while l<r:
@@ -36,6 +36,7 @@ def binary_search_last(l, r, f):
     des: 
         example: √ √ √ √ X X X X 
         find last `x` in (`l`,`r`] that `f(x)`; if not found return `l`
+    plang: equiv to `bisect.bisect_left(range(r+1),True,key=lambda x:1-f(x),lo=l+1)-1`
     """
     assert l<=r
     while l<r:

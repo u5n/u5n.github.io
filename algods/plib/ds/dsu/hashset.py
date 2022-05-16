@@ -1,11 +1,7 @@
-""" this page implement dsu by a set of hashset
+""" implement dsu with a set of hashset
 operation
     unite two set
         time: amortized O(lgn)
-    make a new set for an element 
-        time: O(1)
-    iterate all element in from a set s 
-        time: O(|s|)
 """
 
 class Dsu:
@@ -13,7 +9,7 @@ class Dsu:
     the element is numbered in [0,n)
     """
     def __init__(self, n):
-        self.idx_hs = [{i} for i in range(n)]
+        self.idx_hs = [{i, } for i in range(n)]
     
     def unite(self, l, r):
         # assert: 0<=l<n; 0<=r<n
@@ -31,6 +27,7 @@ class Dsu:
         return True
         
     def detach(self, i):
-        if len(self.idx_hs)>1:
-            self.idx_hs[i].remove(i)
-            self.idx_hs[i] = {i, }
+        idx_hs = self.idx_hs
+        if len(idx_hs[i])>1:
+            idx_hs[i].remove(i)
+            idx_hs[i] = {i, }

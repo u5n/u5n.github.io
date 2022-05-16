@@ -1,6 +1,9 @@
+from functools import cache
+from math import inf
 def solve(mat):
-    m,n=len(mat), len(mat[0])
+    n,m=len(mat), len(mat[0])
 
+    @cache
     def adj_cells(ux, uy):
         """ yield adjacent cells that in bounds """
         # top tr right rd down dl left lt
@@ -9,25 +12,29 @@ def solve(mat):
         ret = []
         for dx,dy in (-1,0),(0,1),(1,0),(0,-1):
             x,y = ux+dx,uy+dy
-            if 0<=x<m and 0<=y<n: # and mat[x][y]
+            if 0<=x<n and 0<=y<m: # and mat[x][y]
                 ret.append((x,y))
         return ret
     
-    def bfs(start):
-        """ single source bfs start at `start`, on `mat` """
-        q = [start]
-        vis = set(q)
+    def bfs(start: list):
+        """ dijkstra(bfs) start at `start`, on `mat` """
+        q = start[:]
+        dis = [[inf]*m for _ in range(n)]
+        for x,y in start:
+            dis[x][y] = 0
+
         d = 0 
         while q:
             pq = q
             q = []
             for x, y in pq:
                 # d is distance from (x,y) to start
-                for nxt in adj_cells(x, y):
-                    if nxt not in vis:
-                        q.append(nxt)
-                        vis.add(nxt)
+                for nx,ny in adj_cells(x, y):
+                    if dis[nx][ny] > d+1:
+                        q.append((nx, ny))
+                        dis[nx][ny] = d+1
             d += 1
+        return dis
 
 
 def spiral_traverse(mat):

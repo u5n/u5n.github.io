@@ -25,6 +25,7 @@ class SparseTable:
                 can2 = M[j-1][i+pow2j1]
                 M[j][i] = can1 if opt(A[can1],A[can2]) else can2
         self.M, self.opt, self.A = M, opt, A
+        
     def query(self,l,r):
         """ret: min(A[l:r+1])
         assert: l<=r

@@ -67,6 +67,7 @@ def str_return(ret, argtype):
         ret = list(ret)
     
     return str(ret)
+
 def run_function_usestd(f, detail, selected, custom_args):
     paras = inspect.getfullargspec(f)
     narg = len(paras.args)-1 # exclude `self` parameter
@@ -81,7 +82,7 @@ def run_function_usestd(f, detail, selected, custom_args):
             print("Custom Test\t")
         else:
             try:
-                # get arg from stdin and change to python type
+                # get arg from stdin until EOF and change to python type
                 raw_args = [input() for _ in range(narg)]
                 if selected and i_cases not in selected:
                     i_cases += 1
@@ -212,16 +213,22 @@ def C(filename, nskip=2, template=None):
     # count not-empty lines, also find some special situations
     with open(filename) as f:
         multilineString = False
+        nline = 1
         for line in f.readlines():
+            validline = True
             if multilineString:
                 if line.rstrip().endswith('"""'):
                     multilineString = False
-                continue
-            if line.lstrip().startswith('#'): continue
-            elif line.strip() == '': continue
+                validline = False
+            elif line.lstrip().startswith('#'): validline = False
+            elif line.strip() == '': validline = False
             elif line.lstrip().startswith('"""'):
                 multilineString = True
-            d['LINE'] += 1
+                validline = False
+
+            if validline or nline <= nskip:
+                d['LINE'] += 1
+            nline += 1
     d['LINE'] -= nskip
 
     """ find code complexity """
