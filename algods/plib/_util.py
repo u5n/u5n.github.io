@@ -24,24 +24,25 @@ def ToStdout(func):
         return ret
     return wrapper
 
-def L(loop=1, maxtime=3600, offset=0):
+def measure(loop=1, maxtime=3600, offset=0):
     """ name: Loop
     find the average runtime of a none parameter function 
     the runtime returned decreased by offset(ms)
     application: measure runtime
     """
     def LOOP_decorator(func):
-        if 0==loop: return 
+        if 0>=loop: return 
         acc = 0
         def break_LOOP(*args):
             """ able to break loop from wrapped function """
             errormsg = f'debug info: {args}\n' if len(args)>0 else ''
             raise Exception(errormsg + f'{func.__name__} runs {i_l} loops in {acc/i_l - offset/1000} (ms), intermediate break with breaker')
         for i_l in range(1, 1+loop):
-            start = time()
             if len(inspect.signature(func).parameters)==0:
+                start = time()
                 func()
             elif len(inspect.signature(func).parameters)==1:
+                start = time()
                 func(break_LOOP)
             
             _t = time(); acc += _t-start; start = _t

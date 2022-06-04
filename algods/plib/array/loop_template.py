@@ -19,10 +19,16 @@ def groupby(A:Iterable):
             yield i,j
             i = j
 
+import numpy as np
+def groupby_np(A):
+    """ group A by its value use its difference """
+    # min index of each groups; index[-1] == len(A)
+    index = np.diff(A, prepend=inf, append=inf).nonzero()[0]
+    
+
 def unique_sorted(A:list):
     """ A is sorted """
     return [v for v,w in itertools.groupby(A)]
-
 
 
 def cyclic_iterate(head, get_next):

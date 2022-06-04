@@ -32,6 +32,7 @@ def bfs(G, start: Iterable):
     
 def dijkstra(adj, start: Iterable):
     """ single/multi source shortest path in graph adjacent list `G` 
+    node numbered from 0 to n-1
     test: @lc#743
     """
     dis = [inf]*len(adj)

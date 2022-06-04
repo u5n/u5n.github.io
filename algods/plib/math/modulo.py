@@ -41,12 +41,12 @@ def trunc_div(a, b):
     if q < 0 and r: q += 1
     return q
 
-def extended_euclidean(a,b):
+def extended_euclidean(a, b):
     """
-    ps * a + pt * b  = abs(pr) = gcd(a,b)
     solve equation `ax + by = gcd(a,b)`
         x = ps + k*b//d
         y = pt - k*a//d
+        ps * a + pt * b  = abs(pr) = gcd(a,b)
     """
     pr,r =a,b
     ps,s =1,0
@@ -56,7 +56,7 @@ def extended_euclidean(a,b):
         pr,r=r,pr-quo*r
         ps,s=s,ps-quo*s
         pt,t=t,pt-quo*t
-    return ps, pt, pr
+    return ps, pt
 
 def solve_linear_congruences(a,b,m):
     """ solve equation ax ≡ b (mod m) && 0<=x<m
@@ -170,3 +170,4 @@ def _namespace_single_point(Mod):
         for p in prime_factors(x):
             ret=ret//p*(p-1)
         return ret
+

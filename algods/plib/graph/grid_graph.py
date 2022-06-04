@@ -1,7 +1,11 @@
+"""
+avoid pass dimension as parameter, most function is defined under a function
+"""
 from functools import cache
 from math import inf
-def solve(mat):
-    n,m=len(mat), len(mat[0])
+
+def solve(grid):
+    n,m=len(grid), len(grid[0])
 
     @cache
     def adj_cells(ux, uy):
@@ -12,12 +16,13 @@ def solve(mat):
         ret = []
         for dx,dy in (-1,0),(0,1),(1,0),(0,-1):
             x,y = ux+dx,uy+dy
-            if 0<=x<n and 0<=y<m: # and mat[x][y]
+            if 0<=x<n and 0<=y<m: # and grid[x][y]
                 ret.append((x,y))
         return ret
     
+    
     def bfs(start: list):
-        """ dijkstra(bfs) start at `start`, on `mat` """
+        """ bfs start at `start`, on `grid` """
         q = start[:]
         dis = [[inf]*m for _ in range(n)]
         for x,y in start:
@@ -37,13 +42,13 @@ def solve(mat):
         return dis
 
 
-def spiral_traverse(mat):
+def spiral_traverse(grid):
     """
     spiral matrix generator
     start at topleft
     clockwise
     """
-    m,n=len(mat),len(mat[0])
+    m,n=len(grid),len(grid[0])
     maxl = (min(m,n)+1)//2
     for l in range(maxl):
         h = m - l*2

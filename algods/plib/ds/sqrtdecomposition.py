@@ -2,87 +2,202 @@ from math import *
 from itertools import islice
 import operator
 
-class SqrtDecomposition:
+class SqrtDecompositionSingle:
     """
-    preprocess in O(n), space O(n)
-    maintain an arraylist
-    method
-        interval query O(√n)
-        point change O(√n)
-        point query O(1)
+    time:
+        init: O(n)
+        interval query: O(√n)
+        point change with monoid merge func: O(√n)
+        point change with group merge func: O(1)
+        point query: O(1)
+    des:
+        similar to segment tree, it can divide any interval into O(√n) nodes ( complete block or single point )
+        `self.merge`:
+            a binary operator
+            each block@A[l:r] maintain the result of `reduce(self.merge, A[l:r])`
+        if the last block is not full:
+            it will not be used
+
     """
-    def __init__(self, n, opt=max, id_ele=-inf, A=None):
-        if opt in (max, min):
+    def __init__(self, A, merge):
+        n = len(A)
+        if merge in (max, min):
             self.assign = self.assign_monoidopt
-        elif opt in (operator.add, operator.xor):
+            id_ele = -inf if merge is max else inf
+        elif merge in (operator.add, operator.xor):
             self.assign = self.assign_groupopt
+            id_ele = 0
         else:
-            raise Exception("unknown binary operator")
+            raise Exception("unknown operator")
+
         block_sz = isqrt(n)
-        n_blocks = ceil(n/block_sz)
+        n_blocks = floor(n/block_sz) # use `floor` to ignore last not full block
+
         blocks = [id_ele]*n_blocks
-        if A:
-            self.A = A
-            for i,e in enumerate(A):
-                p_blocks = i// block_sz
-                blocks[p_blocks] = opt(blocks[p_blocks], e)
-        else:
-            self.A = [id_ele]*n
-        self.n, self.blocks, self.opt, self.block_sz = n, blocks, opt, block_sz    
-        self.id_ele = id_ele
-    def query_interval(self, l, r):
+        
+        for i,e in enumerate(A):
+            block_id = i// block_sz
+            blocks[block_id] = merge(blocks[block_id], e)
+
+        self.A, self.n, self.blocks, self.block_sz = A, n, blocks, block_sz    
+        self.id_ele, self.merge = id_ele, merge
+
+    def range_query(self, l, r):
         """ query on A[l:r] 
         time: O(√n)
         """
-        A, opt, block, block_sz = self.A , self.opt, self.blocks, self.block_sz
+        A, merge, block, block_sz = self.A , self.merge, self.blocks, self.block_sz
 
-        # ceil to nearest leftendpoint of block 
+        # ceil to nearest left endpoint of block 
         lend = l + (-l % block_sz)
-        # floor to nearest rightendpoint of block
+        # floor to nearest left endpoint of block
         rend = r - (r % block_sz)
         ret = self.id_ele
 
         # inside one block
         if lend >= rend:
             for i in range(l, r):
-                ret=opt(ret, A[i])
+                ret = merge(ret, A[i])
         # accross multiple block
         else:
             for i in range(l, lend):
-                ret=opt(ret, A[i])
-            for i_block in range(lend//block_sz, rend//block_sz):
-                ret=opt(ret, block[i_block])
-            for i in range(rend ,r):
-                ret=opt(ret, A[i])
+                ret = merge(ret, A[i])
+            for block_id in range(lend//block_sz, rend//block_sz):
+                ret = merge(ret, block[block_id])
+            for i in range(rend, r):
+                ret = merge(ret, A[i])
         return ret
-        
+
+
     def assign_monoidopt(self, i, v):
         """ des: assign also recalculate the whole block, apply to monoid opeartor
         time: O(n) """
-        A, blocks, opt = self.A, self.blocks, self.opt
-        p_blocks = i//self.block_sz
+        A, blocks, merge, block_sz, id_ele = self.A, self.blocks, self.merge, self.block_sz, self.id_ele
+        block_id = i//block_sz
         
-        if v==opt(A[i], v): # if A[i] < v:
-            blocks[p_blocks] = ___(blocks[p_blocks], v)
+        if v==merge(A[i], v): # if A[i] < v:
+            blocks[block_id] = ___(blocks[block_id], v)
             return
         elif A[i] == v: 
             return
         
-        # recalculate blocks[p_blocks]
+        # recalculate blocks[block_id]
+        blocks[block_id] = id_ele
         A[i] = v
-        lend = p_blocks * self.block_sz
-        for Ai in range(lend, min(self.n, lend + self.block_sz)):
-            Av = A[Ai]
-            blocks[p_blocks] = self.opt(blocks[p_blocks], Av)
+        for Ai in self.block_range(block_id):
+            blocks[block_id] = merge(blocks[block_id], A[Ai])
+
     def assign_groupopt(self, i, v):
         """ des: assign A[i] to v, assume the operator is a group 
         time: O(1) """
-        p_blocks = i//self.block_sz
+        A, blocks, merge = self.A, self.blocks, self.merge
+        block_id = i//self.block_sz
         
-        # inverse opt of self.opt
-        self.blocks[p_blocks] = ___(self.blocks[p_blocks], self.A[i])
-        self.A[i] = v
-        self.blocks[p_blocks] = self.opt(self.blocks[p_blocks], v)
+        # inverse operation of self.merge
+        blocks[block_id] = ___(blocks[block_id], A[i])
+        A[i] = v
+        blocks[block_id] = merge(blocks[block_id], v)
+
+    def recalc_range(self, block_id):
+        """ used when multiple value inside a block has been changed """
+        A, blocks, merge, block_sz, n, id_ele = self.A, self.blocks, self.merge, self.block_sz, self.n, self.id_ele
+        lend, rend = l - (l % block_sz), r + (-r % block_sz)
+        for block_id in range(lend//block_sz, rend//block_sz):
+            blocks[block_id] = id_ele
+            for Ai in self.block_range(block_id):
+                blocks[block_id] = merge(blocks[block_id], A[Ai])
+            lend += block_sz
+
+    def block_range(self, block_id):
+        lend = block_id*self.block_sz
+        return range(lend, min(self.n, lend + self.block_sz))
+
+
+class SqrtDecompositionMulti:
+    class Node:
+        __slots__ = 'max', 'sum'
+        def __init__(self, max, sum):
+            self.max, self.sum = max, sum
+    
+    def __init__(self, A):
+        n = len(A)
+        block_sz = isqrt(n)
+        n_blocks = ceil(n/block_sz)
+        blocks = [ self.Node(-inf, 0) for _ in range(n_blocks)]
+        
+        for i,e in enumerate(A):
+            block_id = i// block_sz
+
+            blocks[block_id].max = max(blocks[block_id].max, e)
+            blocks[block_id].sum += e
+
+        self.A, self.n, self.blocks, self.block_sz = A, n, blocks, block_sz    
+
+    def iterate_nodes(self, l, r):
+        """ 
+        yield nodes in the interval [l:r]
+            the node type could be a single value
+            the node type could be `self.Node`
+
+        time: O(√n)
+        """
+        A,  block, block_sz = self.A , self.blocks, self.block_sz
+
+        # ceil to nearest leftendpoint of block 
+        lend = l + (-l % block_sz)
+        # floor to nearest rightendpoint of block
+        rend = r - (r % block_sz)
+
+        ret = []
+        # inside one block
+        if lend >= rend:
+            for i in range(l, r):
+                ret.append((i, A[i]))
+        # accross multiple block
+        else:
+            for i in range(l, lend):
+                ret.append((i, A[i]))
+            for block_id in range(lend//block_sz, rend//block_sz):
+                ret.append((block_id*block_sz, block[block_id]))
+            for i in range(rend ,r):
+                ret.append((i, A[i]))
+        return ret
+
+
+    def range_sum_query(self, l, r):
+        ret = 0
+        for _, node in self.iterate_nodes(l, r):
+            ret += node.sum if isinstance(node, self.Node) else node
+        return ret
+                
+    def assign(self, i, v):
+        A, blocks, block_sz = self.A, self.blocks, self.block_sz
+        block_id = i//block_sz
+        ov, A[i] = A[i], v
+        blocks[block_id].sum += v - ov
+        # recalculate blocks[block_id].max
+        blocks[block_id].max = -inf
+        if v > ov:
+            blocks[block_id].max = max(blocks[block_id].max, v)
+        else:
+            for Ai in self.block_range(block_id):
+                blocks[block_id].max = max(blocks[block_id].max, A[Ai])
+    
+    def recalc_range(self, l, r):
+        """ recalculate block overlap with [l,r) """
+        A, blocks, block_sz = self.A, self.blocks, self.block_sz
+        lend, rend = l - (l % block_sz), r + (-r % block_sz)
+        for block_id in range(lend//block_sz, rend//block_sz):
+            blocks[block_id].max = -inf
+            blocks[block_id].sum = 0
+            for Ai in self.block_range(block_id):
+                blocks[block_id].max = max(blocks[block_id].max, A[Ai])
+                blocks[block_id].sum += A[Ai]
+
+    def block_range(self, block_id):
+        lend = block_id*self.block_sz
+        return range(lend, min(self.n, lend + self.block_sz))
+
 
 def mosalgorithm(A, queries):
     """ process offline queries where the queriese contains some inclusive intervals 
@@ -93,11 +208,11 @@ def mosalgorithm(A, queries):
     ___ = print("Code Template, need finish"), 1/0
     n = len(A)
     block_sz = isqrt(n)
-    def query_opt(q):
+    def query_cmp(q):
         l,r,i = q
         i_block = l//block_sz
         return i_block, r if i_block%2==0 else -r
-    sq = sorted([(l,r,i) for i,(l,r) in enumerate(queries)], key=query_opt)
+    sq = sorted([(l,r,i) for i,(l,r) in enumerate(queries)], key=query_cmp)
     ds = ___
     ret = [None]*len(queries)
     l , r = 0,-1 # represent an inclusive interval
@@ -109,18 +224,19 @@ def mosalgorithm(A, queries):
         ret[qi] = ___
         
     return ret
+
 if __name__ == "__main__":
-    # testcase1 RMQ and RSQ
+    # testcase1 RMQ and RSumQ without assign
     n = 100
     import random
     A = [random.randrange(-100, 100) for _ in range(n)]
-    sq_max = SqrtDecomposition(n, A=A)
-    sq_sum = SqrtDecomposition(n, operator.add, 0, A=A)
+    sq_max = SqrtDecompositionSingle(A, max)
+    sq_sum = SqrtDecompositionSingle(A, operator.add)
     # for i,e in enumerate(A):
     #     sq_max.assign(i, e)
     #     sq_sum.assign(i, e)
     for l in range(n):
         for r in range(l+1, n+1):
-            assert max(A[l:r]) == sq_max.query_interval(l,r)
-            assert sum(A[l:r]) == sq_sum.query_interval(l,r)
+            assert max(A[l:r]) == sq_max.range_query(l,r)
+            assert sum(A[l:r]) == sq_sum.range_query(l,r)
                 

@@ -1,6 +1,6 @@
 from typing import *
-import numpy as np
 from string import *
+
 """
 numeric
 """

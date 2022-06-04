@@ -1,6 +1,14 @@
 """
 diff with sorted_partition_intervals.py 
     interval don't contain value, store interval information only
+    intervals are disjoint and not all interval has adjacent interval
+test:
+    @lc#2276
+        https://leetcode.cn/submissions/detail/314560085/
+    @lc#715
+        https://leetcode.cn/submissions/detail/315052501/
+    @lc#352
+        https://leetcode.cn/submissions/detail/315065563/
 """
 
 from sortedcontainers import SortedList
@@ -49,7 +57,7 @@ class SortedDisjointIntervals:
         """
         itvs = self.itvs 
         lfind = itvs.bisect_key_right(l) - 1
-        if itvs[lfind][1] >= r:
+        if lfind>=0 and itvs[lfind][1] >= r:
             return lfind
         return None
 
@@ -93,7 +101,7 @@ class SortedDisjointIntervals:
 
     def split_at(self, x):
         """
-        split the interval contain point x into two interval, one of them leftendpoint is x
+        split the interval contain point x into two interval, leftendpoint of one of them is x
         """
         itvs = self.itvs
         find = itvs.bisect_key_right(x) - 1
@@ -101,7 +109,7 @@ class SortedDisjointIntervals:
         l, r = itvs[find]
         if r >= x:
             if l == x: return 
-            itvs[find] = x-1
+            itvs[find][1] = x-1
             itvs.add([x, r])
 
     def remove(self, l, r):
@@ -119,6 +127,7 @@ class SortedDisjointIntervals:
             del itvs[lfind:rfind]
 
     def __len__(self): return len(self.itvs)
+
 
 if __name__ == '__main__':
     def test_SortedIntervals_1():

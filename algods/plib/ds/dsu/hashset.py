@@ -1,12 +1,14 @@
-""" implement dsu with a set of hashset
-operation
-    unite two set
-        time: amortized O(lgn)
-"""
-
 class Dsu:
     """
-    the element is numbered in [0,n)
+    implement dsu with a set of hashset
+    the element is numbered from 0 to n-1
+    operation:
+        unite two set
+            time: amortized O(lgn)
+        
+        compare with dsu implement with arraylist:
+            much slower
+            support detach operation
     """
     def __init__(self, n):
         self.idx_hs = [{i, } for i in range(n)]
@@ -23,7 +25,7 @@ class Dsu:
         for idx in sl:
             idx_hs[idx] = sr
         sr |= sl
-        # del sl
+        # consider `del sl` ?
         return True
         
     def detach(self, i):

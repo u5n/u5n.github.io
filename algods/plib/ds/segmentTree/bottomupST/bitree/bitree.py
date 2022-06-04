@@ -55,17 +55,7 @@ class BIT:
             ret += tarr[idx]
             idx &= idx-1 # idx -= lowbit(idx)
         return ret
-        
-    def point_query(self, i):
-        """ calculate A[i], by find all children of a tree node """
-        tarr = self.tarr
-        res = tarr[i]
-        bound = i&(i-1)
-        i -= 1
-        while i>bound:
-            res -= tarr[i]
-            i&=i-1
-        return res
+    
 
     def kth(self, k):
         """ des: 
@@ -99,17 +89,32 @@ class BIT:
             bit >>= 1
         return pre
 
-class BIT_diff(BIT):
+    def point_query(self, i):
+        """ calculate A[i], by find all children of a tree node 
+        time: O(lgn) """
+        tarr = self.tarr
+        res = tarr[i+1]
+        bound = i&(i+1) # i+1 - lowbit(i+1)
+        while i>bound:
+            res -= tarr[i]
+            i&=i-1
+        return res
+
+
+class BIT_diff:
     """ des: for an static array `A`, it support range addition & point query on `A`
     impl: use a `BIT` to maintain `diff(A)`
     """
+    def __init__(self, n):
+        self.B = BIT(n)
+        self.n = n
     def range_add(self, l, r, delta):
         """ A[l:r] += v """
-        self.add(l, delta)
-        if r != self.n: self.add(r, -delta)
+        self.B.add(l, delta)
+        if r != self.n: self.B.add(r, -delta)
     def point_query(self, i):
         """ return A[i] """
-        return self.sum(i+1)
+        return self.B.sum(i+1)
     
 
 class BIT_range:
