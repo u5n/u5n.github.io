@@ -9,46 +9,51 @@ from collections import defaultdict
 
 class Dsu:
     """ 
-    the parent relationship is maintain by a list
+    the parent relationship is maintain by a list A
+        of a representative r, `-A[r]` is size of set correspond r
+        of a non-representative x, `A[x]` is parent of x
     the element is numbered in [0,n)
     """
-
+    __slots__ = 'p', 'cnt'
     def __init__(self, n):
         # make_set 0,1,...,n-1
         # parent relation
-        self.p = [i for i in range(n)]
-        # size of each resentative
-        self.sz = [1] * n
+        self.p = [-1]*n
         self.cnt = n
 
     def find(self, u):
         p = self.p
-        if p[u] != u:
+        if p[u] >= 0:
             p[u] = self.find(p[u])
-        return p[u]
+            return p[u]
+        else:
+            return u
 
     def unite(self, l, r, bysize=True):
-        p, sz = self.p, self.sz
+        p = self.p
         l, r = self.find(l), self.find(r)
         if l == r: return False
-        if bysize and sz[l] > sz[r]: l, r = r, l
+        if bysize and p[l] < p[r]: l, r = r, l
+        p[r] += p[l]
         p[l] = r
-        sz[r] += sz[l]
         self.cnt -= 1
         return True
 
-    def to_lists(self):
+    def to_sets(self):
         """
         key is resentative
-        value is element in the set
+        value is the set
         """
         ret = defaultdict(list)
         for k in range(len(self.p)):
             ret[self.find(k)].append(k)
         return ret
 
-    def __str__(self):
-        return str(self.to_lists().items())
+    def is_repr(self, u): return self.find(u) < 0
+    def __len__(self): return self.cnt
+    def __repr__(self): return str(self.to_sets().items()).replace("dict_items", "Dsu")
+
+
 
 class DsuChain:
     """
@@ -75,7 +80,7 @@ class DsuChain:
 
     def next(self, i): return self.dsu.find(i+1)
     def front(self): return self.dsu.find(0)
-    def test(self, i): return self.dsu.find(i) == i
+    def test(self, i): return self.dsu.is_repr(i)
 
     def __iter__(self):
         start = self.front()
@@ -110,7 +115,7 @@ class DsuDChain:
 
     def prev(self, i): return self.dsu_l.find(i-1)
     def next(self, i): return self.dsu_r.find(i+1)
-    def test(self, i): return self.dsu_l.find(i) == i
+    def test(self, i): return self.dsu_l.is_repr(i)
     def front(self): return self.dsu_r.find(1)
     def back(self): return self.dsu_l.find(self.n)
 
