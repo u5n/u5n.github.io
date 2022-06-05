@@ -19,13 +19,6 @@ def groupby(A:Iterable):
             yield i,j
             i = j
 
-import numpy as np
-def groupby_np(A):
-    """ group A by its value use its difference """
-    # min index of each groups; index[-1] == len(A)
-    index = np.diff(A, prepend=inf, append=inf).nonzero()[0]
-    
-
 def unique_sorted(A:list):
     """ A is sorted """
     return [v for v,w in itertools.groupby(A)]
@@ -37,13 +30,3 @@ def cyclic_iterate(head, get_next):
         yield cur
         cur = get_next(cur)
         if cur is head: break
-
-
-class InarrayQueue:
-    """ abstract of one usage of monotonic pointers"""
-    def __init__(self, A): self.p, self.n, self.A = 0,len(A), A
-    def __len__(self): return self.n - self.p
-    def popleft(self): self.p += 1; return self.A[self.p-1]
-    
-if __name__ == "__main__":
-    pass

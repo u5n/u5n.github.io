@@ -20,7 +20,12 @@ class MixStack:
     def __str__(self): return f"MixStack({[v for v,m in self.arr]}, monoid={self.monoid})"
 
 class MixDeque:
-    """ deque support find `reduce(monoid_opt, list(self))` in armotized O(1) """
+    """ 
+    des:
+        deque support find `reduce(monoid_opt, list(self))` in armotized O(1) 
+    test:
+        @lc#
+    """
     __slots__ = 'lsta', 'rsta', 'monoid'
     def __init__(self, monoid):
         self.lsta, self.rsta, self.monoid = MixStack(monoid), MixStack(monoid), monoid

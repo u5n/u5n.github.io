@@ -45,6 +45,7 @@ def nearest_larger(A, opt=operator.gt):
         A = [1,1,1,1]
             when opt is opeartor.gt, yield (-1,0,1),(-1,1,2),(-1,2,3),(-1,3,4)
             when opt is opeartor.ge, yield (2,3,4),(1,2,4),(0,1,4),(-1,0,4)
+    test: @lc#907
     """
     n = len(A)
     sta = [-1]

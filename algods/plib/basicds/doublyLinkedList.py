@@ -29,13 +29,14 @@ class ListNode:
 class LinkedList:
     """ there won't be any cycle 
     """
+    __slots__ = 'senhead', 'sentail', 'sz'
     def __init__(self, A:Iterable = None):
         self.senhead = ListNode("senhead") # L[-1]
         self.sentail = ListNode("sentail") # L[n]
         self.senhead.next = self.sentail
         self.sentail.prev = self.senhead
         self.sz = 0
-        self.extend(A)
+        if A: self.extend(A)
 
     def begin(self): return self.senhead.next
     def end(self): return self.sentail
@@ -102,8 +103,7 @@ class LinkedList:
         else:
             for v in iterable:
                 self.insert_after(self.sentail.prev, v)
-    def __getitem__(self, i):
-        return self.index(i).val
+    def __getitem__(self, i): return self.index(i).val
     def __len__(self): return self.sz
     def __str__(self): return f"LL{list(node.val for node in self)}"
     def __iter__(self):

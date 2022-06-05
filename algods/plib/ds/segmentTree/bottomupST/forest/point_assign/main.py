@@ -1,6 +1,13 @@
 """
 des:
     this create a segment forest, 
+                   2
+                 /   \
+             3   4    5
+            / \ / \   / \
+            6 7 8  9 10 11
+            0 1 2  3 4  5 
+            
         the tree is built bottom up layer by layer
             ```
             def build(n):

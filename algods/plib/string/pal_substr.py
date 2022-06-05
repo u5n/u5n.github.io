@@ -7,7 +7,7 @@ TOC
 """
 from collections import namedtuple
 
-from ..array.loop_template import groupby
+from ..list import groupby
 def longestPalindrome(s):
     """ des: groupby then expand around
     time:
