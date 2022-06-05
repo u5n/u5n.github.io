@@ -8,15 +8,14 @@ from plib.basicds.singlyLinkedlist import ListNode, toLinkedlist
 
 
 def D(*args, **kwargs):
-    """des: func that used to debug, wrapper of print function
+    """des: `print` function that used to debug, wrapper of print function
     """
     kwargs["file"] = sys.stderr
     caller = getframeinfo(stack()[1][0])
     print(f"l{caller.lineno}: ", *args, **kwargs)
 
-def ToStdout(func):
+def print_ret(func):
     """ decorator that send what function return to stdout
-    _:name: Debug 
     application: run a function without `print(func(**))` """
     def wrapper(*args, **kwargs):
         ret = func(*args, **kwargs)
@@ -57,62 +56,73 @@ def measure(loop=1, maxtime=3600, offset=0):
     return LOOP_decorator
 
 
-def str_return(ret, argtype):
-    if argtype == type(None):
-        ret = 'null'
-    elif argtype == str:
+def repr_return(ret, ret_type):
+    """ change the return value into string"""
+    if (ret_type is None and ret!=None) or (ret_type and not issubclass(type(ret), ret_type)):
+        return '(return the wrong type)'
+    if ret is None: return 'null'
+    if ret_type is str:
         ret = f'"{ret}"' # assume no special chars appears in `ret``
-    elif argtype == typing.Union[TreeNode, type(None)]:
+    elif ret_type is typing.Union[TreeNode, type(None)] or ret_type is TreeNode:
         ret = ret.encode()
-    elif argtype == typing.Union[ListNode, type(None)] or argtype == ListNode:
+    elif ret_type is typing.Union[ListNode, type(None)] or ret_type is ListNode:
+        # as linkedlist head
         ret = list(ret)
     
     return str(ret)
 
-def run_function_usestd(f, detail, selected, custom_args):
+def input_pyobj(raw_arg, arg_type):
+    """ change input string into python object """
+    if raw_arg == 'null': return None
+    raw_arg = eval(raw_arg)
+    if arg_type is typing.Union[TreeNode, type(None)] or arg_type is TreeNode:
+        return binaryTree_decode(raw_arg)
+    # if use isubclass, make sure arg_type is a `class` not `type`
+    elif arg_type is typing.Union[ListNode, type(None)] or arg_type is ListNode:
+        return toLinkedlist(raw_arg)
+
+    return raw_arg
+
+def truncated(s, sz=200):
+    if len(s)>sz:
+        suf = "... too long, hidden"
+        return s[:sz-len(suf)] + suf
+    return s
+
+def run_function_usestd(f, detail, selected, custom_testcase):
     paras = inspect.getfullargspec(f)
     narg = len(paras.args)-1 # exclude `self` parameter
     
     i_cases = 0
     while True:
-        if None!=custom_args:
-            args = custom_args
-            custom_args = None
-            i_cases = -1
+        # assumption: there is no testcase take no parameters
+        if custom_testcase:
+            args, custom_testcase = custom_testcase, None
             selected = {-1} # don't run anyother testcase from input
             print("Custom Test\t")
         else:
             try:
                 # get arg from stdin until EOF and change to python type
                 raw_args = [input() for _ in range(narg)]
-                if selected and i_cases not in selected:
-                    i_cases += 1
-                    continue
-            
-                args = [None]*narg
-                for i in range(narg):
-                    arg_type =  paras.annotations[paras.args[1+i]]
-                    if arg_type == typing.Union[TreeNode, type(None)]:
-                        args[i] = binaryTree_decode(raw_args[i])
-                    elif arg_type == typing.Union[ListNode, type(None)] or arg_type == ListNode:
-                        args[i] = toLinkedlist(eval(raw_args[i]))
-                    else:
-                        args[i] = eval(raw_args[i])
-
-                
-                if detail:
-                    str_raw_args  = "; ".join(map(lambda rarg: rarg if len(rarg)<100 else rarg[:100]+'......', raw_args))
-                    print(f"Test {i_cases}\n\tinput:", str_raw_args)
             except EOFError:
-                return
+                break
+            
+            if selected and i_cases not in selected:
+                i_cases += 1
+                continue
+        
+            args = [None]*(narg)
+            for i in range(narg):
+                arg_type =  paras.annotations.get(paras.args[1+i], None)
+                args[i] = input_pyobj(raw_args[i], arg_type)
+
+            
+            if detail:
+                str_raw_args  = "; ".join(map(lambda rarg: rarg if len(rarg)<100 else rarg[:100]+'......', raw_args))
+                print(f"Test {i_cases}\n\tinput:", str_raw_args)
 
         start = time(); ret = f(*args); duration = time() - start
-
-        arg_type = paras.annotations['return']
-        ret = str_return(ret, arg_type)
-
-        if len(ret) > 200:
-            ret = ret[:200] + "... too long, hidden"
+        ret = truncated(repr_return(ret, paras.annotations.get('return', None)))
 
         if detail:
             print("\toutput:", ret)
@@ -122,40 +132,62 @@ def run_function_usestd(f, detail, selected, custom_args):
 
         i_cases += 1
 
-def run_multifunction_usestd(cls, detail):
-    # assume only one testcase
-    function_names = eval(input())
-    function_paras = eval(input())
-    i_fp = iter(function_paras)
-    i_fn = iter(function_names); next(i_fn) # skip the ctor
-    duration = 0
-    obj = cls(*next(i_fp))
-    rets = []
-    for method_name, method_paras in zip(i_fn, i_fp):
-        f = getattr(obj, method_name)
-        start = time()
-        ret = f(*method_paras)
-        duration += time()-start
-        rets.append(ret)
+def run_obj_usestd(cls, detail, selected, custom_testcase):
+    i_cases = 0
+    obj = None
+    while selected!={-1}:
+        # assumption: there is no testcase take no parameters
+        if custom_testcase: 
+            (function_names, function_paras), custom_testcase = custom_testcase, None
+            selected = {-1} # don't run anyother testcase from input
+            print("Custom Test\t")
+        else:
+            try:
+                # currently direct use eval, change to `input_pyobj` when needed
+                function_names = eval(input())
+                function_paras = eval(input())
+            except EOFError: 
+                break 
 
-    rets = str(rets)
-    if len(rets) > 200:
-        rets = rets[:200] + "... too long, hidden"
+            if selected and i_cases not in selected:
+                i_cases += 1
+                continue
+            
+            if detail:
+                print(f"Test {i_cases}\n\tfunc_names:", truncated(str(function_names)))
+                print("\tfunc_args:", truncated(str(function_paras)))
 
-    if detail:
-        print("\toutput:", rets)
-        print("\ttime: %.3f ms"%(1000*(duration)))
-    else:
-        print(rets)
-    return obj
+        i_fp = iter(function_paras)
+        i_fn = iter(function_names); next(i_fn) # skip the ctor
+        obj = cls(*next(i_fp))
+
+        duration = 0
+        rets = []
+        for method_name, method_paras in zip(i_fn, i_fp):
+            f = getattr(obj, method_name)
+            start = time()
+            ret = f(*method_paras)
+            duration += time()-start
+            rets.append(ret) # don't use `repr_return`
         
-def Dl(selected={}, detail = False, solution_cls=None, custom_testcase:list =None):
+        rets = truncated(str(rets).replace('None', 'null').replace("'", '"'))
+
+        if detail:
+            print("\toutput:", rets)
+            print("\ttime: %.3f ms"%(1000*(duration)))
+        else:
+            print(rets)
+        
+        i_cases += 1
+    # return last obj
+    return obj
+
+def lc_test(selected={}, detail = False, solution_cls=None, custom_testcase:list =None):
     """ 
-    name: Debug for leetcode
     des:
         find solution_name class in module __main__
         if solution_name is "Solution":
-            find the first function with annotation
+            find the first public(not begin with '__') function with annotation
             create one `Solution` object
             run the first function use input from sys.stdin
         else:
@@ -182,7 +214,7 @@ def Dl(selected={}, detail = False, solution_cls=None, custom_testcase:list =Non
                         cans.append(getattr(obj, method_name))
                 
                 if len(cans)==0:
-                    raise Exception("`Solution` don't have single method")
+                    raise Exception("`Solution` doesn't have public method")
                 # has only one method
                 elif len(cans)==1:
                     f = cans[0]
@@ -207,9 +239,13 @@ def Dl(selected={}, detail = False, solution_cls=None, custom_testcase:list =Non
             raise Exception(f"don't have a `Solution` class")
     else:
         # return object of `solution_cls`
-        return run_multifunction_usestd(solution_cls, detail)
+        return run_obj_usestd(solution_cls, detail, selected, custom_testcase)
 
-def C(filename, nskip=2, template=None):
+
+
+
+
+def file_code_quantity(filename, nskip=2, template=None):
     d  = {'NAME':0, 'OP':0, 'LITERAL':0,'LINE':0}
     # count not-empty lines, also find some special situations
     with open(filename) as f:
@@ -273,30 +309,3 @@ def C(filename, nskip=2, template=None):
     # print(f"code complexity: {{words:{d['NAME']+d['LITERAL']}, opt:{d['OP']} }}")
     print(d)
     print(f"code complexity: {d['NAME']+d['LITERAL']+d['OP']}")
-
-
-def ___preprocess():
-    """ open the file that import and run this function
-    replace all `builtins.max` and `builtins.min` with `if` and `else` statement
-    """
-    import __main__, re
-    with open(__main__.__file__, "r") as f:
-        lines = f.readlines()
-        # todo: 
-        #   enable nearest match
-        #   rewrite use parser
-
-        # testcase: "f(1, max(2, 3)); max(1, f(2,3))"
-        # minfunc_reg = r"\bmin\b\(([^,]+),([^,]+)\)"
-        # maxfunc_reg = r"\bmax\b\(([^,]+),([^,]+)\)"
-        # minfunc_replace = r"\1 if \1<(__mt:=\2) else __mt"
-        # maxfunc_replace = r"\1 if \1>(__mt:=(\2)) else __mt"
-        for i,line in enumerate(lines):
-            # example: max(1,max(2,3))
-            if line.count("max")>=2: continue
-            if line.lstrip().startswith('#'): continue
-            lines[i] = re.sub(minfunc_reg, minfunc_replace, line)
-            lines[i] = re.sub(maxfunc_reg, maxfunc_replace, line)
-
-    with open(__main__.__file__, "w") as f:
-        f.write("".join(lines))
