@@ -1,7 +1,6 @@
-import sys 
-sys.path.append('..')
+import sys; sys.path.append('../../')
 
-from ds.trie.binaryTrie import BinaryTrie, BinaryTrieCounter 
+from plib.ds.trie.binaryTrie import BinaryTrie, BinaryTrieCounter 
 from sortedcontainers import SortedList
 from collections import Counter
 from random import *

@@ -53,7 +53,13 @@ def measure(loop=1, maxtime=3600, offset=0):
         if acc >= 1: print(f'{func.__name__} runs in {acc*1e3:.0f} (ms)')
         elif acc >= 0.001: print(f'{func.__name__} runs in {acc*1e3:.3f} (ms)')
         else: print(f'{func.__name__} each loop runs in {acc*1e3:.6f} (ms)')
-    return LOOP_decorator
+    # use as `@measure(...)`
+    if isinstance(loop, int):
+        return LOOP_decorator
+    # use as `@measure`
+    else:
+        cls, loop = loop, 1
+        return LOOP_decorator(cls)
 
 
 def repr_return(ret, ret_type):

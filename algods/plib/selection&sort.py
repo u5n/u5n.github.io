@@ -11,13 +11,15 @@ TOC:
 """
 import random
 
-
+    
 def mergesort(A):
     """ convention: use left closed right open interval, cuz it's used to count number of sth.
     time: O(nlgn),O(lgn)
     """
     def merge(l,m,r):
-        """ inplace merge A[l:m] and A[m:r] into A[l:r] """
+        """ inplace merge A[l:m] and A[m:r] into A[l:r] 
+        could use heapq.merge
+        """
         tmp = [] # external array to store the sorted A[l:r]
         ri=m
         # available O(r-l) algorithm 
