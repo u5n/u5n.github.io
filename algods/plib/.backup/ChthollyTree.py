@@ -3,6 +3,8 @@ convention:
     every method use left closed and right closed interval
     `Interval` class represent closed interval
 
+abandon reason:
+    rewrite a new version
 """
 from random import *
 from sortedcontainers import SortedDict

@@ -9,6 +9,8 @@ test:
         https://leetcode.cn/submissions/detail/315052501/
     @lc#352
         https://leetcode.cn/submissions/detail/315065563/
+
+All of methods can be done with ChthollyTree(value is bool, 1 means the interval added, 0 means removed), the speed need to be test 
 """
 
 from sortedcontainers import SortedList
@@ -20,7 +22,7 @@ class SortedDisjointIntervals:
     def __init__(self):
         # map left endpoint to right endpoint
         # assumption: sortedlist is faster than sorteddict
-        # the code logic insure there won't be duplicates of left_endpoint, there is no need to use SortedDict to avoid duplicate
+        # the code logic insure there won't be duplicates of left_endpoint, there is no need to use SortedDict to avoid duplications
         self.itvs = SortedList(key=lambda x:x[0])
 
     def get_sub(self, l, r):
@@ -60,6 +62,7 @@ class SortedDisjointIntervals:
         if lfind>=0 and itvs[lfind][1] >= r:
             return lfind
         return None
+
 
     def add(self, l, r):
         """ add interval [l,r],
@@ -101,7 +104,7 @@ class SortedDisjointIntervals:
 
     def split_at(self, x):
         """
-        split the interval contain point x into two interval, leftendpoint of one of them is x
+        split the interval contain point x into two intervals, leftendpoint of one of them is x
         """
         itvs = self.itvs
         find = itvs.bisect_key_right(x) - 1

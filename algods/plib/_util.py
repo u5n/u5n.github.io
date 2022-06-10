@@ -6,7 +6,6 @@ from timeit import default_timer as time
 from plib.basicds.binaryTree import TreeNode, decode as binaryTree_decode
 from plib.basicds.singlyLinkedlist import ListNode, toLinkedlist
 
-
 def D(*args, **kwargs):
     """des: `print` function that used to debug, wrapper of print function
     """
@@ -23,26 +22,30 @@ def print_ret(func):
         return ret
     return wrapper
 
+last_avg_runtime = [None]
 def measure(loop=1, maxtime=3600, offset=0):
-    """ name: Loop
+    """ 
     find the average runtime of a none parameter function 
     the runtime returned decreased by offset(ms)
-    application: measure runtime
     """
-    def LOOP_decorator(func):
+    def run_func(func):
         if 0>=loop: return 
         acc = 0
         def break_LOOP(*args):
             """ able to break loop from wrapped function """
             errormsg = f'debug info: {args}\n' if len(args)>0 else ''
             raise Exception(errormsg + f'{func.__name__} runs {i_l} loops in {acc/i_l - offset/1000} (ms), intermediate break with breaker')
+
         for i_l in range(1, 1+loop):
-            if len(inspect.signature(func).parameters)==0:
+            nargs = len(inspect.signature(func).parameters)
+            if nargs==0:
                 start = time()
                 func()
-            elif len(inspect.signature(func).parameters)==1:
+            elif nargs==1:
                 start = time()
                 func(break_LOOP)
+            else:
+                raise Exception("unsupported arguments size")
             
             _t = time(); acc += _t-start; start = _t
 
@@ -50,16 +53,19 @@ def measure(loop=1, maxtime=3600, offset=0):
                 raise Exception(f"run {i_l} loops with TLE")
         acc /= loop
         acc -= offset/1000
-        if acc >= 1: print(f'{func.__name__} runs in {acc*1e3:.0f} (ms)')
-        elif acc >= 0.001: print(f'{func.__name__} runs in {acc*1e3:.3f} (ms)')
-        else: print(f'{func.__name__} each loop runs in {acc*1e3:.6f} (ms)')
+        last_avg_runtime[0] = acc*1e3
+        if acc >= 1: print(f'{func.__name__} runs in {last_avg_runtime[0]:.0f} (ms)')
+        elif acc >= 0.001: print(f'{func.__name__} runs in {last_avg_runtime[0]:.3f} (ms)')
+        else: print(f'{func.__name__} each loop runs in {last_avg_runtime[0]:.6f} (ms)')
+
+
     # use as `@measure(...)`
     if isinstance(loop, int):
-        return LOOP_decorator
+        return run_func
     # use as `@measure`
     else:
-        cls, loop = loop, 1
-        return LOOP_decorator(cls)
+        func, loop = loop, 1
+        run_func(func)
 
 
 def repr_return(ret, ret_type):

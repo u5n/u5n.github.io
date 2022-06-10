@@ -7,6 +7,7 @@ create a segment forest size 6 , get the node corresponding interval
     6 7 8  9 10 11
     0 1 2  3 4  5 
 application: ?
+abandon_reason: rewrite a new version
 """
 class ST_template_running:
     """ 

@@ -15,10 +15,10 @@ class ST_add:
         for inode in reversed(range(1, n)):
             nodes[inode] = nodes[inode*2] + nodes[inode*2+1]
 
-    def addition(self, Ai, v):
+    def assign(self, Ai, v):
         nodes = self.nodes
         inode = self.n + Ai
-        self.nodes[inode] += v
+        self.nodes[inode] = v
         while inode:
             inode //= 2
             nodes[inode] = nodes[inode*2] + nodes[inode*2+1]
@@ -44,6 +44,30 @@ class ST_add:
     
     def point_query(self, Ai):
         return self.nodes[self.n + Ai]
+
+    def binary_search_prefixsum(self, rk):
+        """ find min l, sum(A[:l])>=rk"""
+        seg_l = []
+        seg_r = []
+        n, nodes = self.n, self.nodes
+        l, r = n, n+n-1
+        while l<=r:
+            if l&1: seg_l.append(l)
+            if r&1==0: seg_r.append(r)
+            l=(l+1)//2
+            r=(r-1)//2
+
+        for ni in seg_l+seg_r[::-1]:
+            if nodes[ni] >= rk:
+                while ni < n:
+                    if nodes[ni*2] >= rk:
+                        ni = ni*2
+                    else:
+                        rk -= nodes[ni*2] 
+                        ni = ni*2 + 1
+                return ni - n
+            else:
+                rk -= nodes[ni]
 
 
 from math import inf

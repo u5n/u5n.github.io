@@ -1,66 +1,62 @@
 """
 _:
     name: binary indexed tree
-convention:
-    tree node number start from 1
-    the target array `A` index start from 0
-adv/dis compare to other bottomup segment tree:
-    adv: faster
-    dis: 
-        can't break interval into smaller intervals(there is a node correspond to)
-            don't support opeartor without inverse element
-            don't support binary search on interval
 
-each method use Left-closed, right-open interval
+adv/dis compare to other bottomup segment tree:
+    adv: 2x faster
+    dis: can't break interval into `log(n)` intervals(there is a node correspond to)
+
 """
 
 class BIT:
     """ 
     des:
-        for a static array `A`, it support a group operator on `A`:
-            1. single element change
-            2. range accumulative operation on `A`
-        the operator shoule be a group
-    default: 
-        use `operator.add` and `math.sum`
-        tarr[i] = sum(A[i+1-lowbit(i+1):i+1])
+        index of A start from 0
+        tarr[i] = sum(A[(i+1)&i:i+1])
+        
+        # i+1 - lowbit(i+1)
+
     """
     __slots__='n','tarr'	
     def __init__(self, n):
         self.n = n
-        self.tarr = [0] * (n+1)
+        self.tarr = [0] * n
 
     def buildfrom(self, A):
-        tarr = self.tarr
         n = len(A)
+        assert n == self.n
+        tarr = self.tarr
         pre = [0]*(n+1)
         for i in range(n):
             pre[i+1] = pre[i] + A[i]
-        for inode in range(1, 1+n):
-            tarr[inode] = pre[inode] - pre[inode&(inode-1)]
-        
+        for inode in range(n):
+            tarr[inode] = pre[inode+1] - pre[inode&(inode+1)]
+    
     def add(self, idx, delta):
         n, tarr = self.n, self.tarr
-        idx += 1
-        while idx <= n:
+        while idx < n:
             tarr[idx] += delta
-            idx += idx&-idx
+            idx |= idx+1
 
     def sum(self, idx, idx2=None):
-        """ sum(A[slice(idx[,idx2])]) """
-        tarr = self.tarr
+        """ sum(idx): return A[:idx]
+        sum(idx, idx2): return A[idx: idx2]
+        """
         if idx2!=None: return self.sum(idx2)-self.sum(idx)
+        tarr = self.tarr
         ret = 0
-        while idx:
-            ret += tarr[idx]
-            idx &= idx-1 # idx -= lowbit(idx)
+        while idx>=1:
+            ret += tarr[idx-1]
+            idx &= idx-1
+        
         return ret
     
 
     def kth(self, k):
         """ des: 
-            return min i that sum(i+1)>k
-            if BIT is a Counter, it find the kth(start from 0) smallest element
+            return min i that `sum(i+1)>=k+1`
+            suppose BIT is a Counter, it find the kth(start from 0) smallest element
+            if not found, return self.n
         time: O(lg(n))
         exec example:
             ```
@@ -80,11 +76,11 @@ class BIT:
         pre = 0 # prefix 
         while bit:
             cur = pre + bit
-            if cur <= n and k >= tarr[cur]:
+            if cur <= n and k >= tarr[cur-1]:
                 # go to next right sibling (shrink the interval by half)
-                k -= tarr[cur]
+                k -= tarr[cur-1]
                 pre = cur
-            # if cur > self.n or k < self.tarr[cur-1]:
+            # if cur > n or k < self.tarr[cur-1]:
             #     go to leftmost child ( shrink the interval by half )
             bit >>= 1
         return pre
@@ -93,12 +89,73 @@ class BIT:
         """ calculate A[i], by find all children of a tree node 
         time: O(lgn) """
         tarr = self.tarr
-        res = tarr[i+1]
-        bound = i&(i+1) # i+1 - lowbit(i+1)
+        res = tarr[i]
+        bound = i&(i+1)
+        while i>bound:
+            res -= tarr[i-1]
+            i&=i-1
+
+        return res
+
+    def __str__(self):
+        return str([self.point_query(i) for i in range(self.n)])
+
+
+class BIT1:
+    """ 
+    des:
+        index of A start from 1( include add/sum method)
+        tarr[i] = sum(A[i+1-lowbit(i):i+1])
+    adv/dis: ?
+    """
+    __slots__='n','tarr'	
+    def __init__(self, n):
+        self.n = n
+        self.tarr = [0] * (n+1)
+
+    def buildfrom(self, A):
+        n = len(A)
+        assert self.n == n
+        tarr = self.tarr
+        pre = [0]*(n+1)
+        for i in range(1, n+1):
+            pre[i] = pre[i-1] + A[i-1]
+        for inode in range(1, 1+n):
+            tarr[inode] = pre[inode] - pre[inode&(inode-1)]
+        
+    def add(self, idx, delta):
+        n, tarr = self.n, self.tarr
+        while idx <= n:
+            tarr[idx] += delta
+            idx += idx&-idx
+
+    def sum(self, idx, idx2=None):
+        """
+            sum(idx): return sum(A[1:idx+1])
+            sum(idx, idx2): return sum(A[idx:idx2+1])
+        """
+        if idx2!=None: return self.sum(idx2)-self.sum(idx-1)
+        tarr = self.tarr
+        ret = 0
+        while idx>=1:
+            ret += tarr[idx]
+            idx &= idx-1
+        return ret
+
+    def point_query(self, i):
+        """ calculate A[i], by find all children of a tree node 
+        time: O(lgn) """
+        tarr = self.tarr
+        res = tarr[i]
+        bound = i&(i-1)
+        i -= 1
         while i>bound:
             res -= tarr[i]
             i&=i-1
         return res
+
+    def __str__(self):
+        return str([self.point_query(i) for i in range(1,1+self.n)])
 
 
 class BIT_diff:
@@ -147,32 +204,34 @@ class BIT2d:
     __slots__='m', 'n', 'tarr'
     def __init__(self, n, m):
         self.n, self.m = n,m
-        self.tarr = [[0]*(m+1) for _ in range(n+1)]
+        self.tarr = [[0]*m for _ in range(n)]
     
     def add(self, idx, delta):
         """ A[idx] += delta """
         tarr, n, m = self.tarr, self.n, self.m
-        x = idx[0]+1
-        while x <= n:
-            y = idx[1]+1
-            while y <= m:
+        x = idx[0]
+        while x < n:
+            y = idx[1]
+            while y < m:
                 tarr[x][y] += delta
-                y += y&-y
-            x += x&-x
+                y |= y+1
+            x |= x+1
     
     def sum(self, idx, idx2=None):
         """ sum(A[:idx[0],:idx[1]]) or sum(A[idx[0]:idx2[0], idx[1]:idx2[1]]) """
         if idx2!=None:
             return self.sum(idx2) + self.sum(idx) - self.sum((idx[0],idx2[1])) - self.sum((idx2[0],idx[1]))
+
         tarr = self.tarr
         ret, x = 0, idx[0]
-        while x:
+        while x>=1:
             y = idx[1]
-            while y:
-                ret += tarr[x][y]
+            while y>=1:
+                ret += tarr[x-1][y-1]
                 y &= y-1
             x &= x-1
         return ret
+
 
 class BIT2d_diff(BIT2d):
     """ des: for an static 2darray `A`, it support rectangle addition and single point query on `A` 
@@ -195,14 +254,14 @@ if __name__ == '__main__':
     """ test BIT class """
     from random import *
     def test_BIT():
-        n = 212
+        n = 10000
         A = [random() for i in range(n)]
         B = BIT(n)
         for i,e in enumerate(A):
             B.add(i, e)
         lowbit = lambda x:x&-x
         for i in range(n):
-            assert B.tarr[i+1] == sum(A[i+1-lowbit(i+1):i+1])
+            assert B.tarr[i] == sum(A[i+1-lowbit(i+1):i+1])
         
         atol=1e-08
         for i in range(n):

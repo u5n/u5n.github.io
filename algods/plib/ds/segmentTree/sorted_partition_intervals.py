@@ -24,7 +24,8 @@ class ChthollyTree:
                 single point assign only
             @lccn#LCP52
     """
-    def __init__(self, A): 
+    __slots__ = 'itvs'
+    def __init__(self, A=None):
         """ example:
                 A=enumerate("abaab")
                 A=[(10, 1), (100, 2), (1000, 3)]
@@ -35,11 +36,12 @@ class ChthollyTree:
         """
         self.itvs = SortedDict({-math.inf: None})
         prv = 0
-        n = len(A)
-        for cur in range(1+n):
-            if cur==n or A[prv][1] != A[cur][1]:
-                self.itvs[A[prv][0]] = A[prv][1]
-                prv = cur
+        if A:
+            n = len(A)
+            for cur in range(1+n):
+                if cur==n or A[prv][1] != A[cur][1]:
+                    self.itvs[A[prv][0]] = A[prv][1]
+                    prv = cur
     
     def split_at(self, x):
         """ split at gap between x-1 and x
@@ -52,7 +54,6 @@ class ChthollyTree:
         # if x is already a leftendpoint
         if itv_l == x:
             return itv_rk
-        
 
         # strictly, this shoule be copy.copy(itvattr), even deepcopy, but slower
         itvs[x] = itvattr
@@ -89,15 +90,19 @@ class ChthollyTree:
         
         self.union_at(l) 
         self.union_at(r+1)
+    
+    def point_query(self, x): return self.itvs.values()[ self.itvs.bisect_right(x)-1 ]
+    def __len__(self): return len(self.itvs)
 
-    def point_query(self, x):
-        return self.itvs.values()[ self.itvs.bisect_right(x)-1 ]
+
 
 import bisect
 class ChthollyTreeList:
     """ the ChthollyTree implemented by arraylist
+    only for len(A)<=100000
     python>=3.10
     """
+    __slots__ = 'itvs'
     def __init__(self, A): 
         self.itvs = [[-math.inf, None]]
         prv = 0
