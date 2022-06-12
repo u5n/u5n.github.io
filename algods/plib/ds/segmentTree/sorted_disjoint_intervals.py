@@ -10,7 +10,7 @@ test:
     @lc#352
         https://leetcode.cn/submissions/detail/315065563/
 
-All of methods can be done with ChthollyTree(value is bool, 1 means the interval added, 0 means removed), the speed need to be test 
+All of methods can be done with ChthollyTree(value is bool, 1 means the interval added, 0 means removed), but faster
 """
 
 from sortedcontainers import SortedList

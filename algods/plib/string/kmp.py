@@ -1,16 +1,16 @@
-def border(s):
+def border(P):
     """ 
     B[i] is length of longest proper border of s[i+1] 
     where border means a string that is the prefix and suffix of s[:i+1]
     """
-    n = len(s)
+    n = len(P)
     B = [None] * n
     B[0] = ml = 0
     for i in range(1, n):
         # loop inv: ml is B[i-1]
-        while ml > 0 and s[i] != s[ml]:
+        while ml > 0 and P[ml] != P[i]:
             ml = B[ml - 1]
-        if s[i] == s[ml]:
+        if P[ml] == P[i]:
             ml += 1
         B[i] = ml
     return B

@@ -8,15 +8,16 @@ class Array:
         negative parameter is not allowed
         third parameter is not allowed
     invariant:
-        segment can't be empty or `n==0`
-    convention:
-        the inner element type should immutable(or primitive)
-            or use `deepcopy` is slow
+        segment can't be empty 
+    test:
+        @lc#2276: https://leetcode.cn/submissions/detail/323969245/
+        @lc#352: https://leetcode.cn/submissions/detail/323971250/
+        @lc#2289: https://leetcode.cn/submissions/detail/323971429/
     """
     __slots__ = 'segments', 'threshold', 'n'
-    def __init__(self, A = [], threshold=8192):
+    def __init__(self, A = [], threshold=1600):
         self.threshold = threshold
-        self.segments = [[]]
+        self.segments = []
         self.n = 0
         if A:
             self.extend(A)
@@ -156,6 +157,29 @@ class Array:
         for seg in self.segments:
             if key(seg[-1]) >= v:
                 return i + bisect.bisect_left(seg, v, key=key)
+            i += len(seg)
+        return i
+
+    def bisect_right(self, v):
+        """ find min i that f[i]>v, it not found return self.n 
+        assert: self is sorted
+        """
+        i = 0
+        for seg in self.segments:
+            if seg[-1] > v:
+                return i + bisect.bisect_right(seg, v)
+            i += len(seg)
+        return i
+
+    def bisect_key_right(self, v, key):
+        """ 
+        find min i that key(f[i]) >v, if not found return self.n
+        assert: map(key, list(self)) is sorted
+        """
+        i = 0
+        for seg in self.segments:
+            if key(seg[-1]) > v:
+                return i + bisect.bisect_right(seg, v, key=key)
             i += len(seg)
         return i
 
