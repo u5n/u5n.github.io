@@ -1,5 +1,4 @@
 import sys; sys.path.append('../../')
-print(sys.path)
 from plib.ds.mixDeque import MixDeque
 import random
 import operator

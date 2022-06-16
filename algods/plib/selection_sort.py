@@ -1,24 +1,35 @@
 """
 TOC:
-    find inversion pairs
-    mergesort
-    countsort
-    cyclesort
-    quicksort
+    insertion_sort
+    merge_sort
+    count_sort
+    cycle_sort
+    quick_sort
     pivot partition into three interval
     pivot partition into two interval
-
+don't involve unless algorithm such as introsort(just use builtin sort), heapsort(just use builtin sort)
 """
 import random
+import sys; sys.path.append('../')
 
+def insertion_sort(A, l, r):
+    """ 
+    sort islice(A,l,r)(its slice, not copy)
+    feature: use adjacent sawp only
+    """
+    for i in range(l+1, r):
+        # loop inv: A[l:i] is sorted
+        for j in reversed(range(l+1, i+1)):
+            if A[j]>=A[j-1]: break
+            A[j],A[j-1]=A[j-1],A[j]
     
-def mergesort(A):
-    """ convention: use left closed right open interval, cuz it's used to count number of sth.
+def merge_sort(A):
+    """ convention: use left closed right open interval
     time: O(nlgn),O(lgn)
     """
     def merge(l,m,r):
         """ inplace merge A[l:m] and A[m:r] into A[l:r] 
-        could use heapq.merge
+        could use `A[l:r]=heapq.merge(A[l:m],A[m:r])`
         """
         tmp = [] # external array to store the sorted A[l:r]
         ri=m
@@ -30,16 +41,16 @@ def mergesort(A):
             tmp.append(A[li])
         A[l:ri] = tmp
     
-    def mergesort_dfs(l,r):
+    def merge_sort_dfs(l,r):
         if r-l<=1: return
         m = (l+r)//2
-        mergesort_dfs(l,m)
-        mergesort_dfs(m,r)
+        merge_sort_dfs(l,m)
+        merge_sort_dfs(m,r)
         merge(l,m,r)
 
-    mergesort_dfs(0, len(A))
+    merge_sort_dfs(0, len(A))
 
-def countsort(A, key=lambda x:x):
+def count_sort(A, key=lambda x:x):
     """ assume key >= 0, key is int """
     maxk = max(key(e) for e in A)
     count = [0]*(1+maxk)
@@ -54,10 +65,11 @@ def countsort(A, key=lambda x:x):
         As[count[k]] = e
     return As
 
-def cyclesort(A):
+def cycle_sort(A):
     """ 
-    _: reduce the procedure by dfa 
-    des: theoretical min times of swap
+    feature: 
+        min swap times(without duplicates)
+        min write to arrays(code should change a little)
     time: 
         O(n^2),O(1)
         if rank of elment can get at O(1), the time complexity will be O(n)
@@ -81,49 +93,59 @@ def cyclesort(A):
             min_swap += 1
     return min_swap
 
-def quicksort(A, l, r):
+
+def quick_sort(A, l, r):
     """
-    quicksort subroutine, 
-    call quicksort(A,0,len(A)) to sort A inplace
+    quick_sort subroutine, 
+    call quick_sort(A,0,len(A)) to sort A inplace
     """
     if r-l<=1: return
     p1,p2 = three_partition(A,l,r)
-    quicksort(A,l,p1)
-    quicksort(A,p2,r)
+    quick_sort(A,l,p1)
+    quick_sort(A,p2,r)
+
 
 def three_partition(A, l, r, pivot=None):
-    """
-    pivot partition A[l:r] into three interval A[l:i], A[i:j], A[j:r]
+    """ des:
+        accoring to `pivot` partition A[l:r] into three interval A[l:i], A[i:j], A[j:k]
+            A[l:i]<pivot
+            A[i:j]==pivot
+            A[j:k]>pivot
     """
     # assert l!=r
     i = j = l
     k = r
     if pivot is None:
+        # or median of A[l],A[r-1],A[(l+r)//2]
         pivot = A[random.randrange(l,r)]
     while j<k:
         # [l:i] < ; [i:j] == ; [k:] >
         if A[j]<pivot:
             A[j],A[i]=A[i],A[j]
             i+=1; j+=1
-        elif A[j]==pivot:
-            j+=1
-        else:
+        elif A[j]>pivot:
             k-=1
             A[j],A[k]=A[k],A[j]
+        else:
+            j+=1
     return i,j
+
 
 def partition(A, l, r, pivot=None):
     """ 
     des:
-        rearrange `A` such that all elements less_than pivot are put before pivot
-        return position of pivot
+        rearrange `A` such that 
+            all elements <= pivot are put before pivot
+            all elements > pivot are put after pivot
+        return aftersorted position of pivot
     feature: inplace, not stable 
     """
     if pivot is None:
+        # or median of A[l],A[r-1],A[(l+r)//2]
         pivot_index = random.randrange(l,r)
+        pivot = A[pivot_index]
         A[pivot_index], A[r-1] = A[r-1], A[pivot_index]
-        pivot = A[r-1]
-
+    
     i = l
     for j in range(l, r):
         # loop inv: A[l:i] <= pivot < A[i:j]

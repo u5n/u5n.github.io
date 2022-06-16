@@ -48,6 +48,7 @@ class BinaryHeap:
         self.A[self.r] = v
         self.r += 1
         self.sift_up(self.r-1)
+
     def pushpop(self, v):
         if v <= self.A[0]:
             return v
@@ -56,6 +57,7 @@ class BinaryHeap:
             self.A[0] = v
             self.sift_down(0)
             return ret
+
     def __pushpop_key(self, v):
         if self.key(v) <= self.key(self.A[0]):
             return v
@@ -64,8 +66,14 @@ class BinaryHeap:
             self.A[0] = v
             self.sift_key_down(0)
             return ret
+
     def top(self): return self.A[0]
-    # below is binary heap related function
+            
+    def __len__(self): return self.r
+    def __iter__(self): 
+        while self.r: yield self.pop()
+
+    # below is binary heap related function, could be static but not necessary
 
     def make_heap(self):
         """ sift_down internal node from bottom to top 
@@ -119,11 +127,8 @@ class BinaryHeap:
             if min_idx == i: break
             A[min_idx], A[i] = A[i], A[min_idx]
             i = min_idx
-            
-    def __len__(self): return self.r
-    def __iter__(self): 
-        while self.r: yield self.pop()
 
+            
 if __name__ == '__main__':
     # test `BinaryHeap` without key 
     pq = BinaryHeap()
