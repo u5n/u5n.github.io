@@ -10,7 +10,7 @@ import math
 class ChthollyTree:
     """ 
         des: 
-            flattened segment tree(similar to 1d quadtree, dynamically open and delete point), 
+            flattened segment tree(dynamically open and delete point), 
                 every node stored in a SortedDict, with left endpoint of SegmentTree node corresponding interval as key, node attribute as value
             
         time complexity: 

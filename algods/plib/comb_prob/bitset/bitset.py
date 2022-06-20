@@ -16,8 +16,7 @@ def bs_iter(bs):
     return ret
 
 def bs_subbs(BS):
-    """ ret: all subset of bitset BS, reverse order by `bit_count`
-    """
+    """ ret: all subset of bitset BS """
     ret = []
     bs1 = BS
     while bs1:
@@ -25,6 +24,7 @@ def bs_subbs(BS):
         bs1 = (bs1-1)&BS
     ret.append(0)
     return ret
+
 
 def bs_2partition(BS):
     """ ret: all unordered pairs@[bs1, bs2]{ bs1 & bs2 = 0; bs1 | bs2 in U}, where bs1>=bs2
@@ -59,16 +59,27 @@ def ubs_2disjoint(U):
         U-=1
     return ret
 
-def cache_bs_subsetsum(A):
+def cache_bs_subbs(max_bit_count=12):
+    ret = [[] for _ in range(1<<max_bit_count)]
+    for bs in range(1<<max_bit_count):
+        subbs = bs
+        while subbs:
+            ret[bs].append(subbs)
+            subbs=(subbs-1)&bs
+        ret[bs].append(0)
+    return ret
+    
+def cache_bs_sum(A):
     """ preprocess subset sum of A 
     {A[0], A[1]} -> 0b11
     """
     n = len(A)
     dp = [0]*(1<<n)
-    for BS in range(1<<n):
-        lb = BS&-BS
-        dp[BS] = dp[BS-lb] + A[lb.bit_length()-1]
+    for bs in range(1, 1<<n):
+        lb = bs&-bs
+        dp[bs] = dp[bs-lb] + A[lb.bit_length()-1]
     return dp    
+
 
 
 def combinations(n, r):

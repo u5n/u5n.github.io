@@ -70,11 +70,15 @@ def measure(loop=1, maxtime=3600, offset=0):
 
 def repr_return(ret, ret_type):
     """ change the return value into string"""
-
+    
     # try to check the types
     if not issubclass(type(ret_type), typing._GenericAlias):
-        if (ret_type is None and ret!=None) or (ret_type and not issubclass(type(ret), ret_type)):
-            return '(return the wrong type)'
+        # allow type conversion
+        if ret_type is float and type(ret) is int: 
+            pass
+        else:
+            if (ret_type is None and ret!=None) or (ret_type and not issubclass(type(ret), ret_type)):
+                return f'(return the wrong type) {ret}'
 
     if ret is None: return 'null'
     if ret_type is str:
