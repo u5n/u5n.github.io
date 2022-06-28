@@ -1,24 +1,15 @@
 import sys; sys.path.append('../../../')
 from plib._util import measure, last_avg_runtime, D
 from plib.ds.sqrtArray import Array
+from plib.ds.skiplist.skiplist import SkiplistArray
 import copy
 from random import *
-
-# n = 16
-# L = list(range(n))
-# A = Array(L, 8)
-# L = [45, 61, 57, 58, 30, 54, 39, 59, 37, 48, 63, 9, 64, 31, 56, 60, 40, 52, 41, 28, 17, 32, 55]
-# A.segments = [[45, 61], [57], [58, 30], [54, 39], [59, 37], [48, 63], [9, 64], [31], [56, 60], [40, 52], [41, 28], [17, 32, 55]]
-# A.n = len(L)
-# D(A.locate(5))
-# A.insert(5,65)
-# L.insert(5,65)
-# assert A==L
 
 def random_slice(threshold):
     n = 16
     L = list(range(n))
-    A = Array(L, threshold)
+    A = Array(L, randrange(4, 32))
+
 
     sno = n # sequence number
     for i in range(100000):
@@ -46,14 +37,17 @@ def random_slice(threshold):
         elif funcname == "del":
             del A[l:r]
             del L[l:r]
-            assert A == L
+            if A != L: 
+                raise Exception()
         else:
-            assert A[l:r] == L[l:r]
+            if A[l:r] != L[l:r]: 
+                raise Exception()
 
-def random_point(threshold):
+def random_point():
     n = 16
     L = list(range(n))
-    A = Array(L, threshold)
+    A = Array(L, randrange(4, 32))
+    S = SkiplistArray(A=L)
 
     sno = n # sequence number
     for i in range(100000):
@@ -63,33 +57,48 @@ def random_point(threshold):
             
             # oriAseg = copy.deepcopy(A.segments)
             # oriL = L[:]
-
             A.insert(i, sno)
             L.insert(i, sno)
-
+            S.insert(i, sno)
             sno+=1
             if A!=L:
-                print(i, sno-1)
-                print(oriAseg)
-                print(oriL)
-                raise Exception("insert function wrong")
+                # print(i, sno-1)
+                # print(oriAseg)
+                # print(oriL)
+                raise Exception()
+            if L!=S:
+                raise Exception()
+
         elif funcname == "pop":
             i = randrange(len(A))
             
             # oriAseg = copy.deepcopy(A.segments)
             # oriL = L[:]
 
-            assert A.pop(i)==L.pop(i)
-            assert A==L, (i, oriAseg, oriL)
+            r1= A.pop(i)
+            r2=L.pop(i)
+            r3=S.pop(i)
+            if r1!=r2:
+                raise Exception()
+            if r1!=r3:
+                raise Exception()
+
         else:
             i = randrange(len(A))
-            assert A[i]==L[i], (i, A.segments, L)
+            if A[i]!=L[i]:
+                raise Exception()
+            
+            if L[i]!=S[i]:
+                raise Exception()
 
 
 for i in range(100): 
-    random_slice(randrange(4, 32))
+    random_slice()
     print(i, end=' ')
+print("random_slice pass")
 
 for i in range(100): 
-    random_point(randrange(4, 32))
+    random_point()
     print(i, end=' ')
+print("random_point pass")
+

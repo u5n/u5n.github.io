@@ -1,78 +1,152 @@
-# file: skiplist, for explanation and application refer to skiplistRank.py
-# usg: educational, intend a min code size 
-# impl: without rank
 import random
 import math
 import operator
 
 class SkiplistNode:
     __slots__ = 'levels','val'
-    def __init__(self, level: int, val):
+    def __init__(self, nlevel: int, val):
         self.val = val
-        self.levels = [None]*level
-    def __str__(self):
-        return str(self.val)
+        # (forward, num_steps_reach_next)
+        self.levels = [[None, 42] for _ in range(nlevel)]
+    def __str__(self): return str(self.val)
 
-class Skiplist:
-    def __init__(self, maxlevel=32, p=0.5, opt=operator.lt):
-        self.MAXLEVEL = maxlevel
-        self.P = p
-        self.header = SkiplistNode(maxlevel, '/')
-        self.length = 0
-        self.opt_lt = opt
+class SkiplistArray:
+    """
+    the interface is `builtins.list`
+    the design target: 
+        as quick as possible
+    however, this is far slower than `builtins.list` when n is rather small(<=100000)
+    """
+    __slots__ = 'senhead', 'sentail', 'sz', 'maxlvl', 'lvllim', 'riseprob'
+    def __init__(self, lvllim=32, riseprob=0.3, A=[]):
+        self.lvllim, self.riseprob = lvllim, riseprob
+        self.senhead = SkiplistNode(lvllim, '$')
+        if not A:
+            self.sz = self.maxlvl = 0
+        else:
+            # O(n/(1-riseprob))
+            n = len(A)
+            createdNode =[None]*n
+            maxlvl = 0
+            mul = int(1/riseprob)
+            step = 1
+            while step <= n: 
+                maxlvl += 1
+                step *= mul
+            step //= mul
+            for ilvl in reversed(range(maxlvl)):
+                cur = self.senhead
+                for Ai in range(step-1, n, step):
+                    if createdNode[Ai] is None:
+                        createdNode[Ai] = SkiplistNode(ilvl+1, A[Ai])
+                    
+                    cur.levels[ilvl][0] = createdNode[Ai]
+                    cur.levels[ilvl][1] = step
+                    cur = createdNode[Ai]
+                step //= mul
 
-    def _find(self, val, opt):
-        """ draw a verticial line x=val, then sweep left on each level@l until meet a node which is update[l] 
-        in layer i, update[i] is last node that opt(update[i].val, val)
-        """
-        update = [self.header] * self.MAXLEVEL
-        x = self.header
-        for i in reversed(range(self.MAXLEVEL)):
-            while x.levels[i]!=None and opt(x.levels[i].val, val):
-                x = x.levels[i]
-            update[i] = x
-        return update
+            self.sz = n
+            self.maxlvl = maxlvl
+        
+    def getNodeByRank(self, rank):
+        x = self.senhead
+        x_rank = -1 # senhead rank is -1
+        for i in reversed(range(self.maxlvl)):
+            while x.levels[i][0]!=None and x_rank+x.levels[i][1]<=rank:
+                x_rank += x.levels[i][1]
+                x = x.levels[i][0]
+            if x_rank==rank: return x
+        raise Exception(".getNodeByRank: invalid rank")
 
-    def add(self, val):
-        update = self._find(val, self.opt_lt)
-        newnode_level = min(1-int(math.log(1/random.random(), self.P)), self.MAXLEVEL)
-        x = SkiplistNode(newnode_level, val)
-        for i in range(newnode_level):
-            x.levels[i] = update[i].levels[i]
-            update[i].levels[i] = x
-        self.length += 1
-        return x
 
-    def remove(self, val):
-        update = self._find(val, self.opt_lt)
-        x = update[0].levels[0]
-        if x==None or not self.opt_eq(x.val, val):
-            return False
-        for i in range(len(x.levels)):
-            update[i].levels[i] = x.levels[i]
-        self.length -=1 
-        return True
-    # only return node
-    def bisect_right(self, val): return self._find(val, self.opt_le)[0].levels[0]
-    # only return node
-    def bisect_left(self, val): return self._find(val, self.opt_lt)[0].levels[0]
-    def opt_le(self, lval, val): return not self.opt_lt(val, lval)
-    def opt_eq(self, lval, val): return not self.opt_lt(val, lval) and not self.opt_lt(lval, val)
-# below for debug
+    def __template_getPrevByRank(self, rank):
+        # this is code template
+        x = self.senhead
+        x_rank = -1
+        for i in reversed(range(self.maxlvl)):
+            while x.levels[i][0]!=None and x_rank+x.levels[i][1]<rank:
+                x_rank += x.levels[i][1]
+                x = x.levels[i][0]
+            # prevnodes[i] = x
+            # prevnodes_rank[i] = x_rank
+    
+    def deleteByRank(self, rank):
+        assert 0<=rank<self.sz
+        x = self.senhead
+        x_rank = -1
+        toremove = None
+        for i in reversed(range(self.maxlvl)):
+            while x.levels[i][0]!=None and x_rank+x.levels[i][1]<rank:
+                x_rank += x.levels[i][1]
+                x = x.levels[i][0]
+            if toremove is None and x_rank + x.levels[i][1] == rank:
+                toremove = x.levels[i][0]
+            
+            if toremove:
+                x.levels[i][0] = toremove.levels[i][0]
+                x.levels[i][1] += toremove.levels[i][1] - 1
+            else:
+                x.levels[i][1] -= 1
+            
+        while len(toremove.levels)==self.maxlvl and self.senhead.levels[self.maxlvl-1][0] == None:
+            self.maxlvl -= 1
+        self.sz -=1 
+        return toremove
+            
+
+    def pop(self, rank): return self.deleteByRank(rank).val
+    def insert(self, rank, val):
+        if rank > self.sz: rank = self.sz
+        newnode_nlvl = min(1-int(math.log(1/random.random(), self.riseprob)), self.lvllim)
+        newnode = SkiplistNode(newnode_nlvl, val)
+        x = self.senhead
+        x_rank = -1
+        for i in reversed(range(max(self.maxlvl, newnode_nlvl))):
+            while x.levels[i][0]!=None and x_rank+x.levels[i][1]<rank:
+                x_rank += x.levels[i][1]
+                x = x.levels[i][0]
+            
+            if i >= newnode_nlvl:
+                x.levels[i][1] += 1
+            else:
+                newnode.levels[i][0] = x.levels[i][0]
+                newnode.levels[i][1] = x.levels[i][1] - (rank - x_rank) + 1
+                x.levels[i][0] = newnode
+                x.levels[i][1] = rank - x_rank
+        
+            
+        self.maxlvl = max(self.maxlvl, newnode_nlvl)
+        self.sz += 1
+        
+
+    def __getitem__(self, rank): return self.getNodeByRank(rank).val
+    def __setitem__(self, rank, val): self.getNodeByRank(rank).val = val
+    def __delitem__(self, rank): self.pop(rank)
+    def __len__(self): return self.sz
     def __iter__(self):
-        """ iterate levels[0] in O(n),O(1) """
-        x = self.header.levels[0]
+        # iterate nodes
+        x = self.senhead.levels[0][0]
+        while x:
+            yield x.val
+            x=x.levels[0][0]
+    def iterateNode(self):
+        x = self.senhead.levels[0][0]
         while x:
             yield x
-            x=x.levels[0]
-    def __len__(self): return self.length
-    def __str__(self):
-        selflevel = self.MAXLEVEL
-        while selflevel>1 and self.header.levels[selflevel-1]==None:
-            selflevel -= 1
-        mat = [[None]*(self.length+1) for _ in range(selflevel)]
+            x=x.levels[0][0]
+
+    def __eq__(self, oth):
+        if self.sz != len(oth): return False
+        for v1, v2 in zip(self, oth):
+            if v1 != v2: return False
+        return True
+
+
+    def __repr__(self):
+        mat = [[None]*self.sz for _ in range(self.maxlvl)]
         maxlen = 0
-        for i,x in enumerate(self):
+        
+        for i,x in enumerate(self.iterateNode()):
             for l in range(len(x.levels)):
                 mat[l][i] = str(x)
                 maxlen = max(maxlen, len(str(x)))
@@ -87,55 +161,5 @@ class Skiplist:
                     level_sbuilder.append("".ljust(maxlen))
             sbuilder.append("  ".join(level_sbuilder))
 
-        return "-"*5+f" size:{self.length}  level:{selflevel} "+'-'*5+\
-            '\n'+"\n".join(sbuilder)+'\n'+'-'*30
-
-if __name__ == "__main__":
-    d = [0,1,0]
-    if d[0]:
-        print("test case 1\n")
-        z = Skiplist()
-        z.add((9, 'a'))
-        z.add((2, 'b'))
-        z.add((1, 'd'))
-        z.add((4, 'c'))
-        z.add((5, 'e'))
-        z.add((3, 'e'))
-        assert z.remove((1, 'd')) == 1
-        assert z.remove((1, 'd')) == 0
-        z.add((0, 'g'))
-        print(z)
-        print(len(z.header.levels))
-        print(z._find((11212,'a'), z.opt_lt))
-    # as multiset
-    if d[1]:
-        print("test case 2\n")
-        z2 = Skiplist()
-        for e in 1,2,3,3,2,4,2:
-            z2.add(e)
-        print(z2)
-        assert z2.remove(3)==1
-        print(z2)
-        assert z2.remove(3)==1
-        print(z2)
-        assert z2.remove(3)==0
-        print(z2)
-        print(z2.bisect_left(100))
-        print(z2.bisect_left(-100))
-        print(z2.bisect_right(100))
-        print(z2.bisect_right(-100))
-        print(z2.bisect_left(2))
-        print(z2.bisect_right(2))
-        print([str(v) for v in z2])
-    # as min priority_queue
-    if d[2]:
-        print("test case 2\n")
-        z3 = Skiplist()
-        for e in range(10):
-            z3.add(e)
-        # get heap top
-        v = z3.header.levels[0].val
-        print(v)
-        z3.remove(v) # O(lg(n))
-        print(z3)
-        
+        return "-"*5+f" size:{self.sz}  maxlvl:{self.maxlvl} "+'-'*5+\
+            '\n'+"\n".join(sbuilder)+'\n'+'-'*30 +'\n'

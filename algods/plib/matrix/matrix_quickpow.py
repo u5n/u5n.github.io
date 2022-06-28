@@ -6,7 +6,7 @@ Mod = int(1e9+7)
 def matpow_mod(mat, b):
     """ 
     the normal version
-    equiv to np.power(mat, b)%Mod (assume infinite precision) 
+    equiv to `np.power(mat, b)%Mod`(ignore precision problem) 
     assert: mat is square
     time: O(n^3*lg(b))
     """
@@ -24,7 +24,7 @@ def _namespace_quickpow_cached():
     """
     the cached version, use when initial_statement.shape[1] is rather small
     """
-    def matpow_mod_cache(mat, nbit):
+    def 得到mat的2的x次幂(mat, nbit):
         """ cache of [mat**(1<<i) for i in range(nbit)] 
         time: O(n^3*nbit)
         """
@@ -35,8 +35,8 @@ def _namespace_quickpow_cached():
             ret[i] = mat
         return ret
 
-    def matpow(mat, b, ini, cac):
-        """ calc np.power(mat,b) @ ini
+    def 矩阵快速幂带预处理(mat, b, ini, cac):
+        """ calc `np.power(mat,b) @ ini`
         ni1 = ini.shape[1]
         time: O(log(b)* n^2 * ni1)
         """

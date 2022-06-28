@@ -25,7 +25,6 @@ class ListNode:
         return ret[:-1] # no sentail
 
 # senhead <-> L[0] <-> L[1] <-> ... L[n-1] <-> sentail
-# senhead -> ( <-> L[0] <-> L[1] <-> ... L[n-1] <-> L[0] <->) <- sentail
 class LinkedList:
     """ there won't be any cycle 
     """
@@ -114,7 +113,7 @@ class LinkedList:
 
 def cyclic_dlinkedlist_tolist(head, gonext=True):
     """ assume it's cyclic
-        direction: "clockwise
+        direction: clockwise if gonext else anti_clockwise
     """
     cur = head
     ret = []
