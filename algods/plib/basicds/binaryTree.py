@@ -142,11 +142,10 @@ def pprint(root, rep, compact=False):
     print("BinaryTree[\n"+"\n".join(eltrans)+"\n]")    
 
 
-import sys
-
-sys.setrecursionlimit(1000000000)
     
 if __name__=="__main__":
+    import sys
+    sys.setrecursionlimit(1000000000)
     def f():
         d = 0
         root = r = TreeNode(d); d+=1

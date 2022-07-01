@@ -17,7 +17,7 @@ class SkiplistArray:
         as quick as possible
     however, this is far slower than `builtins.list` when n is rather small(<=100000)
     """
-    __slots__ = 'senhead', 'sentail', 'sz', 'maxlvl', 'lvllim', 'riseprob'
+    __slots__ = 'senhead', 'sz', 'maxlvl', 'lvllim', 'riseprob'
     def __init__(self, lvllim=32, riseprob=0.3, A=[]):
         self.lvllim, self.riseprob = lvllim, riseprob
         self.senhead = SkiplistNode(lvllim, '$')
