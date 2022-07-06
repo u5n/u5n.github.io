@@ -76,7 +76,8 @@ def binary_search_continuous(l, r, f, atol=1e-9):
     return l
     
 def tarnary_search_continuous(l, r, f, atol=1e-9):
-    """ f is an continuous function with Δf>0, return the approx minimum point"""
+    """ f is an continuous function where f' has only one zeropoint and f'(l)<0, return the approx minimum point
+    """
     while r-l>atol:
         lmid = l + (r-l)/3
         rmid = r - (r-l)/3
@@ -87,7 +88,7 @@ def tarnary_search_continuous(l, r, f, atol=1e-9):
     return l
 
 def tarnary_search(l, r, f):
-    """ f is an discrete function defined on [l,r] with Δf>0, ... 
+    """ f is an discrete function defined on [l,r] where f' has only one zeropoint and f'(l)<0, ... 
     _: todo: https://codeforces.com/contest/1633
     des: as same as binary_search_last(l,r,lambda x:f[x]-f[x-1]<0)
     performance: ?

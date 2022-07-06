@@ -29,6 +29,7 @@ chr_bopt = {
     '+':Opt(1,operator.add,'+'),
     '-':Opt(1,operator.sub,'-'),
     '*':Opt(2,operator.mul,'*'),
+    # the truncated division in c++
     '/':Opt(2,lambda l,r: l//r+(l%r!=0)*(l//r<0),'/'),
     '%':Opt(2,operator.mod,'%'),
     '^':Opt(3,operator.pow,'^',False),
@@ -39,7 +40,6 @@ lpar_opt = Opt(-10000,None,'(') # a dummy opearator that has the lowest preceden
 chr_uopt = {
     '-': Opt(100,operator.neg,'-',False,True),
     '+': Opt(100,operator.pos,'+',False,True),
-    '!': Opt(100,operator.pos,'+',False,True),
 }
 
 def calc(s):
@@ -63,9 +63,10 @@ def calc(s):
     prvtype = 0 
     ps = 0
     while ps < len(s):
-        if s[ps].isspace(): ps += 1
+        c = s[ps]
+        if c.isspace(): ps += 1
         # is numeric
-        elif s[ps].isdigit(): 
+        elif c.isdigit(): 
             num = 0
             while s[ps].isdigit():
                 num = num*10 + (ord(s[ps])-48); ps += 1
@@ -73,10 +74,10 @@ def calc(s):
             valsta.append(num)
             prvtype = 1
         
-        elif s[ps] == '(':
+        elif c == '(':
             optsta.append(lpar_opt); ps += 1
         
-        elif s[ps] == ')':
+        elif c == ')':
             while optsta[-1]!=lpar_opt:
                 calc_last()
             optsta.pop(); ps += 1
@@ -84,10 +85,10 @@ def calc(s):
         # is a opt
         else:
             # is a unary opt
-            if prvtype==0 and s[ps] in chr_uopt:
-                cur_opt = chr_uopt[s[ps]]
+            if prvtype==0 and c in chr_uopt:
+                cur_opt = chr_uopt[c]
             else:
-                cur_opt = chr_bopt[s[ps]]
+                cur_opt = chr_bopt[c]
             
             while optsta and (
                 (optsta[-1].lasso and optsta[-1].prec >= cur_opt.prec)
@@ -97,10 +98,12 @@ def calc(s):
             optsta.append(cur_opt); ps += 1
             prvtype = 0
         
-        # print([str(c) for c in optsta], valsta)
+        # print([str(v) for v in optsta], valsta)
         
     
     return valsta[-1]
 
 if __name__ == "__main__":
     assert calc("-2^2") == 4
+    assert calc(" -(1*-2) + -3*-9/2^2 ") == 8
+

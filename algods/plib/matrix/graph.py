@@ -41,45 +41,33 @@ def solve(grid):
             d += 1
         return dis
 
-
 def spiral_traverse(grid):
     """
     spiral matrix generator
     start at topleft
-    clockwise
+    test: @lc#54
     """
-    m,n=len(grid),len(grid[0])
-    maxl = (min(m,n)+1)//2
-    for l in range(maxl):
-        h = m - l*2
-        w = n - l*2
-        if w==1:
-            # right
-            for i in range(h):
-                yield l+i,l
-        elif h==1:
-            # down
-            for i in range(w):
-                yield l,l+i
-        else:
-            # topleft: l,l
-            # topright: l,l+w-1
-            # bottomright: l+h-1,l+w-1
-            # bottomleft: l+h-1,l
-            x = y = l
-            # go right
-            for _ in range(w-1):
-                yield x,y
-                y+=1
-            # go down
-            for _ in range(h-1):
-                yield x,y
-                x+=1
-            # go left
-            for _ in range(w-1):
-                yield x,y
-                y-=1
-            # go up
-            for _ in range(h-1):
-                yield x,y
-                x-=1
+    if len(grid)==0: return
+    minx, rmaxy, rmaxx, miny  = 0, len(grid[0]),  len(grid), 0
+    while True:
+        for y in range(miny, rmaxy):
+            yield minx,y
+        minx += 1
+        if minx == rmaxx: break
+        
+        for x in range(minx, rmaxx):
+            yield x, rmaxy-1
+        rmaxy -= 1
+        if rmaxy == miny: break
+        
+        for y in reversed(range(miny, rmaxy)):
+            yield rmaxx-1, y
+        rmaxx -=1 
+        if rmaxx == minx: break
+
+        for x in reversed(range(minx, rmaxx)):
+            yield x, miny
+        miny += 1
+        if miny == rmaxy: break
+        
+    

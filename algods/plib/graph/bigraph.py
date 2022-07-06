@@ -21,12 +21,12 @@ def is_bigraph(adj):
 
 
 def hungarian_adjmat(adjmat):
-    """ des: hungarian algorithm implement use bfs 
+    """ des: hungarian algorithm implement use dfs 
     app: dense graph, bigraph maximum cardinality matching 
     time: O(nl^2 * nr), O(nl+nr)
     """
     ans = 0
-    nl, nr = len(adjmat)
+    nl, nr = len(adjmat), len(adjmat[0])
     paired_y = [None]*nr
     paired_l = [None]*nr
     def dfs(x):
@@ -52,7 +52,7 @@ def hungarian_adjlist(adj, left_vertices):
     time: O(VE), O(V)
     """
     def bfs(start):
-        # left vertex i -> its previous left-vertex in augument path
+        # left vertex i -> exist augument path start at i
         prev = [0]*n ; prev[start] = None
         inpath = [False]*n
         q = [start]

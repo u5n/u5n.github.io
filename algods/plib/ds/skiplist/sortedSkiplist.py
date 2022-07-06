@@ -14,48 +14,57 @@ class Skiplist:
     """
     design: intend a min code size 
     usage: similar to std::multiset in c++
+    test: @lc#1206
     """
     __slots__ = 'lvllim', 'riseprob', 'senhead', 'sz', 'maxlvl', 'opt_lt'
 
-    def __init__(self, lvllim=32, riseprob=0.5, opt=operator.lt):
+    def __init__(self, lvllim=32, riseprob=0.5, opt=operator.lt, optmin = -math.inf):
         self.lvllim = lvllim
         self.riseprob = riseprob
-        self.senhead = SkiplistNode(lvllim, '/')
+        self.senhead = SkiplistNode(lvllim, optmin)
         self.sz = 0
         self.opt_lt = opt
 
-    def getPrevByCond(self, val, opt):
-        """ draw a verticial line x=val, then sweep left on each level@l until meet a node which is update[l] 
-        in layer i, update[i] is last node that opt(update[i].val, val)
+    def getPrevByCond(self, val, opt=None):
+        """ draw a verticial line x=val, then sweep left on each level@l until meet a node which is prevNodePerLvl[l] 
+        in layer i, prevNodePerLvl[i] is last node that opt(prevNodePerLvl[i].val, val)
         """
-        update = [self.senhead] * self.lvllim
+        if opt is None: opt = self.opt_lt
+        prevNodePerLvl = [self.senhead] * self.lvllim
         x = self.senhead
         for i in reversed(range(self.lvllim)):
-            while x.levels[i]!=None and opt(x.levels[i].val, val):
-                x = x.levels[i]
-            update[i] = x
-        return update
+            while x and opt(x.val, val):
+                prvx, x = x, x.levels[i]
+            prevNodePerLvl[i] = x = prvx
+        return prevNodePerLvl
 
     def add(self, val):
-        update = self.getPrevByCond(val, self.opt_lt)
+        prevNodePerLvl = self.getPrevByCond(val)
         newnode_level = min(1-int(math.log(1/random.random(), self.riseprob)), self.lvllim)
         x = SkiplistNode(newnode_level, val)
         for i in range(newnode_level):
-            x.levels[i] = update[i].levels[i]
-            update[i].levels[i] = x
+            x.levels[i] = prevNodePerLvl[i].levels[i]
+            prevNodePerLvl[i].levels[i] = x
         self.sz += 1
         return x
 
     def remove(self, val):
-        update = self.getPrevByCond(val, self.opt_lt)
-        x = update[0].levels[0]
+        prevNodePerLvl = self.getPrevByCond(val)
+        x = prevNodePerLvl[0].levels[0]
         if x==None or not self.opt_eq(x.val, val):
             return False
         for i in range(len(x.levels)):
-            update[i].levels[i] = x.levels[i]
+            prevNodePerLvl[i].levels[i] = x.levels[i]
         self.sz -=1 
         return True
     
+    def count(self, val):
+        firstnot = self.getPrevByCond(val)[0].levels[0]
+        if firstnot and firstnot.val == val:
+            return 1
+        return 0
+
+
     def opt_le(self, lval, val): return not self.opt_lt(val, lval)
     def opt_eq(self, lval, val): return not self.opt_lt(val, lval) and not self.opt_lt(lval, val)
 

@@ -21,12 +21,6 @@ def groupby(A:Iterable):
 
 def unique_sorted(A:list):
     """ A is sorted """
-    return [v for v,w in itertools.groupby(A)]
+    return [v for v,g in itertools.groupby(A)]
 
 
-def cyclic_iterate(head, get_next):
-    cur = head
-    while cur:
-        yield cur
-        cur = get_next(cur)
-        if cur is head: break
