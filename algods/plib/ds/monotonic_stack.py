@@ -57,23 +57,23 @@ def nearest_larger(A, opt=operator.gt):
         sta.append(i)
     return ret
     
-class MixQueue:
+class MinQueue:
     """ 
     des:
-        use default to create maxqueue
-        use `ge=opertor.le` to create minqueue
+        use default to create minqueue
+        use `lt=opertor.gt` to create maxqueue
     disadv:
         seems useless 
     """
-    __slots__ = 'monoqueue', 'valqueue', 'ge'
-    def __init__(self, ge = operator.ge):
+    __slots__ = 'monoqueue', 'valqueue', 'lt'
+    def __init__(self, lt = operator.lt):
         self.monoqueue = []
         self.valqueue = deque()
-        self.ge = ge
+        self.lt = lt
 
     def append(self, v):
         mq = self.monoqueue
-        while mq and not self.ge(mq[-1], v):
+        while mq and not self.lt(mq[-1], v):
             mq.pop()
         self.valqueue.append(v)
         mq.append(v)

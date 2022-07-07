@@ -25,7 +25,7 @@ class Dsu:
         for idx in sl:
             idx_hs[idx] = sr
         sr |= sl
-        # consider `del sl` ?
+        # python will gc sl if not ref
         return True
         
     def detach(self, i):
