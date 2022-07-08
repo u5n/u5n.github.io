@@ -62,8 +62,9 @@ class MinQueue:
     des:
         use default to create minqueue
         use `lt=opertor.gt` to create maxqueue
-    disadv:
-        seems useless 
+    test: @lc#375
+    adv:
+        faster than minDeque
     """
     __slots__ = 'monoqueue', 'valqueue', 'lt'
     def __init__(self, lt = operator.lt):
