@@ -67,13 +67,13 @@ class MinQueue:
     """
     __slots__ = 'monoqueue', 'valqueue', 'lt'
     def __init__(self, lt = operator.lt):
-        self.monoqueue = []
+        self.monoqueue = deque()
         self.valqueue = deque()
         self.lt = lt
 
     def append(self, v):
         mq = self.monoqueue
-        while mq and not self.lt(mq[-1], v):
+        while mq and self.lt(mq[-1], v):
             mq.pop()
         self.valqueue.append(v)
         mq.append(v)
@@ -84,7 +84,7 @@ class MinQueue:
             self.monoqueue.popleft()
         return ret
 
-    def getmix(self):
+    def getmin(self):
         return self.monoqueue[0]
 
 
