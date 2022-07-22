@@ -110,6 +110,14 @@ def prime_generator():
         sieve[m] = s                 # original test entry: ideone.com/WFv4f
 
 def _namespace_single_point(Mod):
+    """
+        others:
+            max number of divisors: 
+                evaluate:U**(1.066/log(log(U)))
+                n=1000000000
+                ~=1344
+
+    """
     def modular_multiplication_inverse(a, Mod):
         assert gcd(a, Mod)==1
         return extended_euclidean(a, Mod)[0]%Mod

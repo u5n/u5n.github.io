@@ -9,6 +9,7 @@ class Attr:
 class Dsu:
     """ the parent relationship is maintain by a hashmap
     """
+    __slots__ = 'p', 'repr_attr', 'cnt'
     def __init__(self):
         self.p = {}
         self.repr_attr = {} # repr -> attr of set(default only store size)

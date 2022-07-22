@@ -28,6 +28,7 @@ class ST_diff_add:
             cur//=2
         
         return ret
+        
     def range_addition(self, l, r, v):
         nodes = self.nodes
 

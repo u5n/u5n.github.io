@@ -21,11 +21,9 @@ def Z_function(A):
     return z
 
 
-
 def suffix_array(A):
     """ 
     des: the suffix array implement with some constant optimize
-        1. 
     time: O(nlgn) """
     n = len(A)
     cnt = [0]*n 

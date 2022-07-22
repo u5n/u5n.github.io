@@ -13,9 +13,6 @@ class BIT:
     des:
         index of A start from 0
         tarr[i] = sum(A[(i+1)&i:i+1])
-        
-        # i+1 - lowbit(i+1)
-
     """
     __slots__='n','tarr'	
     def __init__(self, n):
@@ -54,7 +51,7 @@ class BIT:
 
     def kth(self, k):
         """ des: 
-            return min i that `sum(i+1)>=k+1`
+            return min i that `sum(i+1)>k`
             suppose BIT is a Counter, it find the kth(start from 0) smallest element
             if not found, return self.n
         time: O(lg(n))
@@ -76,12 +73,12 @@ class BIT:
         pre = 0 # prefix 
         while bit:
             cur = pre + bit
-            if cur <= n and k >= tarr[cur-1]:
-                # go to next right sibling (shrink the interval by half)
+            if cur <= n and tarr[cur-1]<=k:
+                # go to segmenttree right child (shrink the interval by half)
                 k -= tarr[cur-1]
                 pre = cur
             # if cur > n or k < self.tarr[cur-1]:
-            #     go to leftmost child ( shrink the interval by half )
+            #     go to segmenttree left child ( shrink the interval by half )
             bit >>= 1
         return pre
 

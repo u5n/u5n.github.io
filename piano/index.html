@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en-US">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>virtual piano</title>
+    <meta name="description" content="virtual piano">
+    <meta property="og:description" content="">
+    <meta property="og:title" content="">
+
+    <link rel="stylesheet" href="/lib/common.css">
+    <script src="/lib/common.js"></script>
+    <script src="./src/lexical.js"></script>
+    
+    
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <style>
+        #console {
+            font-size: 2rem;
+            word-break: break-all;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="console">press key, ctrl falling, shift rising</div>
+    <script>
+        class note {
+            constructor(cor, scale, sharp, quarter) {
+                this.cor = cor
+                this.scale = scale
+                this.sharp = sharp
+                this.quarter = quarter
+            }
+            get note() {
+                return this.cor + ((this.sharp == 0) ? '' : '%23') + this.scale
+            }
+
+        }
+        document.addEventListener("DOMContentLoaded", function () {
+            init();
+        });
+        async function sound_by_note(n, period = 667, longing = true) {
+            let A = new Audio('/assets/audio/musical_note/' + n.note + '.mp3')
+            
+            A.play()
+            if (!longing) {
+                await sleep(n.long * period)
+                A.pause()
+                delete A
+            }
+        }
+
+        function num_to_Note(n, tone = 0, sharp, quarter = 1) {
+            let cor = [, 'C', 'D', 'E', 'F', 'G', 'A', 'B']
+            return new note(cor[n], tone + 4, sharp, quarter)
+        }
+
+        async function play_melody(melody, quarter = 1, period = 667) {//90 bpm
+            for (let a of melody) {
+                let tone = 0
+                let quarter = 1
+                let notation = a.slice(1)
+                let ana = lexical_ana(notation) //tone,quarter
+                D(num_to_Note(a[0], ...ana))
+                D(period * ana[2])
+                sound_by_note(num_to_Note(a[0], ...ana));
+                await sleep(period * ana[2])
+            }
+        }
+        function preload_audio(){
+            let _scale_n='CDEFGAB'.split('')
+            _scale_n.push(...['C%23','D%23','F%23','G%23','A%23'])
+            for(let i of _scale_n)
+                for(let j of '23456')
+                {
+                    let url='/assets/audio/musical_note/' + i+j + '.mp3'
+                    A=new Audio()
+                    A.src=url
+                }
+        }
+        function play_key(e){
+            let num, tone=0, sharp = 0;
+            if (e.code.slice(0, 5) != 'Digit') {
+                let sharpLayout = "qw rty io "
+                let idx = sharpLayout.indexOf(e.key.toLowerCase()) + 1
+                if (!idx)
+                    return
+                // black
+                else {
+                    sharp = 1
+                    num = idx
+                }
+            }//white
+            else {
+                num = e.code.slice(-1).charCodeAt(0) - 48
+                if (num == 0) num += 10
+
+            }
+            if (num > 7) {
+                tone += 1
+                num -= 7
+            }
+
+            if (e.ctrlKey) tone -= 1;
+            if (e.shiftKey) tone += 1;
+
+            let note = num_to_Note(num, tone, sharp)
+
+            sound_by_note(note)
+            printable.push(num)
+            document.querySelector('#console').innerText = printable
+            e.preventDefault()
+        
+        }
+        let printable = []
+        function init() {
+            preload_audio();
+
+            let melody = []
+            melody.push(...['6-_', '1_', '3_','1_','2','1_','7-_',
+            '3','2','6-=','1_','3_','5_','5_','6','5_','4_','3=',
+            '4#','5#','7','6_','3','3_','7-','6-_','3_','2_','4',
+            '4_','0_','5_','4_','3','2_','1_','3','2','6-='
+        ])
+            
+            
+            play_melody(melody)
+            
+            document.addEventListener('keydown', play_key)
+        } 
+    </script>
+</body>

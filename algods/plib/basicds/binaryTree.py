@@ -18,19 +18,22 @@ class TreeNode:
         return str(x.val) if x!=None else 'N'
     def copy(self):
         return decode(self.encode())
-    def pprint(self): pprint(self, TreeNode.rep)
+    def pprint(self, returnstr): 
+        if returnstr:
+            return pprint(self, TreeNode.rep, returnstr=returnstr)
+        else:
+            pprint(self, TreeNode.rep, returnstr=returnstr)
     def encode(self, returnType="str"):
         q=[self]
-        i = 0
-        while i<len(q):
-            if q[i]:
-                q.append(q[i].left)
-                q.append(q[i].right)
-            i+=1
+        for node in q:
+            if node:
+                q.append(node.left)
+                q.append(node.right)
+
         while q[-1]==None:
             q.pop()
         if returnType=="str":
-            return '['+", ".join(str(e) if e!=None else 'null' for e in q)+']'
+            return '['+", ".join(str(e.val) if e!=None else 'null' for e in q)+']'
         else:
             return list(q)
 
@@ -60,7 +63,7 @@ def decode(datastr):
 
     return root
     
-def pprint(root, rep, compact=False):
+def pprint(root, rep, compact=False, returnstr=False):
     """
     pprint a binary tree at root, stringify each node use `vrepr` function
 
@@ -139,8 +142,11 @@ def pprint(root, rep, compact=False):
             toappend = '|'.join( map(lambda ee: paddingaround(rep(ee), epArr[i], emptyspaceArr[i]), e) )
         eltrans.append(" "+toappend)
     
-    print("BinaryTree[\n"+"\n".join(eltrans)+"\n]")    
-
+    printedstr = "BinaryTree[\n"+"\n".join(eltrans)+"\n]"
+    if returnstr:
+        return printedstr
+    else:
+        print(printedstr)
 
     
 if __name__=="__main__":

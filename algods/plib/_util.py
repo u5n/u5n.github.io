@@ -84,7 +84,8 @@ def repr_return(ret, ret_type):
     if ret_type is str:
         ret = f'"{ret}"' # assume no special chars appears in `ret``
     elif ret_type is typing.Union[TreeNode, type(None)] or ret_type is TreeNode:
-        ret = ret.encode()
+        if ret: 
+            ret = ret.pprint(returnstr=1)
     elif ret_type is typing.Union[ListNode, type(None)] or ret_type is ListNode:
         # as linkedlist head
         ret = list(ret)
@@ -156,7 +157,7 @@ def run_obj_usestd(cls, detail, selected, custom_testcase):
     i_cases = 0
     obj = None
     while selected!={-1}:
-        # assumption: there is no testcase take no parameters
+        # assumption: custom testcase must be nonempty
         if custom_testcase: 
             (function_names, function_paras), custom_testcase = custom_testcase, None
             selected = {-1} # don't run anyother testcase from input

@@ -14,11 +14,61 @@ All of methods can be done with ChthollyTree(value is bool, 1 means the interval
 """
 
 from sortedcontainers import SortedList
+import itertools
+
+class BoolList_Groupby:
+    """ des: vector<bool> with some operations, faster than SortedDisjointIntervals
+    can find size of continuous ones
+    """
+    __slots__ = 'zeros', 'szs'
+    def __init__(self, n, A = None):
+        if A:
+            # self.ones = SortedList([i for i,v in enumerate(A) if v])
+            self.zeros = SortedList([i for i,v in enumerate(A) if v==0])
+            self.szs = SortedList(len(list(y)) for x,y in itertools.groupby(A) if x)
+        else:
+            # self.ones = SortedList()
+            self.zeros = SortedList(range(n))
+            self.szs = SortedList()
+        # add two sentry
+        self.zeros.add(-1)
+        self.zeros.add(n)
+
+    def __setitem__(self, i, v):
+        zeros, szs = self.zeros, self.szs
+        if v:
+            if i in zeros:
+                l1sz = i - zeros[zeros.bisect_left(i)-1] - 1
+                r1sz = zeros[zeros.bisect_right(i)] - i - 1 
+                if l1sz:
+                    szs.remove(l1sz)
+                if r1sz:
+                    szs.remove(r1sz)
+                szs.add(l1sz+r1sz+1)
+                zeros.remove(i)
+        else:
+            if i not in zeros:
+                l1sz = i - zeros[zeros.bisect_left(i)-1] - 1
+                r1sz = zeros[zeros.bisect_right(i)] - i - 1 
+                szs.remove(l1sz+r1sz+1)
+                if l1sz:
+                    szs.add(l1sz)
+                if r1sz:
+                    szs.add(r1sz)
+                zeros.add(i)
+
+    def __repr__(self):
+        s = ''
+        for i in range(self.zeros[-1]):
+            s += '0' if i in self.zeros else '1'
+        return s
+
 
 class SortedDisjointIntervals:
     """ des: a collection of ordered and disjoint closed intervals ( endpoint is integers )
     app: the online algorithm of [meeting rooms](https://leetcode.com/problems/meeting-rooms)
     """
+    __slots__ = 'itvs',
     def __init__(self):
         # map left endpoint to right endpoint
         # assumption: sortedlist is faster than sorteddict

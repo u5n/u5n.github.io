@@ -44,7 +44,7 @@ def partition_solver(f1,f2, f3=None):
 
 def partition_optimizer(A, k):
     """ des: 
-        if dp[sz] transition from dp[sz-1][p] + f3(p, sz), and p is monotonic by sz, then apply this method
+        if dp[vk][sz] transition from dp[vk-1][p] + f3(p, sz), and p is monotonic by sz, then apply this method
     assert: f1 = min; f2 = sum
     convention: empty part is not allowed
     test: @lc#1478

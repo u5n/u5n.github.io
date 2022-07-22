@@ -23,9 +23,9 @@ TOC:
 def postorder(G):
     """ visit node in postorder, ensure child is visited before parent 
     dfs code: 
-        def postorder_dfs(u):
+        def postorder(u):
             for v in G[u]:
-                yield from postorder_dfs(v)
+                yield from postorder(v)
             yield u
     """
     sta = [[0, 0]] # bpt, vertex
@@ -38,13 +38,24 @@ def postorder(G):
             yield sta.pop()[1]
 
 def to_array_preorder(G):
-    """ in preorder seq@P, every subtree@u is a continuous subarrays 
+    """ in preorder seq@P of tree `G`, every subtree@u is a continuous subarrays 
     ret: mp: u (node_number in G) |-> P[mp[u][0]:mp[u][1]] correspond subtree at u
-    impl: iterative postorder use breakpoint
-    `preorder[mp[u][0]:mp[u][1]]` """
+    impl: iterative dfs use breakpoint
+    dfs code:
+        def to_array_preorder(G):
+            seq = 0
+            mp = [[None, None] for _ in range(n)]
+            def dfs(u):
+                mp[u][0] = seq; seq == 1
+                for v in G[u]:
+                    dfs(v)
+                mp[u][1] = seq
+            dfs(0)
+    """
+
     n = len(G)
     sta = [[0, 0]] # breakpoint, vertex
-    mp = [[-1,-1] for _ in range(n)]
+    mp = [[None, None] for _ in range(n)]
     seq = 0
     while sta:
         bpt, u = sta[-1]

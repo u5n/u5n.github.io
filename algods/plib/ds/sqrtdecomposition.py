@@ -2,6 +2,8 @@ from math import *
 from itertools import islice
 import operator
 
+min2 = lambda l,r: l if l<r else r
+max2 = lambda l,r: l if l>r else r
 class SqrtDecompositionSingle:
     """
     time:
@@ -19,11 +21,13 @@ class SqrtDecompositionSingle:
             it will not be used
 
     """
+    __slots__ = 'A', 'n', 'blocks', 'block_sz', 'id_ele', 'merge'
     def __init__(self, A, merge):
         n = len(A)
         if merge in (max, min):
             self.assign = self.assign_monoidopt
             id_ele = -inf if merge is max else inf
+            merge = max2 if merge is max else min2
         elif merge in (operator.add, operator.xor):
             self.assign = self.assign_groupopt
             id_ele = 0
@@ -54,11 +58,10 @@ class SqrtDecompositionSingle:
         rend = r - (r % block_sz)
         ret = self.id_ele
 
-        # inside one block
+        # don't contain any completely block
         if lend >= rend:
             for i in range(l, r):
                 ret = merge(ret, A[i])
-        # accross multiple block
         else:
             for i in range(l, lend):
                 ret = merge(ret, A[i])
@@ -76,11 +79,14 @@ class SqrtDecompositionSingle:
         block_id = i//block_sz
         
         if v==merge(A[i], v): # if A[i] < v:
-            blocks[block_id] = ___(blocks[block_id], v)
+            blocks[block_id] = merge(blocks[block_id], v)
             return
         elif A[i] == v: 
             return
         
+        # if last block is incomplete, ignore it
+        if block_id == len(blocks): return
+
         # recalculate blocks[block_id]
         blocks[block_id] = id_ele
         A[i] = v
@@ -93,6 +99,9 @@ class SqrtDecompositionSingle:
         A, blocks, merge = self.A, self.blocks, self.merge
         block_id = i//self.block_sz
         
+        # if last block is incomplete, ignore it
+        if block_id == len(blocks): return
+
         # inverse operation of self.merge
         blocks[block_id] = ___(blocks[block_id], A[i])
         A[i] = v
@@ -110,7 +119,7 @@ class SqrtDecompositionSingle:
 
     def block_range(self, block_id):
         lend = block_id*self.block_sz
-        return range(lend, min(self.n, lend + self.block_sz))
+        return range(lend, min2(self.n, lend + self.block_sz))
 
 
 class SqrtDecompositionMulti:
@@ -118,7 +127,7 @@ class SqrtDecompositionMulti:
         __slots__ = 'max', 'sum'
         def __init__(self, max, sum):
             self.max, self.sum = max, sum
-    
+    __slots__ = 'A', 'n', 'blocks', 'block_sz'
     def __init__(self, A):
         n = len(A)
         block_sz = isqrt(n)
@@ -128,7 +137,7 @@ class SqrtDecompositionMulti:
         for i,e in enumerate(A):
             block_id = i// block_sz
 
-            blocks[block_id].max = max(blocks[block_id].max, e)
+            blocks[block_id].max = max2(blocks[block_id].max, e)
             blocks[block_id].sum += e
 
         self.A, self.n, self.blocks, self.block_sz = A, n, blocks, block_sz    
@@ -149,11 +158,10 @@ class SqrtDecompositionMulti:
         rend = r - (r % block_sz)
 
         ret = []
-        # inside one block
+        # don't contain any completely block
         if lend >= rend:
             for i in range(l, r):
                 ret.append((i, A[i]))
-        # accross multiple block
         else:
             for i in range(l, lend):
                 ret.append((i, A[i]))
@@ -174,14 +182,16 @@ class SqrtDecompositionMulti:
         A, blocks, block_sz = self.A, self.blocks, self.block_sz
         block_id = i//block_sz
         ov, A[i] = A[i], v
+        # if last block is incomplete, ignore it
+        if block_id == len(blocks): return
         blocks[block_id].sum += v - ov
         # recalculate blocks[block_id].max
         blocks[block_id].max = -inf
         if v > ov:
-            blocks[block_id].max = max(blocks[block_id].max, v)
+            blocks[block_id].max = max2(blocks[block_id].max, v)
         else:
             for Ai in self.block_range(block_id):
-                blocks[block_id].max = max(blocks[block_id].max, A[Ai])
+                blocks[block_id].max = max2(blocks[block_id].max, A[Ai])
     
     def recalc_range(self, l, r):
         """ recalculate block overlap with [l,r) """
@@ -191,12 +201,12 @@ class SqrtDecompositionMulti:
             blocks[block_id].max = -inf
             blocks[block_id].sum = 0
             for Ai in self.block_range(block_id):
-                blocks[block_id].max = max(blocks[block_id].max, A[Ai])
+                blocks[block_id].max = max2(blocks[block_id].max, A[Ai])
                 blocks[block_id].sum += A[Ai]
 
     def block_range(self, block_id):
         lend = block_id*self.block_sz
-        return range(lend, min(self.n, lend + self.block_sz))
+        return range(lend, min2(self.n, lend + self.block_sz))
 
 
 def mosalgorithm(A, queries):

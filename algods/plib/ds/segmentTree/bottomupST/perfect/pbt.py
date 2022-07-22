@@ -65,6 +65,9 @@ class ST_repeatsubarray:
     """
     find maximum size of subarrays with same characters
     test: @lc#2213
+    time:
+        n=100000
+        0.02ms per assign
     """
     __slots__ = 'n', 'nodes', 'leaves'
     class Node:
@@ -81,7 +84,7 @@ class ST_repeatsubarray:
     def __init__(self, A):
         n_lvl = (len(A)-1).bit_length() + 1
         self.n = 2**(n_lvl - 1)
-        self.leaves = list(A) + ['\0']*(self.n - len(A))
+        self.leaves = A + ['\0']*(self.n - len(A))
 
         sentryNode = self.Node(0,0,0)
         self.nodes = [
