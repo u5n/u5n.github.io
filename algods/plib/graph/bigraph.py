@@ -1,4 +1,6 @@
 from math import inf
+
+
 def is_bigraph(adj):
     # `-COLOR0`` to get COLOR1
     COLOR0, COLOR1 = -1, 1
@@ -15,20 +17,21 @@ def is_bigraph(adj):
                         colored[v] = -colored[u]
                         q.append(v)
                     else:
-                        if colored[v] == colored[u]: 
+                        if colored[v] == colored[u]:
                             return False
     return True
 
 
 def hungarian_adjmat(adjmat):
-    """ des: hungarian algorithm implement use dfs 
-    app: dense graph, bigraph maximum cardinality matching 
+    """ des: hungarian algorithm implement use dfs
+    app: dense graph, bigraph maximum cardinality matching
     time: O(nl^2 * nr), O(nl+nr)
     """
     ans = 0
     nl, nr = len(adjmat), len(adjmat[0])
     paired_y = [None]*nr
     paired_l = [None]*nr
+
     def dfs(x):
         for y in range(nr):
             if adjmat[x][y] and not inpath_y[y]:
@@ -38,7 +41,7 @@ def hungarian_adjmat(adjmat):
                     paired_l[x] = y
                     return True
         return False
-    
+
     for x in range(nl):
         if paired_l[x] is None:
             # right vertex → whether in augmentpath
@@ -46,9 +49,10 @@ def hungarian_adjmat(adjmat):
             ans += dfs(x)
     return ans
 
+
 def hungarian_adjlist(adj, left_vertices):
-    """ des: hungarian algorithm implement use bfs 
-    app: sprase graph, bigraph maximum cardinality matching 
+    """ des: hungarian algorithm implement use bfs
+    app: sprase graph, bigraph maximum cardinality matching
     time: O(VE), O(V)
     """
     def bfs(start):

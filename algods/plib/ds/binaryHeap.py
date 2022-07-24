@@ -35,12 +35,15 @@ class BinaryHeap:
             self.sift_down = self.__sift_key_down
             self.pushpop = self.__pushpop_key
     
-    def pop(self):
+    def pop(self, index=0):
+        """ the index is not node rank by value 
+        time: O(log(n))
+        """
         if self.r==0:
             raise IndexError("pop from an empty priority queue")
-        self.A[0], self.A[self.r-1] = self.A[self.r-1], self.A[0]
+        self.A[index], self.A[self.r-1] = self.A[self.r-1], self.A[index]
         self.r -= 1
-        self.sift_down(0)
+        self.sift_down(index)
         return self.A[self.r]
         
     def push(self, v):

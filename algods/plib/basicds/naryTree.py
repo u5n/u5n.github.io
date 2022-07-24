@@ -2,14 +2,17 @@ class NaryTreeNode:
     def __init__(self, val, children=None):
         self.val = val
         self.children = children if children else []
+
     def encode(self, method='preorder'):
         method = method.replace(" ", "").lower()
         if method == 'preorder' or method == 'dfs':
             return self.encode_preorder()
         if method == 'levelorder' or method == 'bfs':
-            pass    
+            pass
+
     def encode_preorder(self):
         stru = []
+
         def dfs(x):
             uid = len(stru)
             stru.append([x.val, 1])
@@ -19,8 +22,10 @@ class NaryTreeNode:
         dfs(self)
         return stru
 
+
 def decode_preorder(stru):
     iterstru = iter(stru)
+
     def dfs():
         val, sz = next(iterstru)
         root = NaryTreeNode(val)
@@ -33,12 +38,13 @@ def decode_preorder(stru):
         return root, sz
     return dfs()[0]
 
+
 if __name__ == '__main__':
     r = NaryTreeNode(1)
     r.children = [NaryTreeNode(2), NaryTreeNode(3), NaryTreeNode(4)]
     r.children[0].children = [NaryTreeNode(5), NaryTreeNode(6), NaryTreeNode(7)]
-    r.children[2].children = [NaryTreeNode(8), NaryTreeNode(9)] 
-    A=r.encoding()
+    r.children[2].children = [NaryTreeNode(8), NaryTreeNode(9)]
+    A = r.encoding()
     print(A)
     r2 = decode_preorder(A)
     print(r2.encoding())
