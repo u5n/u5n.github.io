@@ -118,6 +118,7 @@ def three_partition(A, l, r, pivot=None):
     if pivot is None:
         # or median of A[l],A[r-1],A[(l+r)//2]
         pivot = A[random.randrange(l,r)]
+        
     while j<k:
         # [l:i] < ; [i:j] == ; [k:] >
         if A[j]<pivot:

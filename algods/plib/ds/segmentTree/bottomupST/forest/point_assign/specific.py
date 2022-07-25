@@ -170,8 +170,8 @@ class ST_maxval:
 
 
 class ST_minidx:
-    """ the opeartor is `lambda lAid, rAid: lAid if A[lAid]<A[rAid] or(A[lAid]==A[rAid] and lAid<rAid) else rAid`
-    the node store the arraylist_index with minvalue
+    """ the merge func is `lambda lAid, rAid: lAid if A[lAid]<A[rAid] or(A[lAid]==A[rAid] and lAid<rAid) else rAid`
+    the node store the index with min A[index] in correspond interval
     if multiple, use the leftmost one
     """
     __slots__ = 'n', 'nodes', 'A'
@@ -195,7 +195,6 @@ class ST_minidx:
             self.pull(cur)
     
     def range_min(self, l, r):
-        """ try to write without sentry """
         A = self.A
         nodes, n = self.nodes, self.n
         seg_l, seg_r, l, r = [], [], l+n, r+n

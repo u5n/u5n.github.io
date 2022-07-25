@@ -21,12 +21,12 @@ class BinaryHeap:
         self.r = 0
         
         if it:
-            self.A_ = list(it)
-            self.r = len(self.A_)
-            if len(self.A_) > capacity:
-                self.A = self.A_
-            else:
-                self.A[:self.r] = self.A_
+            for v in it:
+                if self.r == len(self.A): self.A.extend([None]*(self.r*2))
+
+                self.A[self.r] = v
+                self.r += 1
+
             self.make_heap()
 
         if key: 
