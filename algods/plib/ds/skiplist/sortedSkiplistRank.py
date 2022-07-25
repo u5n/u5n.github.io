@@ -67,10 +67,10 @@ class Skiplist:
         x_rank = -1 # rank of senhead 
         for i in reversed(range(self.lvllim)):
             # compare val or compare rank
-            while x.levels[i].next!=None and\
-                pred(x.levels[i].next.val, x_rank + x.levels[i].span):
+            while (nxtx:=x.levels[i].next)and\
+                pred(nxtx.val, x_rank + x.levels[i].span):
                 x_rank += x.levels[i].span
-                x = x.levels[i].next
+                x = nxtx
             prevnodes[i] = x
             prevnodes_rank[i] = x_rank
 
@@ -105,7 +105,7 @@ class Skiplist:
         return (pointer to )new node
         """
         prevnodes, prevnodesrank = self.getPrevByCond(lambda l_val,_: self.opt_lt(l_val,val))
-        newnode_nlvl = min(1-int(math.log(1/random.random(), self.riseprob)), self.lvllim)
+        newnode_nlvl = min(1+int(math.log(random.random(), self.riseprob)), self.lvllim)
         for i in range(newnode_nlvl, self.lvllim):
             prevnodes[i].levels[i].span += 1        
 

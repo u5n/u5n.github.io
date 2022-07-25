@@ -132,25 +132,17 @@ def three_partition(A, l, r, pivot=None):
     return i,j
 
 
-def partition(A, l, r, pivot=None):
-    """ 
-    des:
-        rearrange `A` such that 
-            all elements <= pivot are put before pivot
-            all elements > pivot are put after pivot
-        return aftersorted position of pivot
-    feature: inplace, not stable 
+def partition(A, l, r, pred):
+    """ des: similar to std::partition
+    return the beginning of second group
+    this can't be directly use for quicksort
+        can't process elements has same value 
+        can't find position of pivot
     """
-    if pivot is None:
-        # or median of A[l],A[r-1],A[(l+r)//2]
-        pivot_index = random.randrange(l,r)
-        pivot = A[pivot_index]
-        A[pivot_index], A[r-1] = A[r-1], A[pivot_index]
-    
     i = l
     for j in range(l, r):
-        # loop inv: A[l:i] <= pivot < A[i:j]
-        if A[j] <= pivot:
+        # loop inv: all(pred(v) for v in A[l:i]); not any(pred(v) for v in A[i:r])
+        if pred(A[j]):
             A[i],A[j] = A[j],A[i]
             i+=1
-    return i-1
+    return i

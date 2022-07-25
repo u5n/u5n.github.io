@@ -97,7 +97,7 @@ class SkiplistArray:
     def pop(self, rank): return self.deleteByRank(rank).val
     def insert(self, rank, val):
         if rank > self.sz: rank = self.sz
-        newnode_nlvl = min(1-int(math.log(1/random.random(), self.riseprob)), self.lvllim)
+        newnode_nlvl = min(1+int(math.log(random.random(), self.riseprob)), self.lvllim)
         newnode = SkiplistNode(newnode_nlvl, val)
         x = self.senhead
         x_rank = -1

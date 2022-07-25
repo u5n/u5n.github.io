@@ -18,10 +18,10 @@ class Skiplist:
     """
     __slots__ = 'lvllim', 'riseprob', 'senhead', 'sz', 'maxlvl', 'opt_lt'
 
-    def __init__(self, lvllim=32, riseprob=0.5, opt=operator.lt, optmin = -math.inf):
+    def __init__(self, lvllim=32, riseprob=0.5, opt=operator.lt):
         self.lvllim = lvllim
         self.riseprob = riseprob
-        self.senhead = SkiplistNode(lvllim, optmin)
+        self.senhead = SkiplistNode(lvllim, None)
         self.sz = 0
         self.opt_lt = opt
 
@@ -30,17 +30,18 @@ class Skiplist:
         in layer i, prevNodePerLvl[i] is last node that opt(prevNodePerLvl[i].val, val)
         """
         if opt is None: opt = self.opt_lt
-        prevNodePerLvl = [self.senhead] * self.lvllim
-        x = self.senhead
+        prevNodePerLvl = [None] * self.lvllim
+        prvx = self.senhead
         for i in reversed(range(self.lvllim)):
-            while x and opt(x.val, val):
-                prvx, x = x, x.levels[i]
-            prevNodePerLvl[i] = x = prvx
+            while (x:=prvx.levels[i]) and opt(x.val, val):
+                prvx = x
+            prevNodePerLvl[i] = prvx
         return prevNodePerLvl
+
 
     def add(self, val):
         prevNodePerLvl = self.getPrevByCond(val)
-        newnode_level = min(1-int(math.log(1/random.random(), self.riseprob)), self.lvllim)
+        newnode_level = min(1+int(math.log(random.random(), self.riseprob)), self.lvllim)
         x = SkiplistNode(newnode_level, val)
         for i in range(newnode_level):
             x.levels[i] = prevNodePerLvl[i].levels[i]
@@ -51,7 +52,7 @@ class Skiplist:
     def remove(self, val):
         prevNodePerLvl = self.getPrevByCond(val)
         x = prevNodePerLvl[0].levels[0]
-        if x==None or not self.opt_eq(x.val, val):
+        if x is None or not self.opt_eq(x.val, val):
             return False
         for i in range(len(x.levels)):
             prevNodePerLvl[i].levels[i] = x.levels[i]
