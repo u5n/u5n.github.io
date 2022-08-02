@@ -87,6 +87,7 @@ def calc(s):
             # is a unary opt
             if prvtype==0 and c in chr_uopt:
                 cur_opt = chr_uopt[c]
+            # is a binary opt
             else:
                 cur_opt = chr_bopt[c]
             

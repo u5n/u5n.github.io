@@ -19,8 +19,16 @@ def groupby(A:Iterable):
             yield i,j
             i = j
 
-def unique_sorted(A:list):
-    """ A is sorted """
-    return [v for v,g in itertools.groupby(A)]
-
-
+def discretize(A):
+    """
+    put all values of A into number axis
+    return a mapper that map value of A into its rank(start of 0) on numebr axis
+    """
+    pv = None
+    uuid = 0
+    mapper = {}
+    for v in sorted(A):
+        if v == pv: continue
+        mapper[v] = uuid; uuid += 1
+        pv = v
+    return mapper

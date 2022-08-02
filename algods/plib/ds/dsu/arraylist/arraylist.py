@@ -14,12 +14,23 @@ class Dsu:
         of a non-representative x, `A[x]` is parent of x
     the element is numbered in [0,n)
     """
-    __slots__ = 'p', 'cnt'
-    def __init__(self, n):
-        # make_set 0,1,...,n-1
-        # parent relation
-        self.p = [-1]*n
-        self.cnt = n
+    __slots__ = 'p', 'cnt', 'maxsz'
+    def __init__(self, n, make_n_set=True):
+        if make_n_set:
+            # makeset 0,1,...,n-1
+            self.p = [-1]*n
+            self.cnt = n
+            self.maxsz = 1
+        else:
+            self.p = [None]*n
+            self.cnt = 0
+            self.maxsz = 0
+    
+    def makeset(self, i):
+        assert self.p[i] is None
+        self.p[i] = -1
+        self.cnt += 1
+        # self.maxsz = max(self.maxsz, 1)
 
     def find(self, u):
         p = self.p
@@ -36,6 +47,8 @@ class Dsu:
         if bysize and p[l] < p[r]: l, r = r, l
         p[r] += p[l]
         p[l] = r
+        
+        # self.maxsz = max(self.maxsz, -p[r])
         self.cnt -= 1
         return True
 
@@ -46,10 +59,11 @@ class Dsu:
         """
         ret = defaultdict(list)
         for k in range(len(self.p)):
-            ret[self.find(k)].append(k)
+            if self.p[k] is not None:
+                ret[self.find(k)].append(k)
         return ret
 
-    def is_repr(self, u): return self.find(u) < 0
+    def is_repr(self, u): return self.p[u] is not None and self.find(u) < 0
     def __len__(self): return self.cnt
     def __repr__(self): return str(self.to_sets().items()).replace("dict_items", "Dsu")
 

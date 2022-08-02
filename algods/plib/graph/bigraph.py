@@ -26,24 +26,27 @@ def hungarian_adjmat(adjmat):
     """ des: hungarian algorithm implement use dfs
     app: dense graph, bigraph maximum cardinality matching
     time: O(nl^2 * nr), O(nl+nr)
+    test: @lc#1820(oneliner)
     """
     ans = 0
     nl, nr = len(adjmat), len(adjmat[0])
-    paired_y = [None]*nr
-    paired_l = [None]*nr
+    pair_y = [None]*nr
+    pair_x = [None]*nl
 
     def dfs(x):
+        """ return whether exist augument path start at x and don't use vertex in inpath_y
+        """
         for y in range(nr):
             if adjmat[x][y] and not inpath_y[y]:
                 inpath_y[y] = True
-                if paired_y[y] is None or dfs(paired_y[y]):
-                    paired_y[y] = x
-                    paired_l[x] = y
+                if pair_y[y] is None or dfs(pair_y[y]):
+                    pair_y[y] = x
+                    pair_x[x] = y
                     return True
         return False
 
     for x in range(nl):
-        if paired_l[x] is None:
+        if pair_x[x] is None:
             # right vertex → whether in augmentpath
             inpath_y = [False]*nr
             ans += dfs(x)
