@@ -40,7 +40,9 @@ def postorder(G):
 def to_array_preorder(G):
     """ in preorder seq@P of tree `G`, every subtree@u is a continuous subarrays 
     ret: mp: u (node_number in G) |-> P[mp[u][0]:mp[u][1]] correspond subtree at u
-    impl: iterative dfs use breakpoint
+    impl: 
+        iterative dfs use breakpoint
+        don't know how to change stack space limit in some pypy, so have to use iterative version
     dfs code:
         def to_array_preorder(G):
             seq = 0

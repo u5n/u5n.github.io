@@ -20,7 +20,9 @@ def min_repr(s):
             can += n_match + 1
         else:
             ans, can = can, max(can+1, ans + n_match + 1)
+    
     return ans
+    return s2[ans:ans+n]
 
 if __name__ == "__main__":
     import random, string

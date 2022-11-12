@@ -29,8 +29,10 @@ def _combinatorial_cache(Mod, maxn):
         invfac[i]=pow(fac[i], -1, Mod)
         
         # inv[i]=Mod-((Mod//i)*inv[Mod%i])%Mod
+        
     def perm(n, r):
-        if n<r: return 0
+        assert n>=0
+        if r<0 or n<r: return 0
         return fac[n]*invfac[n-r]%Mod
     def comb(n, r):
         return perm(n,r)*invfac[r]%Mod
@@ -153,7 +155,7 @@ def _namespace_single_point(Mod):
                 while x%i==0:
                     x//=i
                 ret.append(i)
-            i+=1
+            i+=2-(i==2)
         if x>1: ret.append(x)
         return ret
     

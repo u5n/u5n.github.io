@@ -1,8 +1,8 @@
-def border(P):
+def prefix_func(P):
     """ 
-    B[i] is length of longest proper border of s[i+1] 
-    where border means a string that is the prefix and suffix of s[:i+1]
+    B[i] is length of longest border{string a is border of string b if a is proper prefix of b and proper suffix of b} of s[:i+1] 
     """
+    
     n = len(P)
     B = [None] * n
     B[0] = ml = 0
@@ -14,10 +14,11 @@ def border(P):
             ml += 1
         B[i] = ml
     return B
+
     
 class KmpQuery:
     def __init__(self, pattern):
-        self.B = border(pattern)
+        self.B = prefix_func(pattern)
         self.P = pattern
     def search(self, T):
         """ yield every index j that T[j:j+np]==P, in order """

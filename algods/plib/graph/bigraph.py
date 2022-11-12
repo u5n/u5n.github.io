@@ -2,8 +2,8 @@ from math import inf
 
 
 def is_bigraph(adj):
-    # `-COLOR0`` to get COLOR1
-    COLOR0, COLOR1 = -1, 1
+    # use `operator.neg` to get another color
+    COLOR0 = 1
     n = len(adj)
     q = []
     colored = [0]*n
@@ -102,6 +102,7 @@ def hungarian_weighted_perfect(adjmat):
     impl:
         add two sentry, x0=len(adjmat), y0=len(adjmat[0])
     time: O(nx**2 * ny)
+    todo: delete it, because there is dinic
     """
     nx,ny = len(adjmat)+1,len(adjmat[0])+1
     lx = [0]*nx

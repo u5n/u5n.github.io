@@ -1,8 +1,8 @@
-def crossed_backedge(G):
-    """
-    of undirected 
-    """
-    n = len(G)
+# def crossed_backedge(G):
+#     """
+#     of undirected 
+#     """
+#     n = len(G)
 
 def find_bridges(adj):
     """ des:
@@ -19,13 +19,12 @@ def find_bridges(adj):
     # u -> MIN{u; u can reach u through any outward_span_edge and only one inward_back_edge} 
     low = [-1]*n 
 
-    uuid = 0
+    preid = 0
     bridges = [] 
     def dfs(pu, u):
-        nonlocal uuid
-        pre[u] = uuid; uuid += 1
+        nonlocal preid
+        low[u] = pre[u] = preid; preid += 1
 
-        low[u] = pre[u]
         for v in adj[u]:
             if pre[v] == -1:
                 dfs(u, v)

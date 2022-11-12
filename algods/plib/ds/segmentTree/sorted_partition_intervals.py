@@ -116,8 +116,9 @@ class ChthollyTreeArray:
     """ the ChthollyTree implemented by arraylist
     only for len(A)<=100000
     python>=3.10
-    adv:
-        can use `ds.sqrtArray`
+    performance:
+        don't know how to measure
+        and `self.itvs` can use `ds.sqrtArray`
     test:
         @lc#2276
             https://leetcode.cn/submissions/detail/323970243/

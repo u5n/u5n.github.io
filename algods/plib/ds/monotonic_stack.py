@@ -28,13 +28,13 @@ def nearest_leftandright(A, opt):
         sta.append(i)
     return left, right
 
-def nearest_larger(A, opt=operator.gt):
+def nearest_greater(A, opt=operator.gt):
     """ 
     paras: opt: example: `[opeartor.lt, opeartor.gt, opeartor.ge, operator.le]`
     des:
         yield i0, i1, i2 for index i1 in `A`
             def cmp(i, j):
-                if 0!=opt(A[i], A[j]): opt(A[i], A[j])
+                if 0!=opt(A[i], A[j]): return opt(A[i], A[j])
                 if opt(0, 0):
                     return i-j # if A[j], A[i] equal, smaller index's cmp is larger
                 return j-i # if A[i] A[j] equal, larger index's cmp is larger
@@ -44,7 +44,13 @@ def nearest_larger(A, opt=operator.gt):
     example:
         A = [1,1,1,1]
             when opt is opeartor.gt, yield (-1,0,1),(-1,1,2),(-1,2,3),(-1,3,4)
+                find next greater, (when equal, the left one is smaller)
             when opt is opeartor.ge, yield (2,3,4),(1,2,4),(0,1,4),(-1,0,4)
+                find next greater, (when equal, the right one is smaller)
+            when opt is opeartor.lt, yield (-1, 0, 1), (-1, 1, 2), (-1, 2, 3), (-1, 3, 4)
+                find next smaller, (when equal, the left one is larger)
+            when opt is opeartor.le, yield 
+                find next smaller, (when equal, the right one is larger)
     test: @lc#907
     """
     n = len(A)

@@ -1,6 +1,6 @@
 from math import inf
 
-def dinic(adj: adjll, s, t):
+def dinic(adj: Adjll, s, t):
     """ 
         find max flow from s to t in graph G
         adj:

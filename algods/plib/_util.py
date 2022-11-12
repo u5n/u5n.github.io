@@ -71,14 +71,14 @@ def measure(loop=1, maxtime=3600, offset=0):
 def repr_return(ret, ret_type):
     """ change the return value into string"""
     
-    # try to check the types
-    if not issubclass(type(ret_type), typing._GenericAlias):
+    # try to check the types when [given ret_type in annotations and it was something like `List[int]`]
+    if ret_type !="NOT EXIST" and not isinstance(ret_type, typing._GenericAlias): # 
         # allow type conversion
         if ret_type is float and type(ret) is int: 
             pass
         else:
-            if (ret_type is None and ret!=None) or (ret_type and not issubclass(type(ret), ret_type)):
-                return f'(return the wrong type) {ret}'
+            if (ret_type is None and ret!=None) or (ret_type and not isinstance(ret, ret_type)):
+                return f'(return the wrong type) `{ret}` of type `{ret_type}`'
 
     if ret is None: return 'null'
     if ret_type is str:
@@ -143,7 +143,7 @@ def run_function_usestd(f, detail, selected, custom_testcase):
                 print(f"Test {i_cases}\n\tinput:", str_raw_args)
 
         start = time(); ret = f(*args); duration = time() - start
-        ret = truncated(repr_return(ret, paras.annotations.get('return', None)))
+        ret = truncated(repr_return(ret, paras.annotations.get('return', "NOT EXIST")))
 
         if detail:
             print("\toutput:", ret)

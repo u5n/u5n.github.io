@@ -1,7 +1,7 @@
-class adjll:
+class Adjll:
     __slots__ = 'n', 'end', 'head', 'm', 'add', 'edges'
     def __init__(self, n, weighted=False):
-        self.head = [-1]*n
+        self.head = [None]*n
 
         self.end = []
         self.n = n
@@ -27,7 +27,7 @@ class adjll:
         end = self.end
         eid = self.head[u]
         
-        while eid!= -1:
+        while eid is not None:
             yield end[eid][0]
             eid = end[eid][1]
 
@@ -35,7 +35,7 @@ class adjll:
         end = self.end
         eid = self.head[u]
 
-        while eid!= -1:
+        while eid is not None:
             yield end[eid][0], end[eid][1]
             eid = end[eid][2]
     

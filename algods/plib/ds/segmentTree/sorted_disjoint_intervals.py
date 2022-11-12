@@ -17,7 +17,7 @@ from sortedcontainers import SortedList
 import itertools
 
 class BoolList_Groupby:
-    """ des: vector<bool> with some operations, faster than SortedDisjointIntervals
+    """ des: List[bool] with some operations, faster than SortedDisjointIntervals
     can find size of continuous ones
     """
     __slots__ = 'zeros', 'szs'
