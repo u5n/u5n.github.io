@@ -140,7 +140,7 @@ def run_function_usestd(f, detail, selected, custom_testcase):
             
             if detail:
                 str_raw_args  = "; ".join(map(lambda rarg: rarg if len(rarg)<100 else rarg[:100]+'......', raw_args))
-                print(f"Test {i_cases}\n\tinput:", str_raw_args)
+                print(f"Testcase {i_cases}\n\tinput:", str_raw_args)
 
         start = time(); ret = f(*args); duration = time() - start
         ret = truncated(repr_return(ret, paras.annotations.get('return', "NOT EXIST")))

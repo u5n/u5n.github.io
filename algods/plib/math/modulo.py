@@ -3,7 +3,7 @@ TOC
     _combinatorial_cache
         fac;invfac;inv;perm;comb
     solve_linear_congruence
-    extended_euclidean
+    extgcd
     chinese_remainder_theorem
     {single point calculation}
         modular_multiplication_inverse
@@ -43,22 +43,21 @@ def trunc_div(a, b):
     if q < 0 and r: q += 1
     return q
 
-def extended_euclidean(a, b):
+def extgcd(a, b):
     """
     solve equation `ax + by = gcd(a,b)`
         x = ps + k*b//d
         y = pt - k*a//d
         ps * a + pt * b  = abs(pr) = gcd(a,b)
     """
-    pr,r =a,b
     ps,s =1,0
     pt,t =0,1
-    while r:
-        quo = trunc_div(pr, r)
-        pr,r=r,pr-quo*r
+    while b:
+        quo = trunc_div(a, b)
+        a,b=b,a-quo*b
         ps,s=s,ps-quo*s
         pt,t=t,pt-quo*t
-    return ps, pt
+    return a, ps, pt
 
 def solve_linear_congruences(a,b,m):
     """ solve equation ax ≡ b (mod m) && 0<=x<m
@@ -66,7 +65,7 @@ def solve_linear_congruences(a,b,m):
     """
     d = gcd(a,m)
     if b%d!=0: return 
-    x0,_ = extended_euclidean(a,m)
+    _,x0,_ = extgcd(a,m)
     x0*=b//d
     # if l==1: min(x0%m, (x0+m//d)%m) is the minimum solution that >= 0
     for _ in range(d):
@@ -122,7 +121,7 @@ def _namespace_single_point(Mod):
     """
     def modular_multiplication_inverse(a, Mod):
         assert gcd(a, Mod)==1
-        return extended_euclidean(a, Mod)[0]%Mod
+        return extgcd(a, Mod)[1]%Mod
     def is_prime(n:int):
         if n<=1: return False
         elif n<=3: return True

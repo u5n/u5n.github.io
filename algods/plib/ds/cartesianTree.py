@@ -9,6 +9,7 @@ class CartesianTreeNode:
     def __init__(self, key, val, left=None, right=None):
         self.key, self.val, self.left, self.right = key, val, left, right
     def __str__(self): return f"({self.key},{self.val})"
+    
     @staticmethod
     def buildfrom(A, opt = operator.lt):
         rchain = []
