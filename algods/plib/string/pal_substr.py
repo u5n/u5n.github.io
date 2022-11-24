@@ -60,8 +60,9 @@ def substr_pal_query(s):
     P0 = manacher_parity(s, 0)
     P1 = manacher_parity(s, 1)
     def is_pal(l, r):
+        """ s[l:r] """
         if r-l<=1: return True
-        if (r-l)%2==0: return P0[(l+r-1)//2]==(r-l)//2
-        else: return P1[(l+r)//2]==(r-l-1)//2
+        if (r-l)%2==0: return P0[(l+r-1)//2]>=(r-l)//2
+        else: return P1[(l+r)//2]>=(r-l-1)//2
     return is_pal
 

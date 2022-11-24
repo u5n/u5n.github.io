@@ -94,15 +94,14 @@ def repr_return(ret, ret_type):
 
 def input_pyobj(raw_arg, arg_type):
     """ change input string into python object """
-    if raw_arg == 'null': return None
-    raw_arg = eval(raw_arg)
+    pyobj_arg = eval(raw_arg.replace('null', 'None'))
     if arg_type is typing.Union[TreeNode, type(None)] or arg_type is TreeNode:
-        return binaryTree_decode(raw_arg)
+        return binaryTree_decode(pyobj_arg)
     # if use isubclass, make sure arg_type is a `class` not `type`
     elif arg_type is typing.Union[ListNode, type(None)] or arg_type is ListNode:
-        return toLinkedlist(raw_arg)
+        return toLinkedlist(pyobj_arg)
 
-    return raw_arg
+    return pyobj_arg
 
 def truncated(s, sz=200):
     if len(s)>sz:
@@ -239,8 +238,9 @@ def lc_test(selected={}, detail = False, solution_cls=None, custom_testcase:list
                 # has only one method
                 elif len(cans)==1:
                     f = cans[0]
-                # has multiple method, select the first one with annotations
+                # has multiple method, select the first one(function name is sort alphabetically) with return type annotated
                 else:
+                    f = None
                     for can in cans:
                         try:
                             paras = inspect.getfullargspec(can)
@@ -251,7 +251,8 @@ def lc_test(selected={}, detail = False, solution_cls=None, custom_testcase:list
                         if len(paras.annotations)!=0:
                             f = can
                             break
-                    else:
+                        
+                    if f is None:
                         raise Exception("no function has annotations ")
                 
                 run_function_usestd(f, detail, selected, custom_testcase)
