@@ -7,32 +7,31 @@ adv/dis compare to other bottomup segment tree:
     dis: can't break interval into `log(n)` intervals(there is a node correspond to)
 
 """
-
-class BIT:
+class BIT0:
     """ 
     des:
-        index of A start from 0
-        tarr[i] = sum(A[(i+1)&i:i+1])
+        node index start from 0
+        node[i] = sum(A[(i+1)&i:i+1])
     """
-    __slots__='n','tarr'	
+    __slots__='n','node'	
     def __init__(self, n):
         self.n = n
-        self.tarr = [0] * n
+        self.node = [0] * n
 
     def buildfrom(self, A):
         n = len(A)
         assert n == self.n
-        tarr = self.tarr
+        node = self.node
         pre = [0]*(n+1)
         for i in range(n):
             pre[i+1] = pre[i] + A[i]
         for inode in range(n):
-            tarr[inode] = pre[inode+1] - pre[inode&(inode+1)]
+            node[inode] = pre[inode+1] - pre[inode&(inode+1)]
     
     def add(self, idx, delta):
-        n, tarr = self.n, self.tarr
+        n, node = self.n, self.node
         while idx < n:
-            tarr[idx] += delta
+            node[idx] += delta
             idx |= idx+1
 
     def sum(self, idx, idx2=None):
@@ -40,10 +39,10 @@ class BIT:
         sum(idx, idx2): return A[idx: idx2]
         """
         if idx2!=None: return self.sum(idx2)-self.sum(idx)
-        tarr = self.tarr
+        node = self.node
         ret = 0
         while idx>=1:
-            ret += tarr[idx-1]
+            ret += node[idx-1]
             idx &= idx-1
         
         return ret
@@ -51,7 +50,7 @@ class BIT:
 
     def kth(self, k):
         """ des: 
-            return min i that `sum(i+1)>k`
+            return min i that `sum(A[:i+1])>k`
             suppose BIT is a Counter, it find the kth(start from 0) smallest element
             if not found, return self.n
         time: O(lg(n))
@@ -59,25 +58,25 @@ class BIT:
             ```
             maxv = 100
             B = BIT(maxv)
-            A=[1,1,1,2,3,3,3,3,4]
+            A=[1,1,1,2,3,3,3,3,4,0]
             for v in A:
                 B.add(v, 1)
             for k in range(len(A)):
-                assert B.kth(k) == A[k]
+                assert B.kth(k) == sorted(A)[k]
             assert B.kth(len(A)+1) == maxv
             ```
         """
-        n, tarr = self.n, self.tarr
+        n, node = self.n, self.node
         
         bit = 1<<(n.bit_length()-1)
         pre = 0 # prefix 
         while bit:
             cur = pre + bit
-            if cur <= n and tarr[cur-1]<=k:
+            if cur <= n and node[cur-1]<=k:
                 # go to segmenttree right child (shrink the interval by half)
-                k -= tarr[cur-1]
-                pre = cur
-            # if cur > n or k < self.tarr[cur-1]:
+                k -= node[cur-1]
+                pre += bit
+            # if cur > n or k < self.node[cur-1]:
             #     go to segmenttree left child ( shrink the interval by half )
             bit >>= 1
         return pre
@@ -85,11 +84,11 @@ class BIT:
     def point_query(self, i):
         """ calculate A[i], by find all children of a tree node 
         time: O(lgn) """
-        tarr = self.tarr
-        res = tarr[i]
+        node = self.node
+        res = node[i]
         bound = i&(i+1)
         while i>bound:
-            res -= tarr[i-1]
+            res -= node[i-1]
             i&=i-1
 
         return res
@@ -97,33 +96,35 @@ class BIT:
     def __str__(self):
         return str([self.point_query(i) for i in range(self.n)])
 
+BIT = BIT0
+
 
 class BIT1:
     """ 
     des:
-        index of A start from 1( include add/sum method)
-        tarr[i] = sum(A[i+1-lowbit(i):i+1])
+        node index start from 1
+        node[i] = sum(A[i+1-lowbit(i):i+1])
     adv/dis: ?
     """
-    __slots__='n','tarr'	
+    __slots__='n','node'	
     def __init__(self, n):
         self.n = n
-        self.tarr = [0] * (n+1)
+        self.node = [0] * (n+1)
 
     def buildfrom(self, A):
         n = len(A)
         assert self.n == n
-        tarr = self.tarr
+        node = self.node
         pre = [0]*(n+1)
         for i in range(1, n+1):
             pre[i] = pre[i-1] + A[i-1]
         for inode in range(1, 1+n):
-            tarr[inode] = pre[inode] - pre[inode&(inode-1)]
+            node[inode] = pre[inode] - pre[inode&(inode-1)]
         
     def add(self, idx, delta):
-        n, tarr = self.n, self.tarr
+        n, node = self.n, self.node
         while idx <= n:
-            tarr[idx] += delta
+            node[idx] += delta
             idx += idx&-idx
 
     def sum(self, idx, idx2=None):
@@ -132,22 +133,22 @@ class BIT1:
             sum(idx, idx2): return sum(A[idx:idx2+1])
         """
         if idx2!=None: return self.sum(idx2)-self.sum(idx-1)
-        tarr = self.tarr
+        node = self.node
         ret = 0
         while idx>=1:
-            ret += tarr[idx]
+            ret += node[idx]
             idx &= idx-1
         return ret
 
     def point_query(self, i):
         """ calculate A[i], by find all children of a tree node 
         time: O(lgn) """
-        tarr = self.tarr
-        res = tarr[i]
+        node = self.node
+        res = node[i]
         bound = i&(i-1)
         i -= 1
         while i>bound:
-            res -= tarr[i]
+            res -= node[i]
             i&=i-1
         return res
 
@@ -195,22 +196,23 @@ class BIT_range:
         if idx2 != None: return self.sum(idx2) - self.sum(idx)
         return (idx-1)*self.bit0.sum(idx) - self.bit1.sum(idx)
 
+
 # index start from 0, and 2 dimension
 class BIT2d:
     """ des: for an static 2darray `A`, it support point addition and rectangle query on `A` """
-    __slots__='m', 'n', 'tarr'
+    __slots__='m', 'n', 'node'
     def __init__(self, n, m):
         self.n, self.m = n,m
-        self.tarr = [[0]*m for _ in range(n)]
+        self.node = [[0]*m for _ in range(n)]
     
     def add(self, idx, delta):
         """ A[idx] += delta """
-        tarr, n, m = self.tarr, self.n, self.m
+        node, n, m = self.node, self.n, self.m
         x = idx[0]
         while x < n:
             y = idx[1]
             while y < m:
-                tarr[x][y] += delta
+                node[x][y] += delta
                 y |= y+1
             x |= x+1
     
@@ -219,12 +221,12 @@ class BIT2d:
         if idx2!=None:
             return self.sum(idx2) + self.sum(idx) - self.sum((idx[0],idx2[1])) - self.sum((idx2[0],idx[1]))
 
-        tarr = self.tarr
+        node = self.node
         ret, x = 0, idx[0]
         while x>=1:
             y = idx[1]
             while y>=1:
-                ret += tarr[x-1][y-1]
+                ret += node[x-1][y-1]
                 y &= y-1
             x &= x-1
         return ret
@@ -258,7 +260,7 @@ if __name__ == '__main__':
             B.add(i, e)
         lowbit = lambda x:x&-x
         for i in range(n):
-            assert B.tarr[i] == sum(A[i+1-lowbit(i+1):i+1])
+            assert B.node[i] == sum(A[i+1-lowbit(i+1):i+1])
         
         atol=1e-08
         for i in range(n):

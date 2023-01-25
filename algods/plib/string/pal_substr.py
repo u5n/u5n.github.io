@@ -52,7 +52,7 @@ def manacher_parity(s, parity):
     
 def substr_pal_query(s):
     """
-    des: given any substring, find whether it's palindromic 
+    des: return function `is_pal(l,r)` that find `s[l:r]==s[l:r][::-1]` in O(1)
     time:
         preprocess: O(n)
         query: O(1)

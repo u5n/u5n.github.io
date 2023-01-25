@@ -6,7 +6,7 @@ both use path compression with unite by size
 """
 from collections import defaultdict
 
-
+    
 class Dsu:
     """ 
     the parent relationship is maintain by a list A
@@ -14,23 +14,12 @@ class Dsu:
         of a non-representative x, `A[x]` is parent of x
     the element is numbered in [0,n)
     """
-    __slots__ = 'p', 'cnt', 'maxsz'
-    def __init__(self, n, make_n_set=True):
-        if make_n_set:
-            # makeset 0,1,...,n-1
-            self.p = [-1]*n
-            self.cnt = n
-            self.maxsz = 1
-        else:
-            self.p = [None]*n
-            self.cnt = 0
-            self.maxsz = 0
-    
-    def makeset(self, i):
-        assert self.p[i] is None
-        self.p[i] = -1
-        self.cnt += 1
-        # self.maxsz = max(self.maxsz, 1)
+    __slots__ = 'p', 'n_sets' # , 'maxsz'
+    def __init__(self, n):
+        # makeset 0,1,...,n-1
+        self.p = [-1]*n
+        self.n_sets = n
+        # self.maxsz = 1
 
     def find(self, u):
         p = self.p
@@ -49,7 +38,7 @@ class Dsu:
         p[l] = r
         
         # self.maxsz = max(self.maxsz, -p[r])
-        self.cnt -= 1
+        self.n_sets -= 1
         return True
 
     def to_sets(self):
@@ -59,12 +48,9 @@ class Dsu:
         """
         ret = defaultdict(list)
         for k in range(len(self.p)):
-            if self.p[k] is not None:
-                ret[self.find(k)].append(k)
+            ret[self.find(k)].append(k)
         return ret
 
-    def is_repr(self, u): return self.p[u] is not None and self.find(u) < 0
-    def __len__(self): return self.cnt
     def __repr__(self): return str(self.to_sets().items()).replace("dict_items", "Dsu")
 
 
@@ -75,10 +61,10 @@ class DsuChain:
         the chain node numbered from 0 to n-1, with a node numbered n as a sentry
         diff with singly linkedlist:
             can't have loop
-            linkedlist(chain) node is a set
+            a set in DsuChain correspond to the node of linkedlist
             can only delete
             delete a node by unite into its next node
-            can get node by node number in O(1)
+            can get(and remove) node by original node number in O(1)
     time:
         the dsu is amortized O(lg(q)), where q number of operations
     """
@@ -104,7 +90,6 @@ class DsuChain:
     def __repr__(self):     
         return f"DsuChain({'->'.join(map(str, self.__iter__()))}, cap={self.n})"
 
-    def __len__(self): return self.sz
 
 class DsuDChain:
     """
@@ -145,4 +130,3 @@ class DsuDChain:
             start = self.prev(start)
 
     def __repr__(self): return f"DsuDChain({' - '.join(map(str, self.__iter__())),}, cap={self.n})"
-    def __len__(self): return self.sz

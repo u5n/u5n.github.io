@@ -1,7 +1,6 @@
 """
 TOC
-    _combinatorial_cache
-        fac;invfac;inv;perm;comb
+    combCache
     solve_linear_congruence
     extgcd
     chinese_remainder_theorem
@@ -20,23 +19,26 @@ from operator import *
 from typing import List
 from itertools import count
 
-def _combinatorial_cache(Mod, maxn):
-    fac = [1]*(maxn+1)
-    invfac = [1]*(maxn+1)
-    # inv = [1]*(maxn+1)
-    for i in range(2,maxn+1):
-        fac[i]=fac[i-1]*i%Mod
-        invfac[i]=pow(fac[i], -1, Mod)
-        
-        # inv[i]=Mod-((Mod//i)*inv[Mod%i])%Mod
+def combCache(mod, maxn):
+    fac = [1]*(maxn)
+    invfac = [1]*(maxn)
+    inv = [1]*(maxn)
+    
+    for i in range(2,maxn):
+        inv[i] = inv[mod%i]*(-mod/i)%mod
+        fac[i]=fac[i-1]*i%mod
+        invfac[i]=invfac[i-1]*inv[i]
         
     def perm(n, r):
         assert n>=0
         if r<0 or n<r: return 0
-        return fac[n]*invfac[n-r]%Mod
+        return fac[n]*invfac[n-r]%mod
+        
     def comb(n, r):
-        return perm(n,r)*invfac[r]%Mod
+        return perm(n,r)*invfac[r]%mod
 
+    
+    
 def trunc_div(a, b):
     """ integer division, quotient truncated towards zero, as same as c++  """
     q, r = divmod(a,b)
@@ -122,6 +124,7 @@ def _namespace_single_point(Mod):
     def modular_multiplication_inverse(a, Mod):
         assert gcd(a, Mod)==1
         return extgcd(a, Mod)[1]%Mod
+    
     def is_prime(n:int):
         if n<=1: return False
         elif n<=3: return True
@@ -133,6 +136,7 @@ def _namespace_single_point(Mod):
             i+=6
         return True
 
+    
     def factors(x):
         ret = []
         p = 1
@@ -145,22 +149,8 @@ def _namespace_single_point(Mod):
             ret.append(p)
         return ret
 
-    def prime_factors(x):
-        """ test: @lccn#LCP14 """
-        i = 2
-        ret = []
-        while i*i <= x:
-            if x%i==0:
-                while x%i==0:
-                    x//=i
-                ret.append(i)
-            i+=2-(i==2)
-        if x>1: ret.append(x)
-        return ret
-    
-    # prime factors in order, with exponent 
-    def prime_factors_exp(x):
-        ret = []
+    def prime_factor(x):
+        ms = Counter()
         i = 2
         while i*i <= x:
             cnt = 0
@@ -168,15 +158,14 @@ def _namespace_single_point(Mod):
                 x//=i
                 cnt += 1
             if cnt!=0: 
-                ret.append((i,cnt))
+                ms[i] = cnt
             i+=1
-        if x>1: ret.append((x,1))
-        return ret
+        if x>1: ms[x] = 1
+        return ms
 
     # euler totient function
     def euler_totient(x):
         ret = x
-        for p in prime_factors(x):
+        for p,_ in prime_factors(x).items():
             ret=ret//p*(p-1)
         return ret
-

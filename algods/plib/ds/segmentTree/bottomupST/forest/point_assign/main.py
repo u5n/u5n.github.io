@@ -1,31 +1,29 @@
 """
 des:
     this create a segment forest, 
-                   2
-                 /   \
-             3   4    5
-            / \ / \   / \
-            6 7 8  9 10 11
-            0 1 2  3 4  5 
+                       2
+                     /   \
+              3     4     5
+             / \   / \   / \
+            6   7 8   9 10 11
             
-        the tree is built bottom up layer by layer
+        Ai: 0   1 2   3 4  5 
+            
+        the forest can be built bottom up layer by layer
             ```
             def build(n):
-                nodes = [Node()]*(2*n)
+                nodes = [Node() for _ in range(2*n)]
                 l = n 
-                r = n*2 -1 
-                while r-l+1 >1:
-                    l, r = (l+1)//2, (r-1)//2
+                r = n*2 - 1
+                l, r = (l+1)//2, (r-1)//2
+                while l<=r:
                     for inode in range(l, r+1):
-                        nodes[inode].left = nodes[inode*2]
-                        nodes[inode].right = nodes[inode*2+1]
+                        nodes[inode].left = nodes[inode*2].left
+                        nodes[inode].right = nodes[inode*2+1].right
+                    l, r = (l+1)//2, (r-1)//2   
             ```
-        a node numbered i 
-            has two child i*2 and i*2+1
-            if i&1:
-                it's right child(if has parent)
-            else:
-                it's left child(if has parent)
+            
+        tree height:  bit_length(n)        
         
 time complexity:
     init: O(n)
