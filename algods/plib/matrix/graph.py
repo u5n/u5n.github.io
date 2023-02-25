@@ -1,5 +1,5 @@
 """
-avoid pass dimension as parameter, most function is defined under a function
+to avoid passing dimension as parameter, most function is defined under a closure
 """
 from functools import cache
 from math import inf

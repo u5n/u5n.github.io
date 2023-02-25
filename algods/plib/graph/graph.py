@@ -115,9 +115,14 @@ def topo_sort(adj):
     return ret
 
 def floydWarshall(adjmat):
+    """ glossary: 
+        medium edge: the edge in a path; the edge is not first and not last
+    """
     n = len(adjmat)
+    # shortest path table when you can't use any medium edge
     dp = copy.deepcopy(adjmat)
     for med in range(n):
+        # now you can use edge numbered `med`` as medium edge
         for i in range(n):
             for j in range(n):
                 dpv = dp[i][med] + dp[med][j]

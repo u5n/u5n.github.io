@@ -12,7 +12,7 @@ class ST_template:
         self.lbor = lbor
         self.rbor = rbor
         
-        totalnodes = 1<<(1+(rbor-lbor).bit_length()) # upperbound as if it's perfect binary tree
+        totalnodes = 2<<(rbor-lbor).bit_length() # upperbound as if it's perfect binary tree
         self.nodes=[0 for _ in range(totalnodes)]
         
         self.opt = opt

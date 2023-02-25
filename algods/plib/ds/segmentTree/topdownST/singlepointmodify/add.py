@@ -4,21 +4,20 @@ class ST_add:
     treenode stores in a array, treenode id start from 1
     usg: range operator.add query with single point assign
     test: @lc#307
+    design: as simple as possible
     """
     __slots__ = 'n', 'nodes'
-
+    
     def __init__(self, n):
-        totalnodes = 1 << (1 + (n - 1).bit_length())
         self.n = n
-        self.nodes = [0]*totalnodes
+        self.nodes = [0]*(1 << (1 + (n - 1).bit_length()))
 
     def buildfrom(self, A):
         # assert len(A)>=self.n
-        nodes = self.nodes
 
         def build(nid, l, r):
             if r == l:
-                nodes[nid] = A[l]
+                self.nodes[nid] = A[l]
                 return
             m = (r + l) // 2
             build(nid * 2, l, m)

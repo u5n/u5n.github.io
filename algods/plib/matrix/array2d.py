@@ -3,26 +3,14 @@ from collections import *
 """  
 des:
     this file shouldn't contain graph content
-TOC:
-    interval_sum_query
-    prefix_sum
-    prefix_sum_np
-    {zero indexed prefix sum}
-        interval_sum_query0
-        prefix_sum_np0
-    DiffArray
-    spiral_traverse
-    matpow_mod
 convention:
     use n to represent row number 
     use m to represent col number
 """
-import copy
-from itertools import product
 
-def _namespace_native():
-    def prefix_sum1(A):
-        """ pre is 1-indexed, i.e. pre[r][c] == sum(A[:r, :c]) """
+class prefix_sum:
+    """ pre[r][c] == sum(A[:r, :c]) """
+    def __init__(self, A):
         n, m = len(A), len(A[0])
         pre = [ [0]*(m+1) for _ in range(n+1)]
         for r in range(n):
@@ -30,26 +18,18 @@ def _namespace_native():
                 pre[r+1][c+1] = A[r][c] + pre[r][c+1] + pre[r+1][c] - pre[r][c]
         return pre
     
-    # zero_indexed_prefix
-    def prefix_sum0(A):
-        """ pre[r][c] == sum(A[:r+1, :c+1])
-        performance: 10x faster than native python
-        """
-        n, m = len(A), len(A[0])
-        pre = [row[:] for row in A]
-        for r,c in product(range(n), range(1, m)):
-            pre[r][c] += pre[r][c-1]
-        for r,c in product(range(1, n), range(m)):
-            pre[r][c] += pre[r-1][c]
-        return pre
-
+    def itv_sum(self, r0, c0, r1, c1):
+        """ return sum(A[r0:r1, c0:c1]) """
+        if not( r0<r1 and c0<c1) : return 0
+        pre = self.pre
+        return pre[r1][c1] - pre[r1][c0] - pre[r0][c1] + pre[r0][c0]
+        
 import numpy as np
-
-class prefix_sum1_np:
+class np_prefix_sum:
+    """ pre[r][c] == sum(A[:r, :c])
+    performance: 10x faster than native python
+    """
     def __init__(self, A):
-        """ pre[r][c] == sum(A[:r, :c])
-        performance: 10x faster than native python
-        """
         n, m = len(A), len(A[0])
         pre = np.zeros((n+1, m+1), int)
         pre[1:, 1:] = A
@@ -57,34 +37,12 @@ class prefix_sum1_np:
         np.cumsum(pre, axis=1, out=pre)
         self.pre = pre.tolist()
     
-    def interval_sum(self, r0, c0, r1, c1):
+    def itv_sum(self, r0, c0, r1, c1):
         """ return sum(A[r0:r1, c0:c1]) """
+        if not( r0<r1 and c0<c1) : return 0
         pre = self.pre
         return pre[r1][c1] - pre[r1][c0] - pre[r0][c1] + pre[r0][c0]
 
-class prefix_sum0_np:
-    def __init__(self, A):    
-        """ pre[r][c] == sum(A[:r+1, :c+1])
-        performance: 10x faster than native python
-        """
-        pre = np.cumsum(A, axis=0)
-        np.cumsum(pre, axis=1, out=pre)
-        self.pre = pre.tolist()
-    def interval_sum(self, r0, c0, r1, c1):
-        """ pre is 0-indexed
-        return sum(A[r0:r1+1, c0:c1+1])
-        assert: 0<=r0<=r1<=n, 0<=c0<=c1<=m
-        """
-        pre = self.pre
-        ret = pre[r1][c1]
-        if c0 == 0 and r0 == 0:
-            return ret 
-        elif c0 == 0:
-            return ret - pre[r0-1][c1]
-        elif r0 == 0:
-            return ret - pre[r1][c0-1]
-        else:
-            return ret - pre[r1][c0-1] - pre[r0-1][c1]
 
 class DiffMatrix:
     """ des: 
@@ -95,7 +53,8 @@ class DiffMatrix:
     def __init__(self, n, m):
         self.diff = [[0]*m for _ in range(n)]
         self.n, self.m = n, m
-    def add_interval(self, lx, ly, rx, ry, d):
+    
+    def add_itv(self, lx, ly, rx, ry, d):
         """ M[lx:ly, rx:ry] += d 
         assert 0<=lx<=rx, lx<n, 0<=ly<=ry, ly<m
         """
@@ -107,7 +66,8 @@ class DiffMatrix:
                 diff[rx][ry] += d
         if ry<self.m:
             diff[lx][ry] -= d
-
-    def get_M(self): return prefix_sum0_np(self.diff)
-
-
+    
+    def get_native_M(self):
+        M = np.cumsum(self.diff, axis=0)
+        np.cumsum(M, axis=1, out=M)
+        return M.tolist()

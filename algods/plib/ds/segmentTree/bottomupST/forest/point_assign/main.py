@@ -22,8 +22,6 @@ des:
                         nodes[inode].right = nodes[inode*2+1].right
                     l, r = (l+1)//2, (r-1)//2   
             ```
-            
-        tree height:  bit_length(n)        
         
 time complexity:
     init: O(n)

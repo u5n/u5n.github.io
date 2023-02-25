@@ -1,6 +1,7 @@
 from math import *
 from functools import reduce
 
+# todo add Al,Ar attrs into Data
 class Data:
     __slots__="sum","ma","mi","add","prop"
     def __init__(self,sum=None,ma=None,mi=None,add=0,prop=None):
@@ -16,9 +17,7 @@ class SegmentTree:
     def __init__(self, lbor, rbor): 
         self.rbor,self.lbor=rbor,lbor
         self.seg=[Data() for _ in range( 2**ceil(log2(rbor-lbor+1) +1))]
-    def reinit(self, lbor, rbor):
-        self.lbor, self.rbor = lbor, rbor
-        self.seg.assign(lbor, rbor, 0)
+    
     def build(self,A,i=0,l=None,r=None):
         if r==None: l=self.lbor; r=self.rbor
         if r==l: 
@@ -28,12 +27,16 @@ class SegmentTree:
         self.build(A,i*2+1,l,m)
         self.build(A,i*2+2,m+1,r)
         self.pull(i)
+    
     def query_max(self,Al,Ar):
         return reduce(lambda l,r:max(l,self.seg[r].ma),self.subsegment(Al,Ar),-inf)
+    
     def query_min(self,Al,Ar):
         return reduce(lambda l,r:min(l,self.seg[r].mi),self.subsegment(Al,Ar),inf)
+    
     def query_sum(self,Al,Ar):
         return reduce(lambda l,r:l+self.seg[r].sum,self.subsegment(Al,Ar),0)
+        
     def addition(self,Al,Ar,add):
         for i,l,r in self.subsegment(Al,Ar,update=True):
             self.seg[i].sum+=add*(r-l+1)
@@ -71,19 +74,24 @@ class SegmentTree:
             seg[i*2+2].sum+=add*(r-m)
             seg[i].add=0
             
-    def subsegment(self,Al,Ar,i=0,l=None,r=None,update=False):
-        if r==None: l=self.lbor; r=self.rbor
-        if Al>r or l>Ar: return
-        elif Al<=l and r<=Ar: 
-            if update: yield i,l,r
-            else: yield i
-        else:
-            m = l+(r-l)//2
-            self.push(i,l,m,r)
-            yield from self.subsegment(Al,Ar,i*2+1,l,m,update)
-            yield from self.subsegment(Al,Ar,i*2+2,m+1,r,update)
-            if update: self.pull(i)
-
+    def subsegment(self,Al,Ar,update=False):
+        def dfs(i,l,r):
+            # not overlap
+            if Al>r or l>Ar: return
+            # completely in [Al,Ar]
+            elif Al<=l and r<=Ar: 
+                if update: yield i,l,r
+                else: yield i
+            # partly overlap
+            else:
+                m = l+(r-l)//2
+                self.push(i,l,m,r)
+                yield from dfs(i*2+1,l,m)
+                yield from dfs(i*2+2,m+1,r)
+                if update: self.pull(i)
+                
+        yield from dfs(0, self.lbor, self.rbor)
+        
 if __name__ == "__main__":
     A = [1,2,2,3,1,1,0]
     S1 = SegmentTree(0,len(A)-1)
